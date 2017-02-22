@@ -1,6 +1,6 @@
 package ie.ul.postgrad.socialanxietyapp.game;
 
-import java.util.ArrayList;
+import android.util.SparseIntArray;
 
 /**
  * Created by Robert on 20-Feb-17.
@@ -8,13 +8,17 @@ import java.util.ArrayList;
 
 public class Inventory {
 
-    private ArrayList<Item> inventoryItems;
+    SparseIntArray items;
 
     public Inventory() {
-        inventoryItems = new ArrayList<>();
+        items = new SparseIntArray();
     }
 
-    public void addItem(Item item) {
-        inventoryItems.add(item);
+    public void addItem(int itemID) {
+        items.put(itemID, items.get(itemID)+1);
+    }
+
+    public SparseIntArray getItems() {
+        return items;
     }
 }

@@ -37,61 +37,48 @@ import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 
-public class MapsActivity extends AppCompatActivity implements
-        OnMapReadyCallback,
-        GoogleApiClient.ConnectionCallbacks,
-        GoogleApiClient.OnConnectionFailedListener,
-        LocationListener,
-        GoogleMap.OnMarkerClickListener{
+import java.util.ArrayList;
+
+import ie.ul.postgrad.socialanxietyapp.game.ItemFactory;
+import ie.ul.postgrad.socialanxietyapp.game.Player;
+import ie.ul.postgrad.socialanxietyapp.game.WorldItem;
+
+public class MapsActivity extends AppCompatActivity implements OnMapReadyCallback, GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener,
+        LocationListener, GoogleMap.OnMarkerClickListener {
 
     private static final String TAG = MapsActivity.class.getSimpleName();
     private GoogleMap mMap;
     private CameraPosition mCameraPosition;
-
-    // The entry point to Google Play services, used by the Places API and Fused Location Provider.
-    private GoogleApiClient mGoogleApiClient;
-    // A request object to store parameters for requests to the FusedLocationProviderApi.
-    private LocationRequest mLocationRequest;
-    // The desired interval for location updates. Inexact. Updates may be more or less frequent.
+    private GoogleApiClient mGoogleApiClient; //Entry point to Play Services (used by Places API).
+    private LocationRequest mLocationRequest; //Request object for FusedLocationProviderApi.
     private static final long UPDATE_INTERVAL_IN_MILLISECONDS = 10000;
-    // The fastest rate for active location updates. Exact. Updates will never be more frequent
-    // than this value.
-    private static final long FASTEST_UPDATE_INTERVAL_IN_MILLISECONDS =
-            UPDATE_INTERVAL_IN_MILLISECONDS / 2;
-
-    // A default location (Sydney, Australia) and default zoom to use when location permission is
-    // not granted.
-    private final LatLng mDefaultLocation = new LatLng(-33.8523341, 151.2106085);
+    private static final long FASTEST_UPDATE_INTERVAL_IN_MILLISECONDS = UPDATE_INTERVAL_IN_MILLISECONDS / 2;
+    private final LatLng mDefaultLocation = new LatLng(-33.8523341, 151.2106085); //Default location.
     private static final int DEFAULT_ZOOM = 15;
     private static final int PERMISSIONS_REQUEST_ACCESS_FINE_LOCATION = 1;
     private boolean mLocationPermissionGranted;
-
-    // The geographical location where the device is currently located.
-    private Location mCurrentLocation;
-
-    // Keys for storing activity state.
+    private Location mCurrentLocation; //Current location of device.
     private static final String KEY_CAMERA_POSITION = "camera_position";
     private static final String KEY_LOCATION = "location";
 
+    public static Player player;
+    private ArrayList<WorldItem> worldItems;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         getSupportActionBar().hide();
+
         // Retrieve location and camera position from saved instance state.
         if (savedInstanceState != null) {
             mCurrentLocation = savedInstanceState.getParcelable(KEY_LOCATION);
             mCameraPosition = savedInstanceState.getParcelable(KEY_CAMERA_POSITION);
         }
-
-        // Retrieve the content view that renders the map.
         setContentView(R.layout.activity_maps);
-        // Build the Play services client for use by the Fused Location Provider and the Places API.
         buildGoogleApiClient();
         mGoogleApiClient.connect();
 
         Button logOutButton = (Button) findViewById(R.id.log_out_button);
-
         FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
         if (user != null) {
             // Name, email address, and profile photo Url
@@ -103,6 +90,17 @@ public class MapsActivity extends AppCompatActivity implements
             @Override
             public void onClick(View v) {
                 FirebaseAuth.getInstance().signOut();
+            }
+        });
+
+        player = new Player(user.getDisplayName());
+        worldItems = new ArrayList<WorldItem>();
+
+        (findViewById(R.id.inventory_button)).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent i = new Intent(getApplicationContext(), InventoryActivity.class);
+                startActivity(i);
             }
         });
     }
@@ -235,11 +233,7 @@ public class MapsActivity extends AppCompatActivity implements
                 return infoWindow;
             }
         });
-        /*
-         * Set the map's camera position to the current location of the device.
-         * If the previous state was saved, set the position to the saved state.
-         * If the current location is unknown, use a default position and zoom value.
-         */
+
         if (mCameraPosition != null) {
             mMap.moveCamera(CameraUpdateFactory.newCameraPosition(mCameraPosition));
         } else if (mCurrentLocation != null) {
@@ -358,11 +352,21 @@ public class MapsActivity extends AppCompatActivity implements
                             snippet = snippet + "\n" + attributions;
                         }
 
+                        //TEMP LOGIC FOR OBJECT PLACEMENT
+                        WorldItem item;
+                        if (snippet.toLowerCase().startsWith("a") || snippet.toLowerCase().startsWith("h") || snippet.toLowerCase().startsWith("p")) {
+                            item = (WorldItem) ItemFactory.buildItem(ItemFactory.ROCK_ID);
+                        } else {
+                            item = (WorldItem) ItemFactory.buildItem(ItemFactory.TREE_ID);
+                        }
+
+
                         mMap.addMarker(new MarkerOptions()
                                 .position(placeLikelihood.getPlace().getLatLng())
-                                .title("You are too far away.")
-                                .icon(BitmapDescriptorFactory.fromResource(R.drawable.tree_1))
-                                .snippet((String) placeLikelihood.getPlace().getName()));
+                                .title("You are too far away from this " + item.getName() + ".")
+                                .icon(BitmapDescriptorFactory.fromResource(item.getMarkerIconID()))
+                                .snippet((String) placeLikelihood.getPlace().getName()))
+                                .setTag(item.getId());
 
                     }
                     // Release the place likelihood buffer.
@@ -399,9 +403,10 @@ public class MapsActivity extends AppCompatActivity implements
     @Override
     public boolean onMarkerClick(Marker marker) {
 
-        if(marker.getTitle().equals("Click to inspect tree.")) {
+        if (marker.getTitle().equals("Click to inspect.")) {
             marker.setTitle("You are too far away!");
-            Intent i  = new Intent(getApplicationContext(), SelfRatingActivity.class);
+            Intent i = new Intent(getApplicationContext(), ActionActivity.class);
+            i.putExtra(ActionActivity.ACTIVE_ITEM_ID, (int) marker.getTag());
             startActivity(i);
         }
 
@@ -411,8 +416,8 @@ public class MapsActivity extends AppCompatActivity implements
 
         float distance = location.distanceTo(mCurrentLocation);
 
-        if(distance < 30) {
-            marker.setTitle("Click to inspect tree.");
+        if (distance > 0) {
+            marker.setTitle("Click to inspect.");
         } else {
             marker.setTitle("You are too far away!");
         }
