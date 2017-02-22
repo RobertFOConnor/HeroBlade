@@ -1,0 +1,34 @@
+<resources>
+    <string name="app_name">Font Awesome App</string>
+
+    <string name="welcome">Welcome</string>
+
+    <string name="sign_up">Sign up</string>
+    <string name="login">Log in</string>
+    <string name="log_out">Log out</string>
+
+    <string name="create_account">Create Account</string>
+    <string name="name">Name</string>
+    <string name="email">Email</string>
+    <string name="password">Password</string>
+    <string name="proceed">Continue</string>
+    <string name="terms_and_conditions">Terms &amp; Conditions</string>
+    <string name="forgot_password">Forgot your password?</string>
+    <string name="reset_password">Reset Password</string>
+
+    <string name="error_empty">Please make sure all fields have been filled.</string>
+    <string name="error_username_short">Please enter a longer user name.</string>
+    <string name="error_email_invalid">Please enter a valid email address.</string>
+
+    <string name="create_account_success">Account created successfully!</string>
+
+    <string name="anxiety_scale_lvl_1">Totally Relaxed</string>
+    <string name="anxiety_scale_lvl_2">Mildly Anxious</string>
+    <string name="anxiety_scale_lvl_3">Moderately Anxious</string>
+    <string name="anxiety_scale_lvl_4">Severely Anxious</string>
+    <string name="anxiety_scale_lvl_5">Extremely Anxious</string>
+
+    <string name="anxiety_rate_title">Please rate the greatest amount of anxiety you experienced by selecting the appropriate number.</string>
+    <string name="title_activity_maps">Map</string>
+
+</resources>
