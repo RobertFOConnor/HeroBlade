@@ -41,10 +41,11 @@ import java.util.ArrayList;
 
 import ie.ul.postgrad.socialanxietyapp.game.ItemFactory;
 import ie.ul.postgrad.socialanxietyapp.game.Player;
+import ie.ul.postgrad.socialanxietyapp.game.WeaponItem;
 import ie.ul.postgrad.socialanxietyapp.game.WorldItem;
 
 public class MapsActivity extends AppCompatActivity implements OnMapReadyCallback, GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener,
-        LocationListener, GoogleMap.OnMarkerClickListener {
+        LocationListener, GoogleMap.OnMarkerClickListener, View.OnClickListener {
 
     private static final String TAG = MapsActivity.class.getSimpleName();
     private GoogleMap mMap;
@@ -62,7 +63,6 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
     private static final String KEY_LOCATION = "location";
 
     public static Player player;
-    private ArrayList<WorldItem> worldItems;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -78,31 +78,41 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
         buildGoogleApiClient();
         mGoogleApiClient.connect();
 
-        Button logOutButton = (Button) findViewById(R.id.log_out_button);
-        FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
-        if (user != null) {
-            // Name, email address, and profile photo Url
-            String buttonText = "Log out: " + user.getDisplayName();
-            logOutButton.setText(buttonText);
-        }
+        setupPlayer();
 
-        logOutButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                FirebaseAuth.getInstance().signOut();
-            }
-        });
+        (findViewById(R.id.inventory_button)).setOnClickListener(this);
+        (findViewById(R.id.player_button)).setOnClickListener(this);
+        (findViewById(R.id.crafting_button)).setOnClickListener(this);
+    }
 
-        player = new Player(user.getDisplayName());
-        worldItems = new ArrayList<WorldItem>();
-
-        (findViewById(R.id.inventory_button)).setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent i = new Intent(getApplicationContext(), InventoryActivity.class);
+    @Override
+    public void onClick(View v) {
+        Intent i;
+        switch (v.getId()) {
+            case R.id.inventory_button:
+                i = new Intent(getApplicationContext(), InventoryActivity.class);
                 startActivity(i);
-            }
-        });
+                break;
+            case R.id.player_button:
+                i = new Intent(getApplicationContext(), PlayerAvatarActivity.class);
+                startActivity(i);
+                break;
+            case R.id.crafting_button:
+                i = new Intent(getApplicationContext(), CraftingActivity.class);
+                startActivity(i);
+                break;
+        }
+    }
+
+
+    private void setupPlayer() {
+        FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+
+        if(user.getDisplayName() != null) {
+            player = new Player(user.getDisplayName());
+        } else {
+            player = new Player("JoeyBananas");
+        }
     }
 
     /**
@@ -354,19 +364,23 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
 
                         //TEMP LOGIC FOR OBJECT PLACEMENT
                         WorldItem item;
-                        if (snippet.toLowerCase().startsWith("a") || snippet.toLowerCase().startsWith("h") || snippet.toLowerCase().startsWith("p")) {
+                        if (snippet.toLowerCase().startsWith("a") || snippet.toLowerCase().startsWith("h") || snippet.toLowerCase().startsWith("u")) {
                             item = (WorldItem) ItemFactory.buildItem(ItemFactory.ROCK_ID);
                         } else {
                             item = (WorldItem) ItemFactory.buildItem(ItemFactory.TREE_ID);
                         }
 
+                        LatLng latLng = placeLikelihood.getPlace().getLatLng();
 
-                        mMap.addMarker(new MarkerOptions()
-                                .position(placeLikelihood.getPlace().getLatLng())
-                                .title("You are too far away from this " + item.getName() + ".")
-                                .icon(BitmapDescriptorFactory.fromResource(item.getMarkerIconID()))
-                                .snippet((String) placeLikelihood.getPlace().getName()))
-                                .setTag(item.getId());
+                        if (!player.hasUsedLocation(latLng)) {
+
+                            mMap.addMarker(new MarkerOptions()
+                                    .position(placeLikelihood.getPlace().getLatLng())
+                                    .title("You are too far away from this " + item.getName() + ".")
+                                    .icon(BitmapDescriptorFactory.fromResource(item.getMarkerIconID()))
+                                    .snippet((String) placeLikelihood.getPlace().getName()))
+                                    .setTag(item.getId());
+                        }
 
                     }
                     // Release the place likelihood buffer.
@@ -404,10 +418,13 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
     public boolean onMarkerClick(Marker marker) {
 
         if (marker.getTitle().equals("Click to inspect.")) {
-            marker.setTitle("You are too far away!");
+            player.addUsedLocation(marker.getPosition());
+
             Intent i = new Intent(getApplicationContext(), ActionActivity.class);
             i.putExtra(ActionActivity.ACTIVE_ITEM_ID, (int) marker.getTag());
             startActivity(i);
+
+            mMap.clear();
         }
 
         Location location = new Location(marker.getId());

@@ -8,6 +8,8 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import org.w3c.dom.Text;
+
 import ie.ul.postgrad.socialanxietyapp.game.Item;
 import ie.ul.postgrad.socialanxietyapp.game.ItemFactory;
 import ie.ul.postgrad.socialanxietyapp.game.Player;
@@ -23,6 +25,8 @@ public class ActionActivity extends AppCompatActivity implements View.OnClickLis
     private Button leaveButton;
     private ImageView itemView;
 
+    private TextView statusText;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -30,7 +34,7 @@ public class ActionActivity extends AppCompatActivity implements View.OnClickLis
         setContentView(R.layout.activity_action);
 
         Bundle b = getIntent().getExtras();
-        activeItem = (WorldItem) ItemFactory.buildItem( b.getInt(ACTIVE_ITEM_ID) );
+        activeItem = (WorldItem) ItemFactory.buildItem(b.getInt(ACTIVE_ITEM_ID));
 
         player = MapsActivity.player;
 
@@ -41,18 +45,31 @@ public class ActionActivity extends AppCompatActivity implements View.OnClickLis
         itemView.setImageResource(activeItem.getImageID());
         ((TextView) findViewById(R.id.item_title)).setText(activeItem.getName());
 
+        statusText = ((TextView) findViewById(R.id.status_display));
+
+
         actionButton.setOnClickListener(this);
         leaveButton.setOnClickListener(this);
     }
 
     private void doAction() {
-        int hitCount = activeItem.onHit();
-        for(int i = 0; i < hitCount; i++) {
-            player.getInventory().addItem(activeItem.getDropItemID());
+        if(activeItem.getHitAmount() > 0) {
+            int hitCount = activeItem.onHit();
+            player.getInventory().addItem(activeItem.getDropItemID(), hitCount);
+
+            String statusMessage = "You have received +"+hitCount+" "+ItemFactory.buildItem(activeItem.getDropItemID()).getName()+".";
+            statusText.setText(statusMessage);
+
+            activeItem.setHitAmount(activeItem.getHitAmount()-1);
+
+            if(activeItem.getHitAmount() <= 0) {
+                actionButton.setText("Depleted");
+                actionButton.setEnabled(false);
+                statusText.setText("The resource has been depleted!");
+            }
         }
 
-        Toast.makeText(getApplicationContext(), "You recieved " + hitCount + " " + ItemFactory.buildItem(activeItem.getDropItemID()).getName(), Toast.LENGTH_SHORT).show();
-    }
+     }
 
     private void leave() {
         finish();
@@ -61,7 +78,7 @@ public class ActionActivity extends AppCompatActivity implements View.OnClickLis
 
     @Override
     public void onClick(View v) {
-        switch(v.getId()) {
+        switch (v.getId()) {
 
             case R.id.action_button:
                 doAction();

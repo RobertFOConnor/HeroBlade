@@ -6,29 +6,38 @@
     android:layout_gravity="center"
     tools:context=".MapsActivity">
 
-    <fragment xmlns:android="http://schemas.android.com/apk/res/android"
-        xmlns:tools="http://schemas.android.com/tools"
-        android:id="@+id/map"
-        android:name="com.google.android.gms.maps.SupportMapFragment"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent" />
-
     <Button
-        android:id="@+id/log_out_button"
+        android:id="@+id/player_button"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignParentBottom="true"
-        android:layout_alignParentStart="true"
-        android:layout_marginBottom="20dp"
-        android:layout_marginStart="20dp"
-        android:text="@string/log_out" />
+        android:text="Player"
+        android:layout_marginStart="12dp"
+        android:layout_above="@+id/inventory_button"
+        android:layout_alignParentStart="true" />
 
     <Button
         android:id="@+id/inventory_button"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="Inventory"
-        android:layout_above="@+id/log_out_button"
-        android:layout_alignStart="@+id/log_out_button" />
+        android:layout_marginBottom="34dp"
+        android:layout_alignParentBottom="true"
+        android:layout_alignStart="@+id/player_button" />
+
+    <Button
+        android:id="@+id/crafting_button"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Crafting"
+        android:layout_above="@+id/player_button"
+        android:layout_alignStart="@+id/player_button" />
+
+    <fragment
+        android:id="@+id/map"
+        android:name="com.google.android.gms.maps.SupportMapFragment"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_alignParentTop="true"
+        android:layout_alignParentStart="true" />
 
 </RelativeLayout>

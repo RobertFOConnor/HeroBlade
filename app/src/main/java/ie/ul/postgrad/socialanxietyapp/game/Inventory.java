@@ -8,14 +8,14 @@ import android.util.SparseIntArray;
 
 public class Inventory {
 
-    SparseIntArray items;
+    private SparseIntArray items;
 
     public Inventory() {
         items = new SparseIntArray();
     }
 
-    public void addItem(int itemID) {
-        items.put(itemID, items.get(itemID)+1);
+    public void addItem(int itemID, int amount) {
+        items.put(itemID, items.get(itemID)+amount);
     }
 
     public SparseIntArray getItems() {

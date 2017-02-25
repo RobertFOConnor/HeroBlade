@@ -23,6 +23,4 @@ public class InventoryActivity extends AppCompatActivity {
         InventoryListAdapter adapter = new InventoryListAdapter(this, player.getInventory());
         itemList.setAdapter(adapter);
     }
-
-
 }

@@ -8,11 +8,13 @@ public class WorldItem extends Item {
 
     private int markerIconID;
     private int dropItemID;
+    private int hitAmount;
 
-    public WorldItem(int id, String name, String description, int markerIconID, int dropItemID) {
+    public WorldItem(int id, String name, String description, int markerIconID, int dropItemID, int hitAmount) {
         super(id, name, description, markerIconID);
         this.markerIconID = markerIconID;
         this.dropItemID = dropItemID;
+        this.hitAmount = hitAmount;
     }
 
     public int getMarkerIconID() {
@@ -25,5 +27,13 @@ public class WorldItem extends Item {
 
     public int getDropItemID() {
         return dropItemID;
+    }
+
+    public int getHitAmount() {
+        return hitAmount;
+    }
+
+    public void setHitAmount(int hitAmount) {
+        this.hitAmount = hitAmount;
     }
 }
