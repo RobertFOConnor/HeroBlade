@@ -12,7 +12,7 @@ public class Player {
     private String name;
     private int level;
     private Inventory inventory;
-    private Item weapon;
+    private WeaponItem weapon;
     private ArrayList<ConsumedLocation> usedLocations;
 
 
@@ -24,11 +24,11 @@ public class Player {
     }
 
 
-    public Item getWeapon() {
+    public WeaponItem getWeapon() {
         return weapon;
     }
 
-    public void setWeapon(Item weapon) {
+    public void setWeapon(WeaponItem weapon) {
         this.weapon = weapon;
     }
 

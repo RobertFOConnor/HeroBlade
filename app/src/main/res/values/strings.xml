@@ -30,5 +30,6 @@
 
     <string name="anxiety_rate_title">Please rate the greatest amount of anxiety you experienced by selecting the appropriate number.</string>
     <string name="title_activity_maps">Map</string>
+    <string name="title_activity_main">MainActivity</string>
 
 </resources>

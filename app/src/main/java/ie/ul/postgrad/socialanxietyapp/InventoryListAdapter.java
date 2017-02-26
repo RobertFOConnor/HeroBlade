@@ -10,7 +10,6 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import ie.ul.postgrad.socialanxietyapp.game.Inventory;
 import ie.ul.postgrad.socialanxietyapp.game.ItemFactory;
 
 /**
@@ -25,10 +24,10 @@ public class InventoryListAdapter extends BaseAdapter {
     private int[] imageId;
     private static LayoutInflater inflater = null;
 
-    public InventoryListAdapter(Context context, Inventory inventory) {
+    public InventoryListAdapter(Context context, SparseIntArray inventory) {
         // TODO Auto-generated constructor stub
 
-        SparseIntArray items = inventory.getItems();
+        SparseIntArray items = inventory;
         result = new String[items.size()];
         itemCount = new int[items.size()];
         imageId = new int[items.size()];
@@ -54,7 +53,6 @@ public class InventoryListAdapter extends BaseAdapter {
 
     @Override
     public Object getItem(int position) {
-        // TODO Auto-generated method stub
         return position;
     }
 
@@ -82,13 +80,6 @@ public class InventoryListAdapter extends BaseAdapter {
         holder.tv.setText(result[position]);
         holder.tv2.setText("x" + itemCount[position]);
         holder.img.setImageResource(imageId[position]);
-        rowView.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                // TODO Auto-generated method stub
-                Toast.makeText(context, "You Clicked " + result[position], Toast.LENGTH_LONG).show();
-            }
-        });
         return rowView;
     }
 }

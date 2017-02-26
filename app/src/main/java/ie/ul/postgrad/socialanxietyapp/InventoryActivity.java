@@ -2,6 +2,7 @@ package ie.ul.postgrad.socialanxietyapp;
 
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
+import android.view.View;
 import android.widget.ListView;
 
 import ie.ul.postgrad.socialanxietyapp.game.Player;
@@ -20,7 +21,11 @@ public class InventoryActivity extends AppCompatActivity {
         player = MapsActivity.player;
 
         itemList = (ListView) findViewById(R.id.item_list);
-        InventoryListAdapter adapter = new InventoryListAdapter(this, player.getInventory());
+        InventoryListAdapter adapter = new InventoryListAdapter(this, player.getInventory().getItems());
         itemList.setAdapter(adapter);
+
+        if (player.getInventory().getItems().size() == 0) {
+            findViewById(R.id.empty_message).setVisibility(View.VISIBLE);
+        }
     }
 }

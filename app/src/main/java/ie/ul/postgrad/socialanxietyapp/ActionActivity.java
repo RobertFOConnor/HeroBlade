@@ -1,30 +1,29 @@
 package ie.ul.postgrad.socialanxietyapp;
 
-import android.support.v7.app.AppCompatActivity;
+import android.content.Intent;
 import android.os.Bundle;
+import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
-import android.widget.Toast;
 
-import org.w3c.dom.Text;
-
-import ie.ul.postgrad.socialanxietyapp.game.Item;
 import ie.ul.postgrad.socialanxietyapp.game.ItemFactory;
 import ie.ul.postgrad.socialanxietyapp.game.Player;
+import ie.ul.postgrad.socialanxietyapp.game.WeaponItem;
 import ie.ul.postgrad.socialanxietyapp.game.WorldItem;
 
 public class ActionActivity extends AppCompatActivity implements View.OnClickListener {
 
+    static final int WEAPON_REQUEST = 1;
     public static final String ACTIVE_ITEM_ID = "id";
     private WorldItem activeItem;
     private Player player;
 
     private Button actionButton;
     private Button leaveButton;
+    private Button weaponButton;
     private ImageView itemView;
-
     private TextView statusText;
 
     @Override
@@ -40,6 +39,7 @@ public class ActionActivity extends AppCompatActivity implements View.OnClickLis
 
         actionButton = (Button) findViewById(R.id.action_button);
         leaveButton = (Button) findViewById(R.id.leave_button);
+        weaponButton = (Button) findViewById(R.id.weapon_button);
         itemView = (ImageView) findViewById(R.id.item_view);
 
         itemView.setImageResource(activeItem.getImageID());
@@ -47,29 +47,39 @@ public class ActionActivity extends AppCompatActivity implements View.OnClickLis
 
         statusText = ((TextView) findViewById(R.id.status_display));
 
+        if (player.getWeapon() != null) {
+            weaponButton.setText("Player Weapon: " + player.getWeapon().getName());
+        }
+
 
         actionButton.setOnClickListener(this);
         leaveButton.setOnClickListener(this);
+        weaponButton.setOnClickListener(this);
     }
 
     private void doAction() {
-        if(activeItem.getHitAmount() > 0) {
+        if (activeItem.getHitAmount() > 0) {
             int hitCount = activeItem.onHit();
+
+            if (player.getWeapon() != null) {
+                hitCount += player.getWeapon().getDamage();
+            }
+
             player.getInventory().addItem(activeItem.getDropItemID(), hitCount);
 
-            String statusMessage = "You have received +"+hitCount+" "+ItemFactory.buildItem(activeItem.getDropItemID()).getName()+".";
+            String statusMessage = "You have received +" + hitCount + " " + ItemFactory.buildItem(activeItem.getDropItemID()).getName() + ".";
             statusText.setText(statusMessage);
 
-            activeItem.setHitAmount(activeItem.getHitAmount()-1);
+            activeItem.setHitAmount(activeItem.getHitAmount() - 1);
 
-            if(activeItem.getHitAmount() <= 0) {
+            if (activeItem.getHitAmount() <= 0) {
                 actionButton.setText("Depleted");
                 actionButton.setEnabled(false);
                 statusText.setText("The resource has been depleted!");
             }
         }
 
-     }
+    }
 
     private void leave() {
         finish();
@@ -87,6 +97,25 @@ public class ActionActivity extends AppCompatActivity implements View.OnClickLis
             case R.id.leave_button:
                 leave();
                 break;
+
+            case R.id.weapon_button:
+                startActivityForResult(new Intent(getApplicationContext(), WeaponSelectionActivity.class), WEAPON_REQUEST);
+                break;
+        }
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        // Check which request we're responding to
+        if (requestCode == WEAPON_REQUEST) {
+            // Make sure the request was successful
+            if (resultCode == RESULT_OK) {
+
+                // The user picked a weapon.
+                int result = data.getIntExtra("result", 0);
+                player.setWeapon((WeaponItem) ItemFactory.buildItem(result));
+                weaponButton.setText("Player Weapon: " + player.getWeapon().getName());
+            }
         }
     }
 }

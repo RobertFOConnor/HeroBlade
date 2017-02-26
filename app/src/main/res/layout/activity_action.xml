@@ -62,5 +62,5 @@
         android:id="@+id/weapon_button"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Player Weapon" />
+        android:text="Player Weapon: None" />
 </LinearLayout>

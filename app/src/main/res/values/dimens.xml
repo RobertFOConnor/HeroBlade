@@ -9,4 +9,5 @@
     <dimen name="field_gap_margin">30dp</dimen>
 
     <dimen name="text_title_size">26sp</dimen>
+    <dimen name="fab_margin">16dp</dimen>
 </resources>

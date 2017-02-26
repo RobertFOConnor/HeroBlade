@@ -15,10 +15,20 @@ public class Inventory {
     }
 
     public void addItem(int itemID, int amount) {
-        items.put(itemID, items.get(itemID)+amount);
+        items.put(itemID, items.get(itemID) + amount);
     }
 
     public SparseIntArray getItems() {
         return items;
+    }
+
+    public SparseIntArray getWeapons() {
+        SparseIntArray arr = new SparseIntArray();
+        for (int i = 0; i < items.size(); i++) {
+            if (ItemFactory.buildItem(items.keyAt(i)) instanceof WeaponItem) {
+                arr.put(items.keyAt(i), items.valueAt(i));
+            }
+        }
+        return arr;
     }
 }
