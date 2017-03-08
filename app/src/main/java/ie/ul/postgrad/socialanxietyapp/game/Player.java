@@ -5,12 +5,15 @@ import java.util.ArrayList;
 
 /**
  * Created by Robert on 22-Feb-17.
+ *
+ * Represents the users character. Holds all the information related to the player.
  */
 
 public class Player {
 
     private String name;
     private int level;
+    private int money;
     private Inventory inventory;
     private WeaponItem weapon;
     private ArrayList<ConsumedLocation> usedLocations;
@@ -19,6 +22,7 @@ public class Player {
     public Player(String name) {
         this.name = name;
         this.level = 1;
+        this.money = 0;
         inventory = new Inventory();
         usedLocations = new ArrayList<>();
     }
@@ -55,5 +59,17 @@ public class Player {
             }
         }
         return false;
+    }
+
+    public void setLevel(int level) {
+        this.level = level;
+    }
+
+    public int getMoney() {
+        return money;
+    }
+
+    public void setMoney(int money) {
+        this.money = money;
     }
 }

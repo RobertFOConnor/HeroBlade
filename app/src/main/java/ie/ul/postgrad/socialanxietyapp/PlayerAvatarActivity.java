@@ -5,6 +5,7 @@ import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.google.firebase.auth.FirebaseAuth;
@@ -16,21 +17,28 @@ import ie.ul.postgrad.socialanxietyapp.game.WeaponItem;
 public class PlayerAvatarActivity extends AppCompatActivity implements View.OnClickListener {
 
     static final int WEAPON_REQUEST = 1;
-    private Button weaponButton;
+    private Button weaponButton, chestButton;
     private Player player;
+    private ImageView wepaonView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         getSupportActionBar().hide();
         setContentView(R.layout.activity_player_avatar);
+        Bundle bundle = getIntent().getExtras();
         player = MapsActivity.player;
 
-        String nameField = "Name: "+player.getName();
+        String nameField = "Name: " + player.getName();
         ((TextView) findViewById(R.id.name_field)).setText(nameField);
+
+        wepaonView = (ImageView) findViewById(R.id.weapon_view);
 
         weaponButton = (Button) findViewById(R.id.weapon_button);
         weaponButton.setOnClickListener(this);
+
+        chestButton = (Button) findViewById(R.id.chest_button);
+        chestButton.setOnClickListener(this);
 
         updateWeaponButton();
 
@@ -54,22 +62,26 @@ public class PlayerAvatarActivity extends AppCompatActivity implements View.OnCl
             case R.id.weapon_button:
                 showWeapons();
                 break;
+            case R.id.chest_button:
+                showChest();
+                break;
         }
     }
 
     private void showWeapons() {
-        startActivityForResult(new Intent(getApplicationContext(), WeaponSelectionActivity.class), WEAPON_REQUEST);
-        //get selected weapon back from intent.
-
-        //set player weapon to selected weapon.
-        //player.setWeapon();
-
+        Intent i = new Intent(this, WeaponSelectionActivity.class);
+        startActivityForResult(i, WEAPON_REQUEST);
         updateWeaponButton();
+    }
+
+    private void showChest() {
+        startActivity(new Intent(this, StepCounterActivity.class));
     }
 
     private void updateWeaponButton() {
         if (player.getWeapon() != null) {
             weaponButton.setText("Player Weapon (" + player.getWeapon().getName() + ")");
+            wepaonView.setImageDrawable(getDrawable(player.getWeapon().getImageID()));
         }
     }
 
@@ -79,7 +91,6 @@ public class PlayerAvatarActivity extends AppCompatActivity implements View.OnCl
         if (requestCode == WEAPON_REQUEST) {
             // Make sure the request was successful
             if (resultCode == RESULT_OK) {
-
                 // The user picked a weapon.
                 int result = data.getIntExtra("result", 0);
                 player.setWeapon((WeaponItem) ItemFactory.buildItem(result));

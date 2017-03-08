@@ -2,6 +2,8 @@ package ie.ul.postgrad.socialanxietyapp.game;
 
 /**
  * Created by Robert on 22-Feb-17.
+ *
+ * An item which only appears on the world map.
  */
 
 public class WorldItem extends Item {

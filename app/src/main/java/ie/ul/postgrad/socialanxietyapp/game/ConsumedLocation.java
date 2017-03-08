@@ -4,6 +4,8 @@ import com.google.android.gms.maps.model.LatLng;
 
 /**
  * Created by Robert on 24-Feb-17.
+ *
+ * A location which has been visited by the user and must wait to respawn.
  */
 
 public class ConsumedLocation {

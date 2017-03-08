@@ -2,6 +2,8 @@ package ie.ul.postgrad.socialanxietyapp.game;
 
 /**
  * Created by Robert on 20-Feb-17.
+ *
+ * The base class for all items in the game.
  */
 
 public class Item {

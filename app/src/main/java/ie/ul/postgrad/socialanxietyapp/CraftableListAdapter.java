@@ -12,6 +12,7 @@ import android.widget.Toast;
 
 import java.util.ArrayList;
 
+import ie.ul.postgrad.socialanxietyapp.game.InventoryItemArray;
 import ie.ul.postgrad.socialanxietyapp.game.Player;
 import ie.ul.postgrad.socialanxietyapp.game.WeaponItem;
 
@@ -29,8 +30,7 @@ public class CraftableListAdapter extends BaseAdapter {
     private Player player;
     private ArrayList<WeaponItem> items;
 
-    public CraftableListAdapter(Context context, ArrayList<WeaponItem> items) {
-        // TODO Auto-generated constructor stub
+    public CraftableListAdapter(Context context, Player player, ArrayList<WeaponItem> items) {
         this.items = items;
         result = new String[items.size()];
         ingredients = new String[items.size()];
@@ -43,11 +43,10 @@ public class CraftableListAdapter extends BaseAdapter {
         }
 
         this.context = context;
-        //imageId = prgmImages;
         inflater = (LayoutInflater) context.
                 getSystemService(Context.LAYOUT_INFLATER_SERVICE);
 
-        player = MapsActivity.player;
+        this.player = player;
     }
 
     @Override
@@ -93,7 +92,7 @@ public class CraftableListAdapter extends BaseAdapter {
                 boolean canCraft = true;
 
                 WeaponItem selectedItem = items.get(position);
-                SparseIntArray playerItems = player.getInventory().getItems();
+                InventoryItemArray playerItems = player.getInventory().getItems();
                 SparseIntArray ingredients = selectedItem.getIngredients();
 
                 for(int i = 0; i < ingredients.size(); i++) {
@@ -108,13 +107,13 @@ public class CraftableListAdapter extends BaseAdapter {
                 if(canCraft) {
 
                     for(int i = 0; i < ingredients.size(); i++) {
-                        playerItems.put(ingredients.keyAt(i), playerItems.get(ingredients.keyAt(i))-ingredients.valueAt(i));
+                        player.getInventory().removeItem(ingredients.keyAt(i), ingredients.valueAt(i));
                     }
                     player.getInventory().addItem(selectedItem.getId(), 1);
 
-                    Toast.makeText(context, "You crafted a new "+selectedItem.getName(), Toast.LENGTH_LONG).show();
+                    Toast.makeText(context, "You crafted a new "+selectedItem.getName(), Toast.LENGTH_SHORT).show();
                 } else {
-                    Toast.makeText(context, "You can't craft a "+selectedItem.getName(), Toast.LENGTH_LONG).show();
+                    Toast.makeText(context, "You can't craft a "+selectedItem.getName(), Toast.LENGTH_SHORT).show();
                 }
             }
         });

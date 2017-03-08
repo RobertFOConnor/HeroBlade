@@ -11,7 +11,6 @@ import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.View;
-import android.widget.Button;
 import android.widget.TextView;
 
 import com.google.android.gms.common.ConnectionResult;
@@ -37,11 +36,9 @@ import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 
-import java.util.ArrayList;
-
+import ie.ul.postgrad.socialanxietyapp.game.InventoryItemArray;
 import ie.ul.postgrad.socialanxietyapp.game.ItemFactory;
 import ie.ul.postgrad.socialanxietyapp.game.Player;
-import ie.ul.postgrad.socialanxietyapp.game.WeaponItem;
 import ie.ul.postgrad.socialanxietyapp.game.WorldItem;
 
 public class MapsActivity extends AppCompatActivity implements OnMapReadyCallback, GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener,
@@ -62,7 +59,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
     private static final String KEY_CAMERA_POSITION = "camera_position";
     private static final String KEY_LOCATION = "location";
 
-    public static Player player;
+    public static Player player; // (TEMP)IMPORTANT (CHANGE FROM STATIC PLAYER PASSES!!!!)
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -90,16 +87,22 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
         Intent i;
         switch (v.getId()) {
             case R.id.inventory_button:
-                i = new Intent(getApplicationContext(), InventoryActivity.class);
+                i = new Intent(this, InventoryActivity.class);
+                Bundle bundle = new Bundle();
+                bundle.putParcelable("player_items", new InventoryItemArray(player.getInventory().getItems()));
+                i.putExtras(bundle);
                 startActivity(i);
+                mMap.clear();
                 break;
             case R.id.player_button:
-                i = new Intent(getApplicationContext(), PlayerAvatarActivity.class);
+                i = new Intent(this, PlayerAvatarActivity.class);
                 startActivity(i);
+                mMap.clear();
                 break;
             case R.id.crafting_button:
-                i = new Intent(getApplicationContext(), CraftingActivity.class);
+                i = new Intent(this, CraftingActivity.class);
                 startActivity(i);
+                mMap.clear();
                 break;
         }
     }
@@ -108,11 +111,16 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
     private void setupPlayer() {
         FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
 
-        if(user.getDisplayName() != null) {
+        /*if(user.getDisplayName() != null) {
             player = new Player(user.getDisplayName());
         } else {
-            player = new Player("JoeyBananas");
-        }
+            player = new Player("Robert");
+        }*/
+        player = new Player("Robert");
+
+        player.getInventory().addItem(1, 20);
+        player.getInventory().addItem(0, 10);
+        player.getInventory().addItem(3, 15);
     }
 
     /**
@@ -257,6 +265,22 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
         }
 
         mMap.setOnMarkerClickListener(this);
+
+        try {
+            mMap.getUiSettings().setMyLocationButtonEnabled(false);
+            mMap.setMyLocationEnabled(false);
+
+            if (mCurrentLocation != null) {
+                mMap.addMarker(new MarkerOptions()
+                        .position(new LatLng(mCurrentLocation.getLatitude(), mCurrentLocation.getLongitude()))
+                        .title(player.getName())
+                        .icon(BitmapDescriptorFactory.fromResource(R.drawable.avatar))
+                        .zIndex(1000)
+                        .snippet("I'm feeling hungry.")).setTag("player");
+            }
+        } catch (SecurityException e) {
+            e.printStackTrace();
+        }
     }
 
     /**
@@ -353,6 +377,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
             result.setResultCallback(new ResultCallback<PlaceLikelihoodBuffer>() {
                 @Override
                 public void onResult(@NonNull PlaceLikelihoodBuffer likelyPlaces) {
+                    boolean tradePost = false;
                     for (PlaceLikelihood placeLikelihood : likelyPlaces) {
                         // Add a marker for each place near the device's current location, with an
                         // info window showing place information.
@@ -363,11 +388,21 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
                         }
 
                         //TEMP LOGIC FOR OBJECT PLACEMENT
+
                         WorldItem item;
-                        if (snippet.toLowerCase().startsWith("a") || snippet.toLowerCase().startsWith("h") || snippet.toLowerCase().startsWith("u")) {
-                            item = (WorldItem) ItemFactory.buildItem(ItemFactory.ROCK_ID);
+                        if (snippet.toLowerCase().startsWith("e")) {
+                            if (!tradePost) {
+                                item = (WorldItem) ItemFactory.buildItem(500); //trading post
+                                tradePost = true;
+                            } else {
+                                item = (WorldItem) ItemFactory.buildItem(300);
+                            }
+                        } else if (snippet.toLowerCase().startsWith("a") || snippet.toLowerCase().startsWith("h") || snippet.toLowerCase().startsWith("u")) {
+                            item = (WorldItem) ItemFactory.buildItem(301);
+                        } else if (snippet.toLowerCase().startsWith("b") || snippet.toLowerCase().startsWith("d")) {
+                            item = (WorldItem) ItemFactory.buildItem(302);
                         } else {
-                            item = (WorldItem) ItemFactory.buildItem(ItemFactory.TREE_ID);
+                            item = (WorldItem) ItemFactory.buildItem(300);
                         }
 
                         LatLng latLng = placeLikelihood.getPlace().getLatLng();
@@ -417,26 +452,40 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
     @Override
     public boolean onMarkerClick(Marker marker) {
 
-        if (marker.getTitle().equals("Click to inspect.")) {
-            player.addUsedLocation(marker.getPosition());
+        if (marker.getTag() != "player") {
 
-            Intent i = new Intent(getApplicationContext(), ActionActivity.class);
-            i.putExtra(ActionActivity.ACTIVE_ITEM_ID, (int) marker.getTag());
-            startActivity(i);
+            if (marker.getTitle().equals("Click to inspect.")) {
 
-            mMap.clear();
-        }
 
-        Location location = new Location(marker.getId());
-        location.setLatitude(marker.getPosition().latitude);
-        location.setLongitude(marker.getPosition().longitude);
+                if ((int) marker.getTag() != 500) {
+                    player.addUsedLocation(marker.getPosition());
+                    Intent i = new Intent(this, ActionActivity.class);
+                    i.putExtra(ActionActivity.ACTIVE_ITEM_ID, (int) marker.getTag());
+                    startActivity(i);
+                } else {
+                    Intent i = new Intent(getApplicationContext(), TradeListActivity.class);
+                    if (marker.getSnippet().contains(",")) {
+                        i.putExtra(TradeListActivity.TRADE_LOCATION_ID, marker.getSnippet().substring(0, marker.getSnippet().indexOf(',')));
+                    } else {
+                        i.putExtra(TradeListActivity.TRADE_LOCATION_ID, marker.getSnippet());
+                    }
+                    startActivity(i);
+                }
 
-        float distance = location.distanceTo(mCurrentLocation);
+                mMap.clear();
+            }
 
-        if (distance > 0) {
-            marker.setTitle("Click to inspect.");
-        } else {
-            marker.setTitle("You are too far away!");
+            Location location = new Location(marker.getId());
+            location.setLatitude(marker.getPosition().latitude);
+            location.setLongitude(marker.getPosition().longitude);
+
+            float distance = location.distanceTo(mCurrentLocation);
+
+            if (distance > 0) {
+                marker.setTitle("Click to inspect.");
+            } else {
+                marker.setTitle("You are too far away!");
+            }
         }
 
         return false;

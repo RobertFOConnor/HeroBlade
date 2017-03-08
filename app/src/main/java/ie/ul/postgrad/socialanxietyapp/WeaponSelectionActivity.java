@@ -21,6 +21,7 @@ public class WeaponSelectionActivity extends AppCompatActivity {
         getSupportActionBar().hide();
         setContentView(R.layout.activity_inventory);
 
+        Bundle bundle = getIntent().getExtras();
         player = MapsActivity.player;
 
         itemList = (ListView) findViewById(R.id.item_list);

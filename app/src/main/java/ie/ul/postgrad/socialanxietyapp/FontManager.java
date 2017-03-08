@@ -8,6 +8,8 @@ import android.widget.TextView;
 
 /**
  * Created by Robert on 25-Jan-17.
+ *
+ * Manager for using FontAwesome icons (vector graphics) within Android Views.
  */
 
 public class FontManager {

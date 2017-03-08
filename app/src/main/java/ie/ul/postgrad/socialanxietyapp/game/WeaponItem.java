@@ -4,6 +4,8 @@ import android.util.SparseIntArray;
 
 /**
  * Created by Robert on 24-Feb-17.
+ *
+ * An item which can be equipped by the user and used as a weapon.
  */
 
 public class WeaponItem extends Item {

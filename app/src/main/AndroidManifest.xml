@@ -64,6 +64,9 @@
             android:screenOrientation="portrait" />
         <activity android:name=".CraftingActivity" />
         <activity android:name=".WeaponSelectionActivity" />
+        <activity android:name=".BattleActivity" />
+        <activity android:name=".StepCounterActivity" />
+        <activity android:name=".TradeListActivity"></activity>
     </application>
 
 </manifest>

@@ -13,6 +13,7 @@ import ie.ul.postgrad.socialanxietyapp.game.Player;
 import ie.ul.postgrad.socialanxietyapp.game.WeaponItem;
 import ie.ul.postgrad.socialanxietyapp.game.WorldItem;
 
+
 public class ActionActivity extends AppCompatActivity implements View.OnClickListener {
 
     static final int WEAPON_REQUEST = 1;
@@ -32,8 +33,8 @@ public class ActionActivity extends AppCompatActivity implements View.OnClickLis
         getSupportActionBar().hide();
         setContentView(R.layout.activity_action);
 
-        Bundle b = getIntent().getExtras();
-        activeItem = (WorldItem) ItemFactory.buildItem(b.getInt(ACTIVE_ITEM_ID));
+        Bundle bundle = getIntent().getExtras();
+        activeItem = (WorldItem) ItemFactory.buildItem(bundle.getInt(ACTIVE_ITEM_ID));
 
         player = MapsActivity.player;
 
@@ -48,7 +49,7 @@ public class ActionActivity extends AppCompatActivity implements View.OnClickLis
         statusText = ((TextView) findViewById(R.id.status_display));
 
         if (player.getWeapon() != null) {
-            weaponButton.setText("Player Weapon: " + player.getWeapon().getName());
+            updateWeapon();
         }
 
 
@@ -99,7 +100,7 @@ public class ActionActivity extends AppCompatActivity implements View.OnClickLis
                 break;
 
             case R.id.weapon_button:
-                startActivityForResult(new Intent(getApplicationContext(), WeaponSelectionActivity.class), WEAPON_REQUEST);
+                startActivityForResult(new Intent(this, WeaponSelectionActivity.class), WEAPON_REQUEST);
                 break;
         }
     }
@@ -114,8 +115,14 @@ public class ActionActivity extends AppCompatActivity implements View.OnClickLis
                 // The user picked a weapon.
                 int result = data.getIntExtra("result", 0);
                 player.setWeapon((WeaponItem) ItemFactory.buildItem(result));
-                weaponButton.setText("Player Weapon: " + player.getWeapon().getName());
+                updateWeapon();
             }
         }
+    }
+
+    private void updateWeapon() {
+        String weaponText = "Player Weapon: " + player.getWeapon().getName();
+        weaponButton.setText(weaponText);
+        ((ImageView) findViewById(R.id.weapon_view)).setImageDrawable(getDrawable(player.getWeapon().getImageID()));
     }
 }
