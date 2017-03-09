@@ -13,11 +13,12 @@ import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.auth.FirebaseUser;
-import com.google.firebase.auth.UserProfileChangeRequest;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
 
 public class CreateAccountActivity extends AppCompatActivity {
 
+    private DatabaseReference mDatabase;
     private FirebaseAuth auth;
 
     @Override
@@ -31,6 +32,7 @@ public class CreateAccountActivity extends AppCompatActivity {
 
         //Get Firebase auth instance
         auth = FirebaseAuth.getInstance();
+        mDatabase = FirebaseDatabase.getInstance().getReference();
 
         findViewById(R.id.continue_button).setOnClickListener(new View.OnClickListener() {
             @Override
@@ -52,43 +54,8 @@ public class CreateAccountActivity extends AppCompatActivity {
                                                 Toast.LENGTH_SHORT).show();
                                     } else {
                                         Toast.makeText(CreateAccountActivity.this, "Account Created!", Toast.LENGTH_SHORT).show();
-                                    }
-                                }
-                            });
-
-                    auth.signInWithEmailAndPassword(email, password)
-                            .addOnCompleteListener(CreateAccountActivity.this, new OnCompleteListener<AuthResult>() {
-                                @Override
-                                public void onComplete(@NonNull Task<AuthResult> task) {
-                                    // If sign in fails, display a message to the user. If sign in succeeds
-                                    // the auth state listener will be notified and logic to handle the
-                                    // signed in user can be handled in the listener.
-                                    if (!task.isSuccessful()) {
-                                        Toast.makeText(CreateAccountActivity.this, "Authentication failed." + task.getException(),
-                                                Toast.LENGTH_SHORT).show();
-                                    } else {
-                                        FirebaseUser user = auth.getCurrentUser();
-
-
-                                        if (user != null) {
-                                            UserProfileChangeRequest profileUpdates = new UserProfileChangeRequest.Builder()
-                                                    .setDisplayName(name)
-                                                    .build();
-
-                                            user.updateProfile(profileUpdates)
-                                                    .addOnCompleteListener(new OnCompleteListener<Void>() {
-                                                        @Override
-                                                        public void onComplete(@NonNull Task<Void> task) {
-                                                            if (task.isSuccessful()) {
-                                                                System.out.println("User profile updated.");
-                                                            }
-                                                        }
-                                                    });
-
-                                            startActivity(new Intent(CreateAccountActivity.this, MapsActivity.class));
-                                            Toast.makeText(CreateAccountActivity.this, "Log in successful!", Toast.LENGTH_SHORT).show();
-                                            finish();
-                                        }
+                                        mDatabase.child("users").child(auth.getCurrentUser().getUid()).child("username").setValue(name);
+                                        startActivity(new Intent(getApplicationContext(), MapsActivity.class));
                                     }
                                 }
                             });

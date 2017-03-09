@@ -28,6 +28,9 @@
     <string name="anxiety_scale_lvl_4">Severely Anxious</string>
     <string name="anxiety_scale_lvl_5">Extremely Anxious</string>
 
+    <string name="authentication_failed">Authentication failed!</string>
+    <string name="login_success">Log in successful!</string>
+
     <string name="anxiety_rate_title">Please rate the greatest amount of anxiety you experienced by selecting the appropriate number.</string>
     <string name="title_activity_maps">Map</string>
     <string name="title_activity_main">MainActivity</string>

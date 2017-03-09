@@ -26,7 +26,6 @@ public class PlayerAvatarActivity extends AppCompatActivity implements View.OnCl
         super.onCreate(savedInstanceState);
         getSupportActionBar().hide();
         setContentView(R.layout.activity_player_avatar);
-        Bundle bundle = getIntent().getExtras();
         player = MapsActivity.player;
 
         String nameField = "Name: " + player.getName();
@@ -47,9 +46,9 @@ public class PlayerAvatarActivity extends AppCompatActivity implements View.OnCl
             @Override
             public void onClick(View v) {
                 FirebaseAuth.getInstance().signOut();
-                Intent i = new Intent(getApplicationContext(), WelcomeActivity.class);
-                startActivity(i);
-                finish();
+                Intent intent = new Intent(getApplicationContext(), WelcomeActivity.class);
+                intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                startActivity(intent);
             }
         });
 

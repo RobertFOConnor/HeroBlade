@@ -3,9 +3,7 @@ package ie.ul.postgrad.socialanxietyapp;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
-import android.util.DisplayMetrics;
 import android.view.View;
-import android.widget.Toast;
 
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
@@ -21,6 +19,7 @@ public class WelcomeActivity extends AppCompatActivity implements View.OnClickLi
         getSupportActionBar().hide();
         setContentView(R.layout.activity_welcome);
 
+        // Buttons
         findViewById(R.id.log_in_button).setOnClickListener(this);
         findViewById(R.id.sign_up_button).setOnClickListener(this);
 
@@ -29,6 +28,7 @@ public class WelcomeActivity extends AppCompatActivity implements View.OnClickLi
         mFirebaseAuth = FirebaseAuth.getInstance();
         mFirebaseUser = mFirebaseAuth.getCurrentUser();
 
+        // Check if user is already signed in
         if (mFirebaseUser != null) {
             startIntent(MapsActivity.class);
             finish();

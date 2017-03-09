@@ -35,6 +35,11 @@ import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 
 import ie.ul.postgrad.socialanxietyapp.game.InventoryItemArray;
 import ie.ul.postgrad.socialanxietyapp.game.ItemFactory;
@@ -59,6 +64,11 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
     private static final String KEY_CAMERA_POSITION = "camera_position";
     private static final String KEY_LOCATION = "location";
 
+
+    // Firebase
+    private DatabaseReference mDatabase, mNameRef;
+    private FirebaseAuth mAuth;
+
     public static Player player; // (TEMP)IMPORTANT (CHANGE FROM STATIC PLAYER PASSES!!!!)
 
     @Override
@@ -74,6 +84,11 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
         setContentView(R.layout.activity_maps);
         buildGoogleApiClient();
         mGoogleApiClient.connect();
+
+        mDatabase = FirebaseDatabase.getInstance().getReference();
+        mAuth = FirebaseAuth.getInstance();
+
+        mNameRef = mDatabase.child("users").child(mAuth.getCurrentUser().getUid()).child("username");
 
         setupPlayer();
 
@@ -107,20 +122,34 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
         }
     }
 
-
     private void setupPlayer() {
-        FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
 
-        /*if(user.getDisplayName() != null) {
-            player = new Player(user.getDisplayName());
-        } else {
-            player = new Player("Robert");
-        }*/
-        player = new Player("Robert");
+        ValueEventListener postListener = new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                // Get Post object and use the values to update the UI
+                String name = (String) dataSnapshot.getValue();
+                player.setName(name);
+            }
 
-        player.getInventory().addItem(1, 20);
-        player.getInventory().addItem(0, 10);
-        player.getInventory().addItem(3, 15);
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+                // Getting Post failed, log a message
+                Log.w(TAG, "loadPost:onCancelled", databaseError.toException());
+            }
+        };
+        mNameRef.addListenerForSingleValueEvent(postListener);
+        player = new Player("");
+    }
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+    }
+
+    @Override
+    protected void onStop() {
+        super.onStop();
     }
 
     /**

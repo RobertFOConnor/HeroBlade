@@ -1,6 +1,8 @@
 package ie.ul.postgrad.socialanxietyapp.game;
 
 import com.google.android.gms.maps.model.LatLng;
+import com.google.firebase.database.IgnoreExtraProperties;
+
 import java.util.ArrayList;
 
 /**
@@ -9,6 +11,7 @@ import java.util.ArrayList;
  * Represents the users character. Holds all the information related to the player.
  */
 
+@IgnoreExtraProperties
 public class Player {
 
     private String name;
@@ -18,6 +21,9 @@ public class Player {
     private WeaponItem weapon;
     private ArrayList<ConsumedLocation> usedLocations;
 
+    public Player() {
+        // Default constructor required for calls to DataSnapshot.getValue(Player.class)
+    }
 
     public Player(String name) {
         this.name = name;
@@ -38,6 +44,10 @@ public class Player {
 
     public String getName() {
         return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
     }
 
     public int getLevel() {

@@ -14,7 +14,7 @@ import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 
-public class LogInActivity extends AppCompatActivity {
+public class LogInActivity extends AppCompatActivity implements View.OnClickListener {
 
     private FirebaseAuth auth;
 
@@ -30,45 +30,50 @@ public class LogInActivity extends AppCompatActivity {
         //Get Firebase auth instance
         auth = FirebaseAuth.getInstance();
 
-        findViewById(R.id.forgot_password_button).setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
+        findViewById(R.id.forgot_password_button).setOnClickListener(this);
+        findViewById(R.id.continue_button).setOnClickListener(this);
+    }
+
+    private void attemptLogin() {
+        String email = ((EditText) findViewById(R.id.email_field)).getText().toString();
+        String password = ((EditText) findViewById(R.id.password_field)).getText().toString();
+
+        if (!email.isEmpty() && !password.isEmpty()) {
+
+            //authenticate user
+            auth.signInWithEmailAndPassword(email, password)
+                    .addOnCompleteListener(LogInActivity.this, new OnCompleteListener<AuthResult>() {
+                        @Override
+                        public void onComplete(@NonNull Task<AuthResult> task) {
+                            // If sign in fails, display a message to the user. If sign in succeeds
+                            // the auth state listener will be notified and logic to handle the
+                            // signed in user can be handled in the listener.
+                            if (!task.isSuccessful()) {
+                                Toast.makeText(LogInActivity.this, getString(R.string.authentication_failed) + task.getException(),
+                                        Toast.LENGTH_SHORT).show();
+                            } else {
+                                startActivity(new Intent(LogInActivity.this, MapsActivity.class));
+                                Toast.makeText(LogInActivity.this, getString(R.string.login_success), Toast.LENGTH_SHORT).show();
+                                finish();
+                            }
+                        }
+                    });
+
+        } else {
+            Toast.makeText(LogInActivity.this, getString(R.string.error_empty), Toast.LENGTH_SHORT).show();
+        }
+    }
+
+    @Override
+    public void onClick(View v) {
+        switch (v.getId()) {
+            case R.id.forgot_password_button:
                 Intent intent = new Intent(LogInActivity.this, ResetPasswordActivity.class);
                 startActivity(intent);
-            }
-        });
-
-        findViewById(R.id.continue_button).setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                String email = ((EditText) findViewById(R.id.email_field)).getText().toString();
-                String password = ((EditText) findViewById(R.id.password_field)).getText().toString();
-
-                if (!email.isEmpty() && !password.isEmpty()) {
-
-                    //authenticate user
-                    auth.signInWithEmailAndPassword(email, password)
-                            .addOnCompleteListener(LogInActivity.this, new OnCompleteListener<AuthResult>() {
-                                @Override
-                                public void onComplete(@NonNull Task<AuthResult> task) {
-                                    // If sign in fails, display a message to the user. If sign in succeeds
-                                    // the auth state listener will be notified and logic to handle the
-                                    // signed in user can be handled in the listener.
-                                    if (!task.isSuccessful()) {
-                                        Toast.makeText(LogInActivity.this, "Authentication failed." + task.getException(),
-                                                Toast.LENGTH_SHORT).show();
-                                    } else {
-                                        startActivity(new Intent(LogInActivity.this, MapsActivity.class));
-                                        Toast.makeText(LogInActivity.this, "Log in successful!", Toast.LENGTH_SHORT).show();
-                                        finish();
-                                    }
-                                }
-                            });
-
-                } else {
-                    Toast.makeText(LogInActivity.this, getString(R.string.error_empty), Toast.LENGTH_SHORT).show();
-                }
-            }
-        });
+                break;
+            case R.id.continue_button:
+                attemptLogin();
+                break;
+        }
     }
 }
