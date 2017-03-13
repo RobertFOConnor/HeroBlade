@@ -65,7 +65,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
     private static final String KEY_LOCATION = "location";
 
 
-    // Firebase
+    // Firebase objects for login and database.
     private DatabaseReference mDatabase, mNameRef;
     private FirebaseAuth mAuth;
 
@@ -85,6 +85,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
         buildGoogleApiClient();
         mGoogleApiClient.connect();
 
+        //Initialize firebase references
         mDatabase = FirebaseDatabase.getInstance().getReference();
         mAuth = FirebaseAuth.getInstance();
 
@@ -92,6 +93,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
 
         setupPlayer();
 
+        //Set button listeners
         (findViewById(R.id.inventory_button)).setOnClickListener(this);
         (findViewById(R.id.player_button)).setOnClickListener(this);
         (findViewById(R.id.crafting_button)).setOnClickListener(this);
@@ -300,12 +302,15 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
             mMap.setMyLocationEnabled(false);
 
             if (mCurrentLocation != null) {
-                mMap.addMarker(new MarkerOptions()
+
+                MarkerOptions playerMarker = new MarkerOptions()
                         .position(new LatLng(mCurrentLocation.getLatitude(), mCurrentLocation.getLongitude()))
                         .title(player.getName())
                         .icon(BitmapDescriptorFactory.fromResource(R.drawable.avatar))
                         .zIndex(1000)
-                        .snippet("I'm feeling hungry.")).setTag("player");
+                        .snippet("I'm feeling hungry.");
+
+                mMap.addMarker(playerMarker);
             }
         } catch (SecurityException e) {
             e.printStackTrace();
@@ -419,14 +424,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
                         //TEMP LOGIC FOR OBJECT PLACEMENT
 
                         WorldItem item;
-                        if (snippet.toLowerCase().startsWith("e")) {
-                            if (!tradePost) {
-                                item = (WorldItem) ItemFactory.buildItem(500); //trading post
-                                tradePost = true;
-                            } else {
-                                item = (WorldItem) ItemFactory.buildItem(300);
-                            }
-                        } else if (snippet.toLowerCase().startsWith("a") || snippet.toLowerCase().startsWith("h") || snippet.toLowerCase().startsWith("u")) {
+                        if (snippet.toLowerCase().startsWith("a") || snippet.toLowerCase().startsWith("h") || snippet.toLowerCase().startsWith("u")) {
                             item = (WorldItem) ItemFactory.buildItem(301);
                         } else if (snippet.toLowerCase().startsWith("b") || snippet.toLowerCase().startsWith("d")) {
                             item = (WorldItem) ItemFactory.buildItem(302);
@@ -482,9 +480,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
     public boolean onMarkerClick(Marker marker) {
 
         if (marker.getTag() != "player") {
-
-            if (marker.getTitle().equals("Click to inspect.")) {
-
+            if (marker.getTitle().equals(getString(R.string.click_to_inspect))) {
 
                 if ((int) marker.getTag() != 500) {
                     player.addUsedLocation(marker.getPosition());
@@ -511,7 +507,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
             float distance = location.distanceTo(mCurrentLocation);
 
             if (distance > 0) {
-                marker.setTitle("Click to inspect.");
+                marker.setTitle(getString(R.string.click_to_inspect));
             } else {
                 marker.setTitle("You are too far away!");
             }

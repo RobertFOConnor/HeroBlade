@@ -16,6 +16,8 @@
     <string name="forgot_password">Forgot your password?</string>
     <string name="reset_password">Reset Password</string>
 
+    <string name="click_to_inspect">Click to inspect</string>
+
     <string name="error_empty">Please make sure all fields have been filled.</string>
     <string name="error_username_short">Please enter a longer user name.</string>
     <string name="error_email_invalid">Please enter a valid email address.</string>

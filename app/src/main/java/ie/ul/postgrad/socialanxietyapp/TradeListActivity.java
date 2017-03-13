@@ -25,6 +25,7 @@ public class TradeListActivity extends AppCompatActivity {
 
         itemList = (ListView) findViewById(R.id.item_list);
 
+        //Example trade deals
         String[] names = {"Mark: LVL 5", "Diarmuid: LVL 3", "Paddy: LVL 4"};
         String[] deals = {"needs 12 Wood for 1 Gold", "needs 4 Rope for 12 Cobblestone", "needs 10 Gold for 20 Coal"};
 
