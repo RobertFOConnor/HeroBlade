@@ -18,7 +18,7 @@ public class WeaponSelectionActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        getSupportActionBar().hide();
+
         setContentView(R.layout.activity_inventory);
 
         Bundle bundle = getIntent().getExtras();

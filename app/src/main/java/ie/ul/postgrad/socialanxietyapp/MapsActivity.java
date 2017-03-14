@@ -66,15 +66,16 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
 
 
     // Firebase objects for login and database.
-    private DatabaseReference mDatabase, mNameRef;
-    private FirebaseAuth mAuth;
+    private FirebaseAuth mAuth = FirebaseAuth.getInstance();
+    private DatabaseReference mDatabase = FirebaseDatabase.getInstance().getReference();
+    private DatabaseReference mNameRef = mDatabase.child("users").child(mAuth.getCurrentUser().getUid()).child("username");
+
 
     public static Player player; // (TEMP)IMPORTANT (CHANGE FROM STATIC PLAYER PASSES!!!!)
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        getSupportActionBar().hide();
 
         // Retrieve location and camera position from saved instance state.
         if (savedInstanceState != null) {
@@ -85,13 +86,6 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
         buildGoogleApiClient();
         mGoogleApiClient.connect();
 
-        //Initialize firebase references
-        mDatabase = FirebaseDatabase.getInstance().getReference();
-        mAuth = FirebaseAuth.getInstance();
-
-        mNameRef = mDatabase.child("users").child(mAuth.getCurrentUser().getUid()).child("username");
-
-        setupPlayer();
 
         //Set button listeners
         (findViewById(R.id.inventory_button)).setOnClickListener(this);
@@ -126,7 +120,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
 
     private void setupPlayer() {
 
-        ValueEventListener postListener = new ValueEventListener() {
+        mNameRef.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
                 // Get Post object and use the values to update the UI
@@ -139,14 +133,14 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
                 // Getting Post failed, log a message
                 Log.w(TAG, "loadPost:onCancelled", databaseError.toException());
             }
-        };
-        mNameRef.addListenerForSingleValueEvent(postListener);
+        });
         player = new Player("");
     }
 
     @Override
     protected void onStart() {
         super.onStart();
+        setupPlayer();
     }
 
     @Override

@@ -9,7 +9,7 @@ public class StepCounterActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        getSupportActionBar().hide();
+
         setContentView(R.layout.activity_step_counter);
 
         findViewById(R.id.back_button).setOnClickListener(new View.OnClickListener() {

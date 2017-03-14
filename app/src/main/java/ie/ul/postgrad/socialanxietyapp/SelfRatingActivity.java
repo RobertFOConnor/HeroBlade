@@ -12,7 +12,7 @@ public class SelfRatingActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        getSupportActionBar().hide();
+
         setContentView(R.layout.activity_self_rating);
 
         final VerticalSeekBar verticalSeekBar = (VerticalSeekBar) findViewById(R.id.rating_bar);
