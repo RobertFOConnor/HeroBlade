@@ -7,7 +7,6 @@ import android.widget.ListView;
 import java.util.ArrayList;
 
 import ie.ul.postgrad.socialanxietyapp.game.item.ItemFactory;
-import ie.ul.postgrad.socialanxietyapp.game.Player;
 import ie.ul.postgrad.socialanxietyapp.game.item.WeaponItem;
 
 public class CraftingActivity extends AppCompatActivity {
@@ -21,18 +20,14 @@ public class CraftingActivity extends AppCompatActivity {
 
         setContentView(R.layout.activity_crafting);
 
-        Bundle bundle = getIntent().getExtras();
-        Player player = MapsActivity.player;
-
         ArrayList<WeaponItem> items = new ArrayList<>();
 
-        for(int i = 0; i < CRAFTABLE_ITEM_COUNT; i++) {
-            items.add((WeaponItem) ItemFactory.buildItem(CRAFTABLE_START_ID+i));
+        for (int i = 0; i < CRAFTABLE_ITEM_COUNT; i++) {
+            items.add((WeaponItem) ItemFactory.buildItem(CRAFTABLE_START_ID + i));
         }
 
-
         ListView itemList = (ListView) findViewById(R.id.craft_item_list);
-        CraftableListAdapter adapter = new CraftableListAdapter(this, player, items);
+        CraftableListAdapter adapter = new CraftableListAdapter(this, items);
         itemList.setAdapter(adapter);
     }
 }

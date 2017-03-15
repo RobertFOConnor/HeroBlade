@@ -10,6 +10,7 @@ import android.database.sqlite.SQLiteOpenHelper;
 import java.util.ArrayList;
 
 import ie.ul.postgrad.socialanxietyapp.game.InventoryItemArray;
+import ie.ul.postgrad.socialanxietyapp.game.Player;
 
 /**
  * Created by Robert on 14-Mar-17.
@@ -76,9 +77,17 @@ public class DBHelper extends SQLiteOpenHelper {
         return true;
     }
 
-    public Cursor getPlayerData(int id) {
+    public Player getPlayer(int id) {
         SQLiteDatabase db = this.getReadableDatabase();
-        return db.rawQuery("SELECT * FROM " + PLAYERS_TABLE_NAME + " WHERE " + PLAYERS_COLUMN_ID + "=" + id, null);
+
+        Cursor cursor = db.query(PLAYERS_TABLE_NAME, new String[] { PLAYERS_COLUMN_ID,
+                        PLAYERS_COLUMN_NAME, PLAYERS_COLUMN_EMAIL, PLAYERS_COLUMN_XP, PLAYERS_COLUMN_LEVEL, PLAYERS_COLUMN_MONEY }, PLAYERS_COLUMN_ID + "=?",
+                new String[] { String.valueOf(id) }, null, null, null, null);
+        if (cursor != null) {
+            cursor.moveToFirst();
+        }
+
+        return new Player(cursor.getString(1), cursor.getString(2), Integer.parseInt(cursor.getString(3)), Integer.parseInt(cursor.getString(4)), Integer.parseInt(cursor.getString(5)));
     }
 
     public Cursor getInventoryData(int id) {
@@ -91,15 +100,15 @@ public class DBHelper extends SQLiteOpenHelper {
         return (int) DatabaseUtils.queryNumEntries(db, PLAYERS_TABLE_NAME);
     }
 
-    public boolean updatePlayer(Integer id, String name, String email, int xp, int level, int money) {
+    public boolean updatePlayer(Player player) {
         SQLiteDatabase db = this.getWritableDatabase();
         ContentValues contentValues = new ContentValues();
-        contentValues.put(PLAYERS_COLUMN_NAME, name);
-        contentValues.put(PLAYERS_COLUMN_EMAIL, email);
-        contentValues.put(PLAYERS_COLUMN_XP, xp);
-        contentValues.put(PLAYERS_COLUMN_LEVEL, level);
-        contentValues.put(PLAYERS_COLUMN_MONEY, money);
-        db.update(PLAYERS_TABLE_NAME, contentValues, PLAYERS_COLUMN_ID + " = ? ", new String[]{Integer.toString(id)});
+        contentValues.put(PLAYERS_COLUMN_NAME, player.getName());
+        contentValues.put(PLAYERS_COLUMN_EMAIL, player.getEmail());
+        contentValues.put(PLAYERS_COLUMN_XP, player.getXp());
+        contentValues.put(PLAYERS_COLUMN_LEVEL, player.getLevel());
+        contentValues.put(PLAYERS_COLUMN_MONEY, player.getMoney());
+        db.update(PLAYERS_TABLE_NAME, contentValues, PLAYERS_COLUMN_ID + " = ? ", new String[]{Integer.toString(1)});
         return true;
     }
 
@@ -136,21 +145,6 @@ public class DBHelper extends SQLiteOpenHelper {
 
         while (!res.isAfterLast()) {
             array_list.add(res.getString(res.getColumnIndex(PLAYERS_COLUMN_NAME)));
-            res.moveToNext();
-        }
-        res.close();
-        return array_list;
-    }
-
-    public ArrayList<String> getAllPlayerEmails() {
-        ArrayList<String> array_list = new ArrayList<>();
-
-        SQLiteDatabase db = this.getReadableDatabase();
-        Cursor res = db.rawQuery("SELECT * FROM " + PLAYERS_TABLE_NAME, null);
-        res.moveToFirst();
-
-        while (!res.isAfterLast()) {
-            array_list.add(res.getString(res.getColumnIndex(PLAYERS_COLUMN_EMAIL)));
             res.moveToNext();
         }
         res.close();

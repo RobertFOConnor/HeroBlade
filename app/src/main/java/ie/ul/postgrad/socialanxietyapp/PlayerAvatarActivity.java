@@ -6,15 +6,15 @@ import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.iid.FirebaseInstanceId;
 
-import java.util.ArrayList;
-
-import ie.ul.postgrad.socialanxietyapp.game.item.ItemFactory;
+import ie.ul.postgrad.socialanxietyapp.game.GameManager;
 import ie.ul.postgrad.socialanxietyapp.game.Player;
+import ie.ul.postgrad.socialanxietyapp.game.XPLevels;
+import ie.ul.postgrad.socialanxietyapp.game.item.ItemFactory;
 import ie.ul.postgrad.socialanxietyapp.game.item.WeaponItem;
 
 public class PlayerAvatarActivity extends AppCompatActivity implements View.OnClickListener {
@@ -24,18 +24,36 @@ public class PlayerAvatarActivity extends AppCompatActivity implements View.OnCl
     private Player player;
     private ImageView wepaonView;
 
+    private ProgressBar xpBar;
+    private TextView xpText;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
         setContentView(R.layout.activity_player_avatar);
-        player = MapsActivity.player;
+        player = GameManager.getInstance().getPlayer();
+        GameManager.getInstance().updatePlayerInDatabase();
 
         String nameField = "Name: " + player.getName();
         ((TextView) findViewById(R.id.name_field)).setText(nameField);
 
         String goldField = "Gold: $" + player.getMoney();
         ((TextView) findViewById(R.id.gold_field)).setText(goldField);
+
+        String levelField = "LVL: " + player.getLevel();
+        ((TextView) findViewById(R.id.level_text)).setText(levelField);
+
+
+        xpBar = (ProgressBar) findViewById(R.id.xp_bar);
+        int maxXP = XPLevels.XP_LEVELS[player.getLevel()];
+        int currXP = player.getXp() - (player.getXPNeeded()-XPLevels.XP_LEVELS[player.getLevel()]);
+
+        xpBar.setMax(maxXP);
+        xpBar.setProgress(currXP);
+
+        xpText = (TextView) findViewById(R.id.xp_text);
+        xpText.setText("XP: " + currXP + "/" + maxXP);
 
         wepaonView = (ImageView) findViewById(R.id.weapon_view);
 
@@ -80,9 +98,10 @@ public class PlayerAvatarActivity extends AppCompatActivity implements View.OnCl
     }
 
     private void updateWeaponButton() {
-        if (player.getWeapon() != null) {
-            weaponButton.setText("Player Weapon (" + player.getWeapon().getName() + ")");
-            wepaonView.setImageDrawable(getDrawable(player.getWeapon().getImageID()));
+        if (player.getWeapon() != -1) {
+            WeaponItem weaponItem = (WeaponItem) ItemFactory.buildItem(player.getWeapon());
+            weaponButton.setText("Player Weapon (" + weaponItem.getName() + ")");
+            wepaonView.setImageDrawable(getDrawable(weaponItem.getImageID()));
         }
     }
 
@@ -94,7 +113,7 @@ public class PlayerAvatarActivity extends AppCompatActivity implements View.OnCl
             if (resultCode == RESULT_OK) {
                 // The user picked a weapon.
                 int result = data.getIntExtra("result", 0);
-                player.setWeapon((WeaponItem) ItemFactory.buildItem(result));
+                player.setWeapon(result);
                 updateWeaponButton();
             }
         }

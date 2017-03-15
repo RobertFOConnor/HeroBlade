@@ -8,11 +8,11 @@ import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ListView;
 
+import ie.ul.postgrad.socialanxietyapp.game.GameManager;
 import ie.ul.postgrad.socialanxietyapp.game.Player;
 
 public class WeaponSelectionActivity extends AppCompatActivity {
 
-    private Player player;
     private ListView itemList;
 
     @Override
@@ -21,17 +21,14 @@ public class WeaponSelectionActivity extends AppCompatActivity {
 
         setContentView(R.layout.activity_inventory);
 
-        Bundle bundle = getIntent().getExtras();
-        player = MapsActivity.player;
-
         itemList = (ListView) findViewById(R.id.item_list);
-        InventoryListAdapter adapter = new InventoryListAdapter(this, player.getInventory().getWeapons());
+        InventoryListAdapter adapter = new InventoryListAdapter(this, GameManager.getInstance().getInventory().getWeapons());
         itemList.setAdapter(adapter);
 
         itemList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                int selectedItemID = player.getInventory().getWeapons().keyAt((int) itemList.getItemAtPosition(position));
+                int selectedItemID = GameManager.getInstance().getInventory().getWeapons().keyAt((int) itemList.getItemAtPosition(position));
 
                 Intent returnIntent = new Intent();
                 returnIntent.putExtra("result",selectedItemID);

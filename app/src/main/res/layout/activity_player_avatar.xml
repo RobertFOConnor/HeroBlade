@@ -54,9 +54,11 @@
         android:layout_height="wrap_content"
         android:layout_alignParentStart="true"
         android:layout_below="@+id/gold_field"
-        android:layout_marginTop="19dp">
+        android:layout_marginTop="19dp"
+        android:id="@+id/linearLayout">
 
         <TextView
+            android:id="@+id/level_text"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
@@ -64,10 +66,9 @@
             android:text="LVL 2: " />
 
         <ProgressBar
-            android:id="@+id/progressBar2"
+            android:id="@+id/xp_bar"
             style="?android:attr/progressBarStyleHorizontal"
             android:layout_width="match_parent"
-
             android:layout_height="wrap_content"
             android:layout_gravity="end"
             android:padding="10dp"
@@ -75,6 +76,15 @@
 
     </LinearLayout>
 
+    <TextView
+        android:id="@+id/xp_text"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:paddingRight="10dp"
+        android:text="XP: 50/1000"
+        android:layout_below="@+id/linearLayout"
+        android:layout_centerHorizontal="true" />
 
     `
 

@@ -1,11 +1,5 @@
 package ie.ul.postgrad.socialanxietyapp.game;
 
-import com.google.android.gms.maps.model.LatLng;
-
-import java.util.ArrayList;
-
-import ie.ul.postgrad.socialanxietyapp.game.item.WeaponItem;
-
 /**
  * Created by Robert on 22-Feb-17.
  * <p>
@@ -15,27 +9,35 @@ import ie.ul.postgrad.socialanxietyapp.game.item.WeaponItem;
 public class Player {
 
     private String name;
+    private String email;
+    private int xp;
     private int level;
-    private long money;
-    private Inventory inventory;
-    private WeaponItem weapon;
-    private ArrayList<ConsumedLocation> usedLocations;
+    private int money;
+    private int weapon_id;
 
-    public Player(String name) {
+    public Player(String name, String email, int xp, int level, int money) {
         this.name = name;
-        this.level = 1;
-        this.money = 0;
-        inventory = new Inventory();
-        usedLocations = new ArrayList<>();
+        this.email = email;
+        this.xp = xp;
+        this.level = level;
+        this.money = money;
+        this.weapon_id = -1;
     }
 
-
-    public WeaponItem getWeapon() {
-        return weapon;
+    public Player() {
+        name = "";
+        xp = 0;
+        level = 1;
+        money = 0;
+        weapon_id = -1;
     }
 
-    public void setWeapon(WeaponItem weapon) {
-        this.weapon = weapon;
+    public int getWeapon() {
+        return weapon_id;
+    }
+
+    public void setWeapon(int weapon) {
+        this.weapon_id = weapon;
     }
 
     public String getName() {
@@ -46,18 +48,55 @@ public class Player {
         this.name = name;
     }
 
+    public int getXp() {
+        return xp;
+    }
+
+    public void setXp(int xp) {
+        this.xp = xp;
+
+        if(canLevelUp()) { //Check for level up
+            setLevel(getLevel()+1);
+        }
+    }
+
+    private boolean canLevelUp() {
+        return (xp > getXPNeeded());
+    }
+
+    public int getXPNeeded() {
+        int xpNeeded = 0;
+        for(int i = 0; i <= level; i++) {
+            xpNeeded += XPLevels.XP_LEVELS[i];
+        }
+        return xpNeeded;
+    }
+
     public int getLevel() {
         return level;
     }
 
-    public Inventory getInventory() {
-        return inventory;
+    public void setLevel(int level) {
+        this.level = level;
     }
 
-    public void setInventory(Inventory inventory) {
-        this.inventory = inventory;
+    public int getMoney() {
+        return money;
     }
 
+    public void setMoney(int money) {
+        this.money = money;
+    }
+
+    public String getEmail() {
+        return email;
+    }
+
+    public void setEmail(String email) {
+        this.email = email;
+    }
+
+    /*
     public void addUsedLocation(LatLng latLng) {
         usedLocations.add(new ConsumedLocation(latLng));
     }
@@ -69,17 +108,5 @@ public class Player {
             }
         }
         return false;
-    }
-
-    public void setLevel(int level) {
-        this.level = level;
-    }
-
-    public long getMoney() {
-        return money;
-    }
-
-    public void setMoney(long money) {
-        this.money = money;
-    }
+    }*/
 }

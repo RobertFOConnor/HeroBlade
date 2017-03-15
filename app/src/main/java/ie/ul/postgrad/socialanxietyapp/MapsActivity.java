@@ -35,6 +35,7 @@ import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.firebase.auth.FirebaseAuth;
 
+import ie.ul.postgrad.socialanxietyapp.game.GameManager;
 import ie.ul.postgrad.socialanxietyapp.game.Inventory;
 import ie.ul.postgrad.socialanxietyapp.game.InventoryItemArray;
 import ie.ul.postgrad.socialanxietyapp.game.Player;
@@ -59,15 +60,6 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
     private static final String KEY_CAMERA_POSITION = "camera_position";
     private static final String KEY_LOCATION = "location";
 
-    //SQLLite objects
-    private static DBHelper databaseHelper;
-
-
-    // Firebase objects for login and database.
-    private FirebaseAuth mAuth = FirebaseAuth.getInstance();
-
-
-    public static Player player; // (TEMP)IMPORTANT (CHANGE FROM STATIC PLAYER PASSES!!!!)
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -80,13 +72,6 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
         }
         setContentView(R.layout.activity_maps);
 
-        //Initialize database helper
-        databaseHelper = new DBHelper(this);
-
-        //Add new player to database
-        if (databaseHelper.numberOfPlayers() == 0) {
-            databaseHelper.insertPlayer(mAuth.getCurrentUser().getEmail(), mAuth.getCurrentUser().getEmail(), 0, 1, 0);
-        }
 
         //Connect to Google API client
         buildGoogleApiClient();
@@ -105,7 +90,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
             case R.id.inventory_button:
                 i = new Intent(this, InventoryActivity.class);
                 Bundle bundle = new Bundle();
-                bundle.putParcelable("player_items", new InventoryItemArray(player.getInventory().getItems()));
+                bundle.putParcelable("player_items", new InventoryItemArray(GameManager.getInstance().getInventory().getItems()));
                 i.putExtras(bundle);
                 startActivity(i);
                 mMap.clear();
@@ -123,15 +108,10 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
         }
     }
 
-    private void setupPlayer() {
-        player = new Player(mAuth.getCurrentUser().getEmail());
-        player.setInventory(new Inventory(databaseHelper.getInventory()));
-    }
-
     @Override
     protected void onStart() {
         super.onStart();
-        setupPlayer();
+        GameManager.getInstance().startGame(this);
     }
 
     @Override
@@ -165,7 +145,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
 
     @Override
     protected void onDestroy() {
-        databaseHelper.close();
+        GameManager.getInstance().closeDatabase();
         super.onDestroy();
     }
 
@@ -296,12 +276,12 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
 
                 MarkerOptions playerMarker = new MarkerOptions()
                         .position(new LatLng(mCurrentLocation.getLatitude(), mCurrentLocation.getLongitude()))
-                        .title(player.getName())
+                        .title(GameManager.getInstance().getPlayer().getName())
                         .icon(BitmapDescriptorFactory.fromResource(R.drawable.avatar))
                         .zIndex(1000)
                         .snippet("I'm feeling hungry.");
 
-                mMap.addMarker(playerMarker);
+                mMap.addMarker(playerMarker).setTag("player");
             }
         } catch (SecurityException e) {
             e.printStackTrace();
@@ -425,7 +405,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
 
                         LatLng latLng = placeLikelihood.getPlace().getLatLng();
 
-                        if (!player.hasUsedLocation(latLng)) {
+                        //if (!player.hasUsedLocation(latLng)) {
 
                             mMap.addMarker(new MarkerOptions()
                                     .position(placeLikelihood.getPlace().getLatLng())
@@ -433,7 +413,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
                                     .icon(BitmapDescriptorFactory.fromResource(item.getMarkerIconID()))
                                     .snippet((String) placeLikelihood.getPlace().getName()))
                                     .setTag(item.getId());
-                        }
+                        //}
                     }
                     // Release the place likelihood buffer.
                     likelyPlaces.release();
@@ -473,7 +453,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
             if (marker.getTitle().equals(getString(R.string.click_to_inspect))) {
 
                 if ((int) marker.getTag() != 500) {
-                    player.addUsedLocation(marker.getPosition());
+                    //player.addUsedLocation(marker.getPosition());
                     Intent i = new Intent(this, ActionActivity.class);
                     i.putExtra(ActionActivity.ACTIVE_ITEM_ID, (int) marker.getTag());
                     startActivity(i);
@@ -502,19 +482,5 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
             }
         }
         return false;
-    }
-
-    public static void updateItemInDatabase(int itemId) {
-        int quantity = player.getInventory().getItems().get(itemId);
-
-        if(databaseHelper.getInventoryData(itemId).moveToFirst()) {
-            if(quantity >0) {
-                databaseHelper.updateItem(1, itemId, quantity);
-            } else {
-                databaseHelper.deleteItem(itemId);
-            }
-        } else {
-            databaseHelper.insertItem(1, itemId, quantity);
-        }
     }
 }

@@ -9,6 +9,7 @@ import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import ie.ul.postgrad.socialanxietyapp.game.GameManager;
 import ie.ul.postgrad.socialanxietyapp.game.item.ItemFactory;
 import ie.ul.postgrad.socialanxietyapp.game.Player;
 import ie.ul.postgrad.socialanxietyapp.game.item.WeaponItem;
@@ -21,6 +22,7 @@ public class ActionActivity extends AppCompatActivity implements View.OnClickLis
     public static final String ACTIVE_ITEM_ID = "id";
     private WorldItem activeItem;
     private Player player;
+    WeaponItem weaponItem;
 
     private Button actionButton;
     private Button leaveButton;
@@ -37,7 +39,7 @@ public class ActionActivity extends AppCompatActivity implements View.OnClickLis
         Bundle bundle = getIntent().getExtras();
         activeItem = (WorldItem) ItemFactory.buildItem(bundle.getInt(ACTIVE_ITEM_ID));
 
-        player = MapsActivity.player;
+        player = GameManager.getInstance().getPlayer();
 
         actionButton = (Button) findViewById(R.id.action_button);
         leaveButton = (Button) findViewById(R.id.leave_button);
@@ -49,7 +51,8 @@ public class ActionActivity extends AppCompatActivity implements View.OnClickLis
 
         statusText = ((TextView) findViewById(R.id.status_display));
 
-        if (player.getWeapon() != null) {
+        if (player.getWeapon() != -1) {
+            weaponItem = (WeaponItem) ItemFactory.buildItem(player.getWeapon());
             updateWeapon();
         }
 
@@ -63,15 +66,14 @@ public class ActionActivity extends AppCompatActivity implements View.OnClickLis
         if (activeItem.getHitAmount() > 0) {
             int hitCount = activeItem.onHit();
 
-            if (player.getWeapon() != null) {
-                hitCount += player.getWeapon().getDamage();
+            if (player.getWeapon() != -1) {
+                hitCount += weaponItem.getDamage();
             }
 
             int itemId = activeItem.getDropItemID();
 
-            player.getInventory().addItem(itemId, hitCount);
-            MapsActivity.updateItemInDatabase(itemId);
-
+            GameManager.getInstance().getInventory().addItem(itemId, hitCount);
+            GameManager.getInstance().updateItemInDatabase(itemId);
 
 
             String statusMessage = "You have received +" + hitCount + " " + ItemFactory.buildItem(activeItem.getDropItemID()).getName() + ".";
@@ -79,10 +81,12 @@ public class ActionActivity extends AppCompatActivity implements View.OnClickLis
 
             activeItem.setHitAmount(activeItem.getHitAmount() - 1);
 
-            if (activeItem.getHitAmount() <= 0) {
+            if (activeItem.getHitAmount() <= 0 && actionButton.isEnabled()) {
                 actionButton.setText("Depleted");
                 actionButton.setEnabled(false);
-                statusText.setText("The resource has been depleted!");
+                statusText.setText("The resource has been depleted! +100XP");
+                player.setXp(player.getXp()+100);
+                GameManager.getInstance().updatePlayerInDatabase();
             }
         }
 
@@ -120,15 +124,15 @@ public class ActionActivity extends AppCompatActivity implements View.OnClickLis
 
                 // The user picked a weapon.
                 int result = data.getIntExtra("result", 0);
-                player.setWeapon((WeaponItem) ItemFactory.buildItem(result));
+                player.setWeapon(result);
                 updateWeapon();
             }
         }
     }
 
     private void updateWeapon() {
-        String weaponText = "Player Weapon: " + player.getWeapon().getName();
+        String weaponText = "Player Weapon: " + weaponItem.getName();
         weaponButton.setText(weaponText);
-        ((ImageView) findViewById(R.id.weapon_view)).setImageDrawable(getDrawable(player.getWeapon().getImageID()));
+        ((ImageView) findViewById(R.id.weapon_view)).setImageDrawable(getDrawable(weaponItem.getImageID()));
     }
 }

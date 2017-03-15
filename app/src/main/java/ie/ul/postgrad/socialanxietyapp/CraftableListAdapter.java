@@ -10,8 +10,11 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.google.android.gms.games.Game;
+
 import java.util.ArrayList;
 
+import ie.ul.postgrad.socialanxietyapp.game.GameManager;
 import ie.ul.postgrad.socialanxietyapp.game.InventoryItemArray;
 import ie.ul.postgrad.socialanxietyapp.game.Player;
 import ie.ul.postgrad.socialanxietyapp.game.item.WeaponItem;
@@ -27,10 +30,9 @@ public class CraftableListAdapter extends BaseAdapter {
     private String[] ingredients;
     private int[] imageId;
     private static LayoutInflater inflater = null;
-    private Player player;
     private ArrayList<WeaponItem> items;
 
-    public CraftableListAdapter(Context context, Player player, ArrayList<WeaponItem> items) {
+    public CraftableListAdapter(Context context, ArrayList<WeaponItem> items) {
         this.items = items;
         result = new String[items.size()];
         ingredients = new String[items.size()];
@@ -45,8 +47,6 @@ public class CraftableListAdapter extends BaseAdapter {
         this.context = context;
         inflater = (LayoutInflater) context.
                 getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-
-        this.player = player;
     }
 
     @Override
@@ -92,7 +92,7 @@ public class CraftableListAdapter extends BaseAdapter {
                 boolean canCraft = true;
 
                 WeaponItem selectedItem = items.get(position);
-                InventoryItemArray playerItems = player.getInventory().getItems();
+                InventoryItemArray playerItems = GameManager.getInstance().getInventory().getItems();
                 SparseIntArray ingredients = selectedItem.getIngredients();
 
                 for(int i = 0; i < ingredients.size(); i++) {
@@ -109,12 +109,12 @@ public class CraftableListAdapter extends BaseAdapter {
                     for(int i = 0; i < ingredients.size(); i++) {
                         int itemId = ingredients.keyAt(i);
 
-                        player.getInventory().removeItem(ingredients.keyAt(i), ingredients.valueAt(i));
-                        MapsActivity.updateItemInDatabase(itemId);
+                        GameManager.getInstance().getInventory().removeItem(ingredients.keyAt(i), ingredients.valueAt(i));
+                        GameManager.getInstance().updateItemInDatabase(itemId);
 
                     }
-                    player.getInventory().addItem(selectedItem.getId(), 1);
-                    MapsActivity.updateItemInDatabase(selectedItem.getId());
+                    GameManager.getInstance().getInventory().addItem(selectedItem.getId(), 1);
+                    GameManager.getInstance().updateItemInDatabase(selectedItem.getId());
 
                     Toast.makeText(context, "You crafted a new "+selectedItem.getName(), Toast.LENGTH_SHORT).show();
                 } else {
