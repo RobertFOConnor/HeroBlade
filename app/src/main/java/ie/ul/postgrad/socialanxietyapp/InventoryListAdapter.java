@@ -8,10 +8,8 @@ import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.ImageView;
 import android.widget.TextView;
-import android.widget.Toast;
 
-import ie.ul.postgrad.socialanxietyapp.game.InventoryItemArray;
-import ie.ul.postgrad.socialanxietyapp.game.ItemFactory;
+import ie.ul.postgrad.socialanxietyapp.game.item.ItemFactory;
 
 /**
  * Created by Robert on 20-Feb-17.

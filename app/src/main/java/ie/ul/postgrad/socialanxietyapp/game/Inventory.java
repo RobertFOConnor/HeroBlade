@@ -1,5 +1,8 @@
 package ie.ul.postgrad.socialanxietyapp.game;
 
+import ie.ul.postgrad.socialanxietyapp.game.item.ItemFactory;
+import ie.ul.postgrad.socialanxietyapp.game.item.WeaponItem;
+
 /**
  * Created by Robert on 20-Feb-17.
  *
@@ -12,6 +15,10 @@ public class Inventory {
 
     public Inventory() {
         items = new InventoryItemArray();
+    }
+
+    public Inventory(InventoryItemArray items) {
+        this.items = items;
     }
 
     public void addItem(int itemID, int amount) {

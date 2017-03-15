@@ -1,4 +1,4 @@
-package ie.ul.postgrad.socialanxietyapp.game;
+package ie.ul.postgrad.socialanxietyapp.game.item;
 
 /**
  * Created by Robert on 22-Feb-17.
@@ -12,7 +12,7 @@ public class WorldItem extends Item {
     private int dropItemID;
     private int hitAmount;
 
-    public WorldItem(int id, String name, String description, int markerIconID, int dropItemID, int hitAmount) {
+    protected WorldItem(int id, String name, String description, int markerIconID, int dropItemID, int hitAmount) {
         super(id, name, description, markerIconID);
         this.markerIconID = markerIconID;
         this.dropItemID = dropItemID;

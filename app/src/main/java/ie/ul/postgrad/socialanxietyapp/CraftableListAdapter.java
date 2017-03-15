@@ -14,7 +14,7 @@ import java.util.ArrayList;
 
 import ie.ul.postgrad.socialanxietyapp.game.InventoryItemArray;
 import ie.ul.postgrad.socialanxietyapp.game.Player;
-import ie.ul.postgrad.socialanxietyapp.game.WeaponItem;
+import ie.ul.postgrad.socialanxietyapp.game.item.WeaponItem;
 
 /**
  * Created by Robert on 20-Feb-17.
@@ -107,9 +107,14 @@ public class CraftableListAdapter extends BaseAdapter {
                 if(canCraft) {
 
                     for(int i = 0; i < ingredients.size(); i++) {
+                        int itemId = ingredients.keyAt(i);
+
                         player.getInventory().removeItem(ingredients.keyAt(i), ingredients.valueAt(i));
+                        MapsActivity.updateItemInDatabase(itemId);
+
                     }
                     player.getInventory().addItem(selectedItem.getId(), 1);
+                    MapsActivity.updateItemInDatabase(selectedItem.getId());
 
                     Toast.makeText(context, "You crafted a new "+selectedItem.getName(), Toast.LENGTH_SHORT).show();
                 } else {

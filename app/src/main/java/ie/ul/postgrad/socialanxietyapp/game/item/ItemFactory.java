@@ -1,4 +1,4 @@
-package ie.ul.postgrad.socialanxietyapp.game;
+package ie.ul.postgrad.socialanxietyapp.game.item;
 
 import android.util.SparseIntArray;
 

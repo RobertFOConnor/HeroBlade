@@ -1,4 +1,4 @@
-package ie.ul.postgrad.socialanxietyapp.game;
+package ie.ul.postgrad.socialanxietyapp.game.item;
 
 import android.util.SparseIntArray;
 
@@ -14,7 +14,7 @@ public class WeaponItem extends Item {
     private int durability; //How many hits the weapon can last.
     private SparseIntArray ingredients;
 
-    public WeaponItem(int id, String name, String description, int imageID, int damage, int durability, SparseIntArray ingredients) {
+    protected WeaponItem(int id, String name, String description, int imageID, int damage, int durability, SparseIntArray ingredients) {
         super(id, name, description, imageID);
         this.damage = damage;
         this.durability = durability;

@@ -9,10 +9,13 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.iid.FirebaseInstanceId;
 
-import ie.ul.postgrad.socialanxietyapp.game.ItemFactory;
+import java.util.ArrayList;
+
+import ie.ul.postgrad.socialanxietyapp.game.item.ItemFactory;
 import ie.ul.postgrad.socialanxietyapp.game.Player;
-import ie.ul.postgrad.socialanxietyapp.game.WeaponItem;
+import ie.ul.postgrad.socialanxietyapp.game.item.WeaponItem;
 
 public class PlayerAvatarActivity extends AppCompatActivity implements View.OnClickListener {
 
@@ -31,6 +34,9 @@ public class PlayerAvatarActivity extends AppCompatActivity implements View.OnCl
         String nameField = "Name: " + player.getName();
         ((TextView) findViewById(R.id.name_field)).setText(nameField);
 
+        String goldField = "Gold: $" + player.getMoney();
+        ((TextView) findViewById(R.id.gold_field)).setText(goldField);
+
         wepaonView = (ImageView) findViewById(R.id.weapon_view);
 
         weaponButton = (Button) findViewById(R.id.weapon_button);
@@ -46,12 +52,8 @@ public class PlayerAvatarActivity extends AppCompatActivity implements View.OnCl
             @Override
             public void onClick(View v) {
                 FirebaseAuth.getInstance().signOut();
-                Intent intent = new Intent(getApplicationContext(), WelcomeActivity.class);
-                intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-                startActivity(intent);
             }
         });
-
     }
 
     @Override

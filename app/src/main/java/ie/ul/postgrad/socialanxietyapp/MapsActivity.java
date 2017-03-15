@@ -34,17 +34,12 @@ import com.google.android.gms.maps.model.MapStyleOptions;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.auth.FirebaseUser;
-import com.google.firebase.database.DataSnapshot;
-import com.google.firebase.database.DatabaseError;
-import com.google.firebase.database.DatabaseReference;
-import com.google.firebase.database.FirebaseDatabase;
-import com.google.firebase.database.ValueEventListener;
 
+import ie.ul.postgrad.socialanxietyapp.game.Inventory;
 import ie.ul.postgrad.socialanxietyapp.game.InventoryItemArray;
-import ie.ul.postgrad.socialanxietyapp.game.ItemFactory;
 import ie.ul.postgrad.socialanxietyapp.game.Player;
-import ie.ul.postgrad.socialanxietyapp.game.WorldItem;
+import ie.ul.postgrad.socialanxietyapp.game.item.ItemFactory;
+import ie.ul.postgrad.socialanxietyapp.game.item.WorldItem;
 
 public class MapsActivity extends AppCompatActivity implements OnMapReadyCallback, GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener,
         LocationListener, GoogleMap.OnMarkerClickListener, View.OnClickListener {
@@ -64,11 +59,12 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
     private static final String KEY_CAMERA_POSITION = "camera_position";
     private static final String KEY_LOCATION = "location";
 
+    //SQLLite objects
+    private static DBHelper databaseHelper;
+
 
     // Firebase objects for login and database.
     private FirebaseAuth mAuth = FirebaseAuth.getInstance();
-    private DatabaseReference mDatabase = FirebaseDatabase.getInstance().getReference();
-    private DatabaseReference mNameRef = mDatabase.child("users").child(mAuth.getCurrentUser().getUid()).child("username");
 
 
     public static Player player; // (TEMP)IMPORTANT (CHANGE FROM STATIC PLAYER PASSES!!!!)
@@ -83,9 +79,18 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
             mCameraPosition = savedInstanceState.getParcelable(KEY_CAMERA_POSITION);
         }
         setContentView(R.layout.activity_maps);
+
+        //Initialize database helper
+        databaseHelper = new DBHelper(this);
+
+        //Add new player to database
+        if (databaseHelper.numberOfPlayers() == 0) {
+            databaseHelper.insertPlayer(mAuth.getCurrentUser().getEmail(), mAuth.getCurrentUser().getEmail(), 0, 1, 0);
+        }
+
+        //Connect to Google API client
         buildGoogleApiClient();
         mGoogleApiClient.connect();
-
 
         //Set button listeners
         (findViewById(R.id.inventory_button)).setOnClickListener(this);
@@ -119,22 +124,8 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
     }
 
     private void setupPlayer() {
-
-        mNameRef.addListenerForSingleValueEvent(new ValueEventListener() {
-            @Override
-            public void onDataChange(DataSnapshot dataSnapshot) {
-                // Get Post object and use the values to update the UI
-                String name = (String) dataSnapshot.getValue();
-                player.setName(name);
-            }
-
-            @Override
-            public void onCancelled(DatabaseError databaseError) {
-                // Getting Post failed, log a message
-                Log.w(TAG, "loadPost:onCancelled", databaseError.toException());
-            }
-        });
-        player = new Player("");
+        player = new Player(mAuth.getCurrentUser().getEmail());
+        player.setInventory(new Inventory(databaseHelper.getInventory()));
     }
 
     @Override
@@ -170,6 +161,12 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
             LocationServices.FusedLocationApi.removeLocationUpdates(
                     mGoogleApiClient, this);
         }
+    }
+
+    @Override
+    protected void onDestroy() {
+        databaseHelper.close();
+        super.onDestroy();
     }
 
     /**
@@ -437,7 +434,6 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
                                     .snippet((String) placeLikelihood.getPlace().getName()))
                                     .setTag(item.getId());
                         }
-
                     }
                     // Release the place likelihood buffer.
                     likelyPlaces.release();
@@ -490,7 +486,6 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
                     }
                     startActivity(i);
                 }
-
                 mMap.clear();
             }
 
@@ -506,7 +501,20 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
                 marker.setTitle("You are too far away!");
             }
         }
-
         return false;
+    }
+
+    public static void updateItemInDatabase(int itemId) {
+        int quantity = player.getInventory().getItems().get(itemId);
+
+        if(databaseHelper.getInventoryData(itemId).moveToFirst()) {
+            if(quantity >0) {
+                databaseHelper.updateItem(1, itemId, quantity);
+            } else {
+                databaseHelper.deleteItem(itemId);
+            }
+        } else {
+            databaseHelper.insertItem(1, itemId, quantity);
+        }
     }
 }

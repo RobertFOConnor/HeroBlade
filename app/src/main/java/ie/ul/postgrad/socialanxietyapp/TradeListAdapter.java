@@ -1,16 +1,11 @@
 package ie.ul.postgrad.socialanxietyapp;
 
 import android.content.Context;
-import android.util.SparseIntArray;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
-import android.widget.ImageView;
 import android.widget.TextView;
-import android.widget.Toast;
-
-import ie.ul.postgrad.socialanxietyapp.game.ItemFactory;
 
 /**
  * Created by Robert on 20-Feb-17.

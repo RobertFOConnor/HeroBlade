@@ -54,7 +54,6 @@ public class CreateAccountActivity extends AppCompatActivity {
                                                 Toast.LENGTH_SHORT).show();
                                     } else {
                                         Toast.makeText(CreateAccountActivity.this, "Account Created!", Toast.LENGTH_SHORT).show();
-                                        mDatabase.child("users").child(auth.getCurrentUser().getUid()).child("username").setValue(name);
                                         startActivity(new Intent(getApplicationContext(), MapsActivity.class));
                                     }
                                 }

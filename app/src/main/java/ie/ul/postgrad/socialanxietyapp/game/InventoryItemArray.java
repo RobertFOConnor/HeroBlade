@@ -36,7 +36,7 @@ public class InventoryItemArray extends SparseIntArray implements Parcelable {
     };
 
 
-    protected InventoryItemArray() {
+    public InventoryItemArray() {
 
     }
 

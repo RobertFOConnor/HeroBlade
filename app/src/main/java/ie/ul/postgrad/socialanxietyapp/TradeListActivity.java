@@ -5,9 +5,6 @@ import android.os.Bundle;
 import android.widget.ListView;
 import android.widget.TextView;
 
-import ie.ul.postgrad.socialanxietyapp.game.ItemFactory;
-import ie.ul.postgrad.socialanxietyapp.game.WorldItem;
-
 public class TradeListActivity extends AppCompatActivity {
 
     public static String TRADE_LOCATION_ID = "trade_loc";

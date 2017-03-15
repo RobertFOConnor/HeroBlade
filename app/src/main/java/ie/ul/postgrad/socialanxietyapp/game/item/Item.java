@@ -1,4 +1,4 @@
-package ie.ul.postgrad.socialanxietyapp.game;
+package ie.ul.postgrad.socialanxietyapp.game.item;
 
 /**
  * Created by Robert on 20-Feb-17.
@@ -14,7 +14,7 @@ public class Item {
     private int imageID;
 
 
-    public Item(int id, String name, String description, int imageID) {
+    protected Item(int id, String name, String description, int imageID) {
         this.id = id;
         this.name = name;
         this.description = description;

@@ -6,9 +6,9 @@ import android.widget.ListView;
 
 import java.util.ArrayList;
 
-import ie.ul.postgrad.socialanxietyapp.game.ItemFactory;
+import ie.ul.postgrad.socialanxietyapp.game.item.ItemFactory;
 import ie.ul.postgrad.socialanxietyapp.game.Player;
-import ie.ul.postgrad.socialanxietyapp.game.WeaponItem;
+import ie.ul.postgrad.socialanxietyapp.game.item.WeaponItem;
 
 public class CraftingActivity extends AppCompatActivity {
 

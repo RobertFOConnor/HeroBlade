@@ -1,29 +1,25 @@
 package ie.ul.postgrad.socialanxietyapp.game;
 
 import com.google.android.gms.maps.model.LatLng;
-import com.google.firebase.database.IgnoreExtraProperties;
 
 import java.util.ArrayList;
 
+import ie.ul.postgrad.socialanxietyapp.game.item.WeaponItem;
+
 /**
  * Created by Robert on 22-Feb-17.
- *
+ * <p>
  * Represents the users character. Holds all the information related to the player.
  */
 
-@IgnoreExtraProperties
 public class Player {
 
     private String name;
     private int level;
-    private int money;
+    private long money;
     private Inventory inventory;
     private WeaponItem weapon;
     private ArrayList<ConsumedLocation> usedLocations;
-
-    public Player() {
-        // Default constructor required for calls to DataSnapshot.getValue(Player.class)
-    }
 
     public Player(String name) {
         this.name = name;
@@ -58,13 +54,17 @@ public class Player {
         return inventory;
     }
 
+    public void setInventory(Inventory inventory) {
+        this.inventory = inventory;
+    }
+
     public void addUsedLocation(LatLng latLng) {
         usedLocations.add(new ConsumedLocation(latLng));
     }
 
     public boolean hasUsedLocation(LatLng latLng) {
-        for(int i = 0; i < usedLocations.size(); i++) {
-            if(usedLocations.get(i).getLatLong().equals(latLng)) {
+        for (int i = 0; i < usedLocations.size(); i++) {
+            if (usedLocations.get(i).getLatLong().equals(latLng)) {
                 return true;
             }
         }
@@ -75,11 +75,11 @@ public class Player {
         this.level = level;
     }
 
-    public int getMoney() {
+    public long getMoney() {
         return money;
     }
 
-    public void setMoney(int money) {
+    public void setMoney(long money) {
         this.money = money;
     }
 }

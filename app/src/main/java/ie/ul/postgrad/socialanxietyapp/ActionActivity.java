@@ -1,6 +1,7 @@
 package ie.ul.postgrad.socialanxietyapp;
 
 import android.content.Intent;
+import android.database.Cursor;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
@@ -8,10 +9,10 @@ import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import ie.ul.postgrad.socialanxietyapp.game.ItemFactory;
+import ie.ul.postgrad.socialanxietyapp.game.item.ItemFactory;
 import ie.ul.postgrad.socialanxietyapp.game.Player;
-import ie.ul.postgrad.socialanxietyapp.game.WeaponItem;
-import ie.ul.postgrad.socialanxietyapp.game.WorldItem;
+import ie.ul.postgrad.socialanxietyapp.game.item.WeaponItem;
+import ie.ul.postgrad.socialanxietyapp.game.item.WorldItem;
 
 
 public class ActionActivity extends AppCompatActivity implements View.OnClickListener {
@@ -66,7 +67,12 @@ public class ActionActivity extends AppCompatActivity implements View.OnClickLis
                 hitCount += player.getWeapon().getDamage();
             }
 
-            player.getInventory().addItem(activeItem.getDropItemID(), hitCount);
+            int itemId = activeItem.getDropItemID();
+
+            player.getInventory().addItem(itemId, hitCount);
+            MapsActivity.updateItemInDatabase(itemId);
+
+
 
             String statusMessage = "You have received +" + hitCount + " " + ItemFactory.buildItem(activeItem.getDropItemID()).getName() + ".";
             statusText.setText(statusMessage);
