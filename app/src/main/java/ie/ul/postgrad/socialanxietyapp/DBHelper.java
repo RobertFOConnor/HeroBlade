@@ -8,6 +8,7 @@ import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 
 import java.util.ArrayList;
+import java.util.Calendar;
 
 import ie.ul.postgrad.socialanxietyapp.game.InventoryItemArray;
 import ie.ul.postgrad.socialanxietyapp.game.Player;
@@ -20,7 +21,7 @@ import ie.ul.postgrad.socialanxietyapp.game.Player;
 
 public class DBHelper extends SQLiteOpenHelper {
 
-    public static final int DATABASE_VERSION = 2;
+    public static final int DATABASE_VERSION = 5;
     public static final String DATABASE_NAME = "AnxietyApp.db";
     public static final String PLAYERS_TABLE_NAME = "players";
     public static final String PLAYERS_COLUMN_ID = "id";
@@ -36,6 +37,12 @@ public class DBHelper extends SQLiteOpenHelper {
     public static final String INVENTORY_COLUMN_QUANTITY = "quantity";
     public static final String INVENTORY_COLUMN_DAMAGE = "damage";
 
+    public static final String TRAVEL_TABLE_NAME = "travel";
+    public static final String TRAVEL_COLUMN_PLAYER_ID = "player_id";
+    public static final String TRAVEL_COLUMN_CREATION_DATE = "creation_date";
+    public static final String TRAVEL_COLUMN_STEPS_COUNT = "step_count";
+    public static final String TRAVEL_COLUMN_DISTANCE = "distance";
+
     public DBHelper(Context context) {
         super(context, DATABASE_NAME, null, DATABASE_VERSION);
     }
@@ -43,11 +50,13 @@ public class DBHelper extends SQLiteOpenHelper {
     public void onCreate(SQLiteDatabase db) {
         db.execSQL("CREATE TABLE " + PLAYERS_TABLE_NAME + " (id integer primary key, name text, email text, xp integer, level integer, money integer)");
         db.execSQL("CREATE TABLE " + INVENTORY_TABLE_NAME + " (player_id integer key, item_id integer, quantity integer)");
+        db.execSQL("CREATE TABLE " + TRAVEL_TABLE_NAME + " (player_id integer key, creation_date text, step_count integer, distance integer)");
     }
 
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
         db.execSQL("DROP TABLE IF EXISTS " + PLAYERS_TABLE_NAME);
         db.execSQL("DROP TABLE IF EXISTS " + INVENTORY_TABLE_NAME);
+        db.execSQL("DROP TABLE IF EXISTS " + TRAVEL_TABLE_NAME);
         onCreate(db);
     }
 
@@ -80,9 +89,9 @@ public class DBHelper extends SQLiteOpenHelper {
     public Player getPlayer(int id) {
         SQLiteDatabase db = this.getReadableDatabase();
 
-        Cursor cursor = db.query(PLAYERS_TABLE_NAME, new String[] { PLAYERS_COLUMN_ID,
-                        PLAYERS_COLUMN_NAME, PLAYERS_COLUMN_EMAIL, PLAYERS_COLUMN_XP, PLAYERS_COLUMN_LEVEL, PLAYERS_COLUMN_MONEY }, PLAYERS_COLUMN_ID + "=?",
-                new String[] { String.valueOf(id) }, null, null, null, null);
+        Cursor cursor = db.query(PLAYERS_TABLE_NAME, new String[]{PLAYERS_COLUMN_ID,
+                        PLAYERS_COLUMN_NAME, PLAYERS_COLUMN_EMAIL, PLAYERS_COLUMN_XP, PLAYERS_COLUMN_LEVEL, PLAYERS_COLUMN_MONEY}, PLAYERS_COLUMN_ID + "=?",
+                new String[]{String.valueOf(id)}, null, null, null, null);
         if (cursor != null) {
             cursor.moveToFirst();
         }
@@ -92,7 +101,7 @@ public class DBHelper extends SQLiteOpenHelper {
 
     public Cursor getInventoryData(int id) {
         SQLiteDatabase db = this.getReadableDatabase();
-        return db.rawQuery("SELECT * FROM " + INVENTORY_TABLE_NAME + " WHERE " + INVENTORY_COLUMN_ID + "=" + id, null);
+        return db.rawQuery(selectAllQuery(INVENTORY_TABLE_NAME) + " WHERE " + INVENTORY_COLUMN_ID + "=" + id, null);
     }
 
     public int numberOfPlayers() {
@@ -140,7 +149,7 @@ public class DBHelper extends SQLiteOpenHelper {
         ArrayList<String> array_list = new ArrayList<>();
 
         SQLiteDatabase db = this.getReadableDatabase();
-        Cursor res = db.rawQuery("SELECT * FROM " + PLAYERS_TABLE_NAME, null);
+        Cursor res = db.rawQuery(selectAllQuery(PLAYERS_TABLE_NAME), null);
         res.moveToFirst();
 
         while (!res.isAfterLast()) {
@@ -155,7 +164,7 @@ public class DBHelper extends SQLiteOpenHelper {
         InventoryItemArray array_list = new InventoryItemArray();
 
         SQLiteDatabase db = this.getReadableDatabase();
-        Cursor res = db.rawQuery("SELECT * FROM " + INVENTORY_TABLE_NAME, null);
+        Cursor res = db.rawQuery(selectAllQuery(INVENTORY_TABLE_NAME), null);
         res.moveToFirst();
 
         while (!res.isAfterLast()) {
@@ -164,5 +173,92 @@ public class DBHelper extends SQLiteOpenHelper {
         }
         res.close();
         return array_list;
+    }
+
+    public boolean insertStepsEntry(float totalDistance) {
+
+        boolean isDateAlreadyPresent = false;
+        boolean createSuccessful = false;
+        int currentDateStepCounts = 0;
+        Calendar mCalendar = Calendar.getInstance();
+        String todayDate = String.valueOf(mCalendar.get(Calendar.MONTH)) + "/" + String.valueOf(mCalendar.get(Calendar.DAY_OF_MONTH)) + "/" + String.valueOf(mCalendar.get(Calendar.YEAR));
+        String selectQuery = "SELECT " + TRAVEL_COLUMN_STEPS_COUNT + " FROM " + TRAVEL_TABLE_NAME + " WHERE " + TRAVEL_COLUMN_CREATION_DATE + " = '" + todayDate + "'";
+        try {
+            SQLiteDatabase db = this.getReadableDatabase();
+            Cursor c = db.rawQuery(selectQuery, null);
+            if (c.moveToFirst()) {
+                do {
+                    isDateAlreadyPresent = true;
+                    currentDateStepCounts = c.getInt((c.getColumnIndex(TRAVEL_COLUMN_STEPS_COUNT)));
+                } while (c.moveToNext());
+            }
+            db.close();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        try {
+            SQLiteDatabase db = this.getWritableDatabase();
+            ContentValues values = new ContentValues();
+            values.put(TRAVEL_COLUMN_PLAYER_ID, 1);
+            values.put(TRAVEL_COLUMN_CREATION_DATE, todayDate);
+            values.put(TRAVEL_COLUMN_DISTANCE, totalDistance);
+            if (isDateAlreadyPresent) {
+                values.put(TRAVEL_COLUMN_STEPS_COUNT, ++currentDateStepCounts);
+                int row = db.update(TRAVEL_TABLE_NAME, values,
+                        TRAVEL_COLUMN_CREATION_DATE + " = '" + todayDate + "'", null);
+                if (row == 1) {
+                    createSuccessful = true;
+                }
+                db.close();
+            } else {
+                values.put(TRAVEL_COLUMN_STEPS_COUNT, 1);
+                long row = db.insert(TRAVEL_TABLE_NAME, null, values);
+                if (row != -1) {
+                    createSuccessful = true;
+                }
+                db.close();
+            }
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return createSuccessful;
+    }
+
+    public int getSteps() {
+        int steps = 0;
+        String selectQuery = selectAllQuery(TRAVEL_TABLE_NAME) + " WHERE " + TRAVEL_COLUMN_PLAYER_ID + "=" + 1;
+        try {
+            SQLiteDatabase db = this.getReadableDatabase();
+            Cursor c = db.rawQuery(selectQuery, null);
+            if (c.moveToFirst()) {
+                steps = c.getInt((c.getColumnIndex(TRAVEL_COLUMN_STEPS_COUNT)));
+            }
+            db.close();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return steps;
+    }
+
+    public int getDistance() {
+        int distance = 0;
+        String selectQuery = selectAllQuery(TRAVEL_TABLE_NAME) + " WHERE " + TRAVEL_COLUMN_PLAYER_ID + "=" + 1;
+        try {
+            SQLiteDatabase db = this.getReadableDatabase();
+            Cursor c = db.rawQuery(selectQuery, null);
+            if (c.moveToFirst()) {
+                distance = c.getInt((c.getColumnIndex(TRAVEL_COLUMN_DISTANCE)));
+            }
+            db.close();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return distance;
+    }
+
+    private String selectAllQuery(String tableName) {
+        return "SELECT * FROM " + tableName;
     }
 }

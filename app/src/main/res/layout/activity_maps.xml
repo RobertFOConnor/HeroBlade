@@ -7,6 +7,26 @@
     tools:context=".MapsActivity">
 
     <Button
+        android:gravity="center"
+        android:text="Distance: "
+        android:id="@+id/distance_text"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="30dp"
+        android:layout_alignParentTop="true"
+        android:layout_centerHorizontal="true" />
+
+    <Button
+        android:gravity="center"
+        android:text="Steps: "
+        android:id="@+id/steps_text"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/distance_text"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="15dp" />
+
+    <Button
         android:id="@+id/player_button"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -30,7 +50,8 @@
         android:layout_height="wrap_content"
         android:text="Crafting"
         android:layout_above="@+id/player_button"
-        android:layout_alignStart="@+id/player_button" />
+        android:layout_alignStart="@+id/player_button"
+        android:layout_alignEnd="@+id/inventory_button" />
 
     <fragment
         android:id="@+id/map"

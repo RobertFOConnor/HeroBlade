@@ -37,4 +37,7 @@
     <string name="title_activity_maps">Map</string>
     <string name="title_activity_main">MainActivity</string>
 
+    <string name="play_services_failed_connection">Play services connection failed: ConnectionResult.getErrorCode() = </string>
+    <string name="play_services_suspended_connection">Play services connection suspended</string>
+
 </resources>

@@ -33,12 +33,9 @@ import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MapStyleOptions;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
-import com.google.firebase.auth.FirebaseAuth;
 
 import ie.ul.postgrad.socialanxietyapp.game.GameManager;
-import ie.ul.postgrad.socialanxietyapp.game.Inventory;
 import ie.ul.postgrad.socialanxietyapp.game.InventoryItemArray;
-import ie.ul.postgrad.socialanxietyapp.game.Player;
 import ie.ul.postgrad.socialanxietyapp.game.item.ItemFactory;
 import ie.ul.postgrad.socialanxietyapp.game.item.WorldItem;
 
@@ -59,6 +56,10 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
     private Location mCurrentLocation; //Current location of device.
     private static final String KEY_CAMERA_POSITION = "camera_position";
     private static final String KEY_LOCATION = "location";
+
+    //Distance and steps display
+    private TextView distanceText;
+    private TextView stepsText;
 
 
     @Override
@@ -81,6 +82,12 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
         (findViewById(R.id.inventory_button)).setOnClickListener(this);
         (findViewById(R.id.player_button)).setOnClickListener(this);
         (findViewById(R.id.crafting_button)).setOnClickListener(this);
+        distanceText = (TextView) findViewById(R.id.distance_text);
+        stepsText = (TextView) findViewById(R.id.steps_text);
+
+        //Start step counter and location service
+        Intent mStepsIntent = new Intent(getApplicationContext(), StepsService.class);
+        startService(mStepsIntent);
     }
 
     @Override
@@ -93,17 +100,14 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
                 bundle.putParcelable("player_items", new InventoryItemArray(GameManager.getInstance().getInventory().getItems()));
                 i.putExtras(bundle);
                 startActivity(i);
-                mMap.clear();
                 break;
             case R.id.player_button:
                 i = new Intent(this, PlayerAvatarActivity.class);
                 startActivity(i);
-                mMap.clear();
                 break;
             case R.id.crafting_button:
                 i = new Intent(this, CraftingActivity.class);
                 startActivity(i);
-                mMap.clear();
                 break;
         }
     }
@@ -112,6 +116,13 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
     protected void onStart() {
         super.onStart();
         GameManager.getInstance().startGame(this);
+        updateDistanceText();
+    }
+
+    private void updateDistanceText() {
+        stepsText.setText("Steps: " + GameManager.getDatabaseHelper().getSteps() + "");
+        distanceText.setText("Distance: " + GameManager.getDatabaseHelper().getDistance() + "m");
+        //distanceText.setText("Distance: " + String.format("%.2f", ((float) GameManager.getDatabaseHelper().getDistance())/1000f) + "km");
     }
 
     @Override
@@ -169,8 +180,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
     public void onConnected(Bundle connectionHint) {
         getDeviceLocation();
         // Build the map.
-        SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
-                .findFragmentById(R.id.map);
+        SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager().findFragmentById(R.id.map);
         mapFragment.getMapAsync(this);
     }
 
@@ -181,8 +191,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
     public void onConnectionFailed(@NonNull ConnectionResult result) {
         // Refer to the reference doc for ConnectionResult to see what error codes might
         // be returned in onConnectionFailed.
-        Log.d(TAG, "Play services connection failed: ConnectionResult.getErrorCode() = "
-                + result.getErrorCode());
+        Log.d(TAG, getString(R.string.play_services_failed_connection) + result.getErrorCode());
     }
 
     /**
@@ -190,7 +199,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
      */
     @Override
     public void onConnectionSuspended(int cause) {
-        Log.d(TAG, "Play services connection suspended");
+        Log.d(TAG, getString(R.string.play_services_suspended_connection));
     }
 
     /**
@@ -199,6 +208,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
     @Override
     public void onLocationChanged(Location location) {
         mCurrentLocation = location;
+        updateDistanceText();
         updateMarkers();
     }
 
@@ -268,7 +278,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
 
         mMap.setOnMarkerClickListener(this);
 
-        try {
+        /*try {
             mMap.getUiSettings().setMyLocationButtonEnabled(false);
             mMap.setMyLocationEnabled(false);
 
@@ -285,7 +295,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
             }
         } catch (SecurityException e) {
             e.printStackTrace();
-        }
+        }*/
     }
 
     /**
@@ -328,9 +338,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
                 == PackageManager.PERMISSION_GRANTED) {
             mLocationPermissionGranted = true;
         } else {
-            ActivityCompat.requestPermissions(this,
-                    new String[]{android.Manifest.permission.ACCESS_FINE_LOCATION},
-                    PERMISSIONS_REQUEST_ACCESS_FINE_LOCATION);
+            ActivityCompat.requestPermissions(this, new String[]{android.Manifest.permission.ACCESS_FINE_LOCATION}, PERMISSIONS_REQUEST_ACCESS_FINE_LOCATION);
         }
         /*
          * Get the best and most recent location of the device, which may be null in rare
@@ -339,8 +347,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
          */
         if (mLocationPermissionGranted) {
             mCurrentLocation = LocationServices.FusedLocationApi.getLastLocation(mGoogleApiClient);
-            LocationServices.FusedLocationApi.requestLocationUpdates(mGoogleApiClient,
-                    mLocationRequest, this);
+            LocationServices.FusedLocationApi.requestLocationUpdates(mGoogleApiClient, mLocationRequest, this);
         }
     }
 
@@ -407,12 +414,12 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
 
                         //if (!player.hasUsedLocation(latLng)) {
 
-                            mMap.addMarker(new MarkerOptions()
-                                    .position(placeLikelihood.getPlace().getLatLng())
-                                    .title("You are too far away from this " + item.getName() + ".")
-                                    .icon(BitmapDescriptorFactory.fromResource(item.getMarkerIconID()))
-                                    .snippet((String) placeLikelihood.getPlace().getName()))
-                                    .setTag(item.getId());
+                        mMap.addMarker(new MarkerOptions()
+                                .position(placeLikelihood.getPlace().getLatLng())
+                                .title("You are too far away from this " + item.getName() + ".")
+                                .icon(BitmapDescriptorFactory.fromResource(item.getMarkerIconID()))
+                                .snippet((String) placeLikelihood.getPlace().getName()))
+                                .setTag(item.getId());
                         //}
                     }
                     // Release the place likelihood buffer.

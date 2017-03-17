@@ -13,11 +13,6 @@ import ie.ul.postgrad.socialanxietyapp.R;
 public class ItemFactory {
 
 
-    /*public enum ID {
-        COBBLESTONE, WOOD, COAL, TREE, ROCK, WOOD_AXE, WOOD_SWORD, BAGEL
-    }*/
-
-
     public static Item buildItem(int id) {
         SparseIntArray ingredients = new SparseIntArray();
 

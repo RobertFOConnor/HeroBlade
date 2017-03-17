@@ -10,7 +10,7 @@ import ie.ul.postgrad.socialanxietyapp.DBHelper;
 
 /**
  * Created by Robert on 15-Mar-17.
- *
+ * <p>
  * Game Manager singleton class for handling all interactions with the main game objects
  * and syncing game data with the database.
  */
@@ -23,7 +23,7 @@ public class GameManager {
     private ArrayList<ConsumedLocation> visitedLoactions;
 
     //SQLLite objects
-    private DBHelper databaseHelper;
+    private static DBHelper databaseHelper;
     // Firebase objects for login.
     private FirebaseAuth mAuth = FirebaseAuth.getInstance();
 
@@ -90,5 +90,9 @@ public class GameManager {
 
     public void closeDatabase() {
         databaseHelper.close();
+    }
+
+    public static DBHelper getDatabaseHelper() {
+        return databaseHelper;
     }
 }
