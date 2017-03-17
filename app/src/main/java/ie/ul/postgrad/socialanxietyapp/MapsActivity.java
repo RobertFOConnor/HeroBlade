@@ -34,6 +34,8 @@ import com.google.android.gms.maps.model.MapStyleOptions;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 
+import java.util.ArrayList;
+
 import ie.ul.postgrad.socialanxietyapp.game.GameManager;
 import ie.ul.postgrad.socialanxietyapp.game.InventoryItemArray;
 import ie.ul.postgrad.socialanxietyapp.game.item.ItemFactory;
@@ -60,6 +62,8 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
     //Distance and steps display
     private TextView distanceText;
     private TextView stepsText;
+
+    private ArrayList<Marker> markers;
 
 
     @Override
@@ -88,6 +92,8 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
         //Start step counter and location service
         Intent mStepsIntent = new Intent(getApplicationContext(), StepsService.class);
         startService(mStepsIntent);
+
+        markers = new ArrayList<>();
     }
 
     @Override
@@ -414,12 +420,24 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
 
                         //if (!player.hasUsedLocation(latLng)) {
 
-                        mMap.addMarker(new MarkerOptions()
-                                .position(placeLikelihood.getPlace().getLatLng())
-                                .title("You are too far away from this " + item.getName() + ".")
-                                .icon(BitmapDescriptorFactory.fromResource(item.getMarkerIconID()))
-                                .snippet((String) placeLikelihood.getPlace().getName()))
-                                .setTag(item.getId());
+                        boolean doesMarkerExist = false;
+
+                        for (Marker marker : markers) { //Check if marker has already been placed on map.
+                            if (marker.getPosition().equals(latLng)) {
+                                doesMarkerExist = true;
+                            }
+                        }
+
+                        if (!doesMarkerExist) {
+                            final Marker m = mMap.addMarker(new MarkerOptions()
+                                    .position(placeLikelihood.getPlace().getLatLng())
+                                    .title("You are too far away from this " + item.getName() + ".")
+                                    .icon(BitmapDescriptorFactory.fromResource(item.getMarkerIconID()))
+                                    .snippet((String) placeLikelihood.getPlace().getName()));
+
+                            m.setTag(item.getId());
+                            markers.add(m);
+                        }
                         //}
                     }
                     // Release the place likelihood buffer.
@@ -432,6 +450,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
                     .title("Title")
                     .snippet("Info snippet."));
         }
+
     }
 
     /**
