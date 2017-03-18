@@ -8,9 +8,18 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
+import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.Toolbar;
 import android.util.Log;
+import android.util.TypedValue;
+import android.view.Gravity;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
+import android.widget.ListView;
 import android.widget.TextView;
 
 import com.google.android.gms.common.ConnectionResult;
@@ -42,7 +51,7 @@ import ie.ul.postgrad.socialanxietyapp.game.item.ItemFactory;
 import ie.ul.postgrad.socialanxietyapp.game.item.WorldItem;
 
 public class MapsActivity extends AppCompatActivity implements OnMapReadyCallback, GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener,
-        LocationListener, GoogleMap.OnMarkerClickListener, View.OnClickListener {
+        LocationListener, GoogleMap.OnMarkerClickListener {
 
     private static final String TAG = MapsActivity.class.getSimpleName();
     private GoogleMap mMap;
@@ -65,6 +74,9 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
 
     private ArrayList<Marker> markers;
 
+    private DrawerLayout mDrawerLayout;
+    private ListView mDrawerList;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -82,10 +94,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
         buildGoogleApiClient();
         mGoogleApiClient.connect();
 
-        //Set button listeners
-        (findViewById(R.id.inventory_button)).setOnClickListener(this);
-        (findViewById(R.id.player_button)).setOnClickListener(this);
-        (findViewById(R.id.crafting_button)).setOnClickListener(this);
+
         distanceText = (TextView) findViewById(R.id.distance_text);
         stepsText = (TextView) findViewById(R.id.steps_text);
 
@@ -94,28 +103,17 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
         startService(mStepsIntent);
 
         markers = new ArrayList<>();
-    }
 
-    @Override
-    public void onClick(View v) {
-        Intent i;
-        switch (v.getId()) {
-            case R.id.inventory_button:
-                i = new Intent(this, InventoryActivity.class);
-                Bundle bundle = new Bundle();
-                bundle.putParcelable("player_items", new InventoryItemArray(GameManager.getInstance().getInventory().getItems()));
-                i.putExtras(bundle);
-                startActivity(i);
-                break;
-            case R.id.player_button:
-                i = new Intent(this, PlayerAvatarActivity.class);
-                startActivity(i);
-                break;
-            case R.id.crafting_button:
-                i = new Intent(this, CraftingActivity.class);
-                startActivity(i);
-                break;
-        }
+        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        toolbar.setNavigationIcon(R.drawable.ic_menu);
+        setSupportActionBar(toolbar);
+
+        mDrawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
+        mDrawerList = (ListView) findViewById(R.id.left_drawer);
+
+        mDrawerList.setAdapter(new ArrayAdapter<>(this,
+                R.layout.fragment_trade_item, R.id.trader_title, new String[]{"Player", "Inventory", "Crafting"}));
+        mDrawerList.setOnItemClickListener(new DrawerItemClickListener());
     }
 
     @Override
@@ -239,6 +237,15 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
         } catch (Resources.NotFoundException e) {
             Log.e(TAG, "Can't find style. Error: ", e);
         }
+
+        // Calculate ActionBar height
+        int actionBarHeight = 0;
+        TypedValue tv = new TypedValue();
+        if (getTheme().resolveAttribute(android.R.attr.actionBarSize, tv, true)) {
+            actionBarHeight = TypedValue.complexToDimensionPixelSize(tv.data, getResources().getDisplayMetrics());
+        }
+
+        mMap.setPadding(0, 0, 0, actionBarHeight);
 
         // Turn on the My Location layer and the related control on the map.
         updateLocationUI();
@@ -492,7 +499,6 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
                     }
                     startActivity(i);
                 }
-                mMap.clear();
             }
 
             Location location = new Location(marker.getId());
@@ -508,5 +514,48 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
             }
         }
         return false;
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        // Inflate the menu; this adds items to the action bar if it is present.
+        getMenuInflater().inflate(R.menu.menu_maps, menu);
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        // TODO Auto-generated method stub
+        switch (item.getItemId()) {
+            case android.R.id.home:
+                mDrawerLayout.openDrawer(Gravity.LEFT);
+                return true;
+            default:
+                return super.onOptionsItemSelected(item);
+        }
+    }
+
+    private class DrawerItemClickListener implements ListView.OnItemClickListener {
+        @Override
+        public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+            Intent i;
+            switch (position) {
+                case 0:
+                    i = new Intent(getApplicationContext(), PlayerAvatarActivity.class);
+                    startActivity(i);
+                    break;
+                case 1:
+                    i = new Intent(getApplicationContext(), InventoryActivity.class);
+                    Bundle bundle = new Bundle();
+                    bundle.putParcelable("player_items", new InventoryItemArray(GameManager.getInstance().getInventory().getItems()));
+                    i.putExtras(bundle);
+                    startActivity(i);
+                    break;
+                case 2:
+                    i = new Intent(getApplicationContext(), CraftingActivity.class);
+                    startActivity(i);
+                    break;
+            }
+        }
     }
 }

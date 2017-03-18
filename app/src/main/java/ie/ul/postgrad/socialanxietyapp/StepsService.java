@@ -1,9 +1,12 @@
 package ie.ul.postgrad.socialanxietyapp;
 
+import android.app.NotificationManager;
+import android.app.PendingIntent;
 import android.app.Service;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.graphics.Color;
 import android.hardware.Sensor;
 import android.hardware.SensorEvent;
 import android.hardware.SensorEventListener;
@@ -12,10 +15,12 @@ import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
 import android.media.MediaPlayer;
+import android.media.RingtoneManager;
 import android.os.Bundle;
 import android.os.IBinder;
 import android.support.annotation.Nullable;
 import android.support.v4.app.ActivityCompat;
+import android.support.v4.app.NotificationCompat;
 
 /**
  * Created by Robert on 16-Mar-17.
@@ -36,6 +41,8 @@ public class StepsService extends Service implements SensorEventListener, Locati
     private Location startLoc;
     private float totalDistance = 0f;
     private float prevSteps = 0;
+
+    boolean chestOpened = false;
 
     @Override
     public void onCreate() {
@@ -103,6 +110,11 @@ public class StepsService extends Service implements SensorEventListener, Locati
             prevSteps = dbHelper.getSteps();
 
             startLoc = mCurrentLocation;
+
+            if (totalDistance > 100 && !chestOpened) {
+                notifyOpenedChest();
+                chestOpened = true;
+            }
         }
     }
 
@@ -119,5 +131,40 @@ public class StepsService extends Service implements SensorEventListener, Locati
     @Override
     public void onProviderDisabled(String provider) {
 
+    }
+
+    private void notifyOpenedChest() {
+        Intent resultIntent = new Intent(this, MapsActivity.class);
+        // Because clicking the notification opens a new ("special") activity, there's
+        // no need to create an artificial back stack.
+        PendingIntent resultPendingIntent =
+                PendingIntent.getActivity(
+                        this,
+                        0,
+                        resultIntent,
+                        PendingIntent.FLAG_UPDATE_CURRENT
+                );
+
+        NotificationCompat.Builder mBuilder =
+                new NotificationCompat.Builder(this)
+                        .setSmallIcon(R.drawable.ic_chest_open)
+                        .setContentTitle("You've unlocked a treasure chest!")
+                        .setContentText("You walked 2km. The chest has been opened.")
+                        .setVibrate(new long[]{1000, 1000})
+                        .setLights(Color.BLUE, 3000, 3000)
+                        .setAutoCancel(true)
+                        .setSound(RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION));
+
+        mBuilder.setContentIntent(resultPendingIntent);
+
+        // Sets an ID for the notification
+        int mNotificationId = 001;
+        // Gets an instance of the NotificationManager service
+        NotificationManager mNotifyMgr =
+                (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
+
+
+        // Builds the notification and issues it.
+        mNotifyMgr.notify(mNotificationId, mBuilder.build());
     }
 }

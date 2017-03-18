@@ -1,64 +1,72 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<android.support.v4.widget.DrawerLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/drawer_layout"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:layout_gravity="center"
+    android:fitsSystemWindows="true"
     tools:context=".MapsActivity">
 
-    <Button
-        android:gravity="center"
-        android:text="Distance: "
-        android:id="@+id/distance_text"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="30dp"
-        android:layout_alignParentTop="true"
-        android:layout_centerHorizontal="true" />
-
-    <Button
-        android:gravity="center"
-        android:text="Steps: "
-        android:id="@+id/steps_text"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_below="@+id/distance_text"
-        android:layout_centerHorizontal="true"
-        android:layout_marginTop="15dp" />
-
-    <Button
-        android:id="@+id/player_button"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Player"
-        android:layout_marginStart="12dp"
-        android:layout_above="@+id/inventory_button"
-        android:layout_alignParentStart="true" />
-
-    <Button
-        android:id="@+id/inventory_button"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Inventory"
-        android:layout_marginBottom="34dp"
-        android:layout_alignParentBottom="true"
-        android:layout_alignStart="@+id/player_button" />
-
-    <Button
-        android:id="@+id/crafting_button"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Crafting"
-        android:layout_above="@+id/player_button"
-        android:layout_alignStart="@+id/player_button"
-        android:layout_alignEnd="@+id/inventory_button" />
-
-    <fragment
-        android:id="@+id/map"
-        android:name="com.google.android.gms.maps.SupportMapFragment"
+    <FrameLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_alignParentTop="true"
-        android:layout_alignParentStart="true" />
+        android:layout_height="match_parent">
 
-</RelativeLayout>
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_gravity="center">
+
+            <Button
+                android:id="@+id/distance_text"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentTop="true"
+                android:layout_centerHorizontal="true"
+                android:layout_marginTop="30dp"
+                android:gravity="center"
+                android:text="Distance: " />
+
+            <Button
+                android:id="@+id/steps_text"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/distance_text"
+                android:layout_centerHorizontal="true"
+                android:layout_marginTop="15dp"
+                android:gravity="center"
+                android:text="Steps: " />
+
+            <fragment
+                android:id="@+id/map"
+                android:name="com.google.android.gms.maps.SupportMapFragment"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_alignParentStart="true"
+                android:layout_alignParentTop="true" />
+
+            <android.support.v7.widget.Toolbar
+                android:id="@+id/toolbar"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_alignParentBottom="true"
+                android:layout_alignParentStart="true"
+                android:background="#50000000"
+                android:minHeight="?attr/actionBarSize"
+                app:titleTextColor="@android:color/white" />
+
+        </RelativeLayout>
+
+    </FrameLayout>
+
+    <!-- The navigation drawer -->
+    <ListView
+        android:id="@+id/left_drawer"
+        android:layout_width="320dp"
+        android:layout_height="match_parent"
+        android:layout_gravity="start"
+        android:background="#FFF"
+        android:choiceMode="singleChoice"
+        android:divider="@android:color/transparent"
+        android:dividerHeight="0dp" />
+</android.support.v4.widget.DrawerLayout>
