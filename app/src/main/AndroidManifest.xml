@@ -67,10 +67,13 @@
         <activity android:name=".WeaponSelectionActivity" />
         <activity android:name=".BattleActivity" />
         <activity android:name=".StepCounterActivity" />
-        <activity android:name=".TradeListActivity"></activity>
+        <activity android:name=".TradeListActivity" />
 
+        <service android:name=".StepsService" />
 
-        <service android:name="StepsService" />
+        <activity
+            android:name=".SettingsActivity"
+            android:label="@string/title_activity_settings"></activity>
     </application>
 
 </manifest>

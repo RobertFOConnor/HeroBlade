@@ -91,7 +91,7 @@ public class StepsService extends Service implements SensorEventListener, Locati
 
     @Override
     public void onLocationChanged(Location location) {
-
+        System.out.println("LOCATION CHANGED:");
         if (startLoc == null) {
             startLoc = location;
         }
@@ -111,10 +111,10 @@ public class StepsService extends Service implements SensorEventListener, Locati
 
             startLoc = mCurrentLocation;
 
-            if (totalDistance > 100 && !chestOpened) {
+            /*if (totalDistance > 100 && !chestOpened) {
                 notifyOpenedChest();
                 chestOpened = true;
-            }
+            }*/
         }
     }
 

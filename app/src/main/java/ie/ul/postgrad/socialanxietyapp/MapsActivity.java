@@ -8,6 +8,7 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
+import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
@@ -18,7 +19,6 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
 import android.widget.ListView;
 import android.widget.TextView;
 
@@ -111,9 +111,6 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
         mDrawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
         mDrawerList = (ListView) findViewById(R.id.left_drawer);
 
-        mDrawerList.setAdapter(new ArrayAdapter<>(this,
-                R.layout.fragment_trade_item, R.id.trader_title, new String[]{"Player", "Inventory", "Crafting"}));
-        mDrawerList.setOnItemClickListener(new DrawerItemClickListener());
     }
 
     @Override
@@ -121,6 +118,12 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
         super.onStart();
         GameManager.getInstance().startGame(this);
         updateDistanceText();
+
+        String[] menuTitles = new String[]{"Inventory", "Quests", "Crafting", "Achievements", "Settings"};
+        int[] menuIcons = new int[]{R.drawable.ic_backpack, R.drawable.ic_quest, R.drawable.ic_crafting, R.drawable.ic_achievements, R.drawable.ic_settings};
+
+        mDrawerList.setAdapter(new NavigationDrawerListAdapter(this, menuTitles, menuIcons));
+        mDrawerList.setOnItemClickListener(new DrawerItemClickListener());
     }
 
     private void updateDistanceText() {
@@ -245,7 +248,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
             actionBarHeight = TypedValue.complexToDimensionPixelSize(tv.data, getResources().getDisplayMetrics());
         }
 
-        mMap.setPadding(0, 0, 0, actionBarHeight);
+        mMap.setPadding(0, actionBarHeight, 0, 0);
 
         // Turn on the My Location layer and the related control on the map.
         updateLocationUI();
@@ -540,10 +543,6 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
         public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
             Intent i;
             switch (position) {
-                case 0:
-                    i = new Intent(getApplicationContext(), PlayerAvatarActivity.class);
-                    startActivity(i);
-                    break;
                 case 1:
                     i = new Intent(getApplicationContext(), InventoryActivity.class);
                     Bundle bundle = new Bundle();
@@ -551,11 +550,26 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
                     i.putExtras(bundle);
                     startActivity(i);
                     break;
-                case 2:
+                case 3:
                     i = new Intent(getApplicationContext(), CraftingActivity.class);
                     startActivity(i);
                     break;
+                case 5:
+                    i = new Intent(getApplicationContext(), SettingsActivity.class);
+                    startActivity(i);
+                    break;
             }
+            DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
+            drawer.closeDrawer(GravityCompat.START);
+        }
+    }
+
+    @Override
+    public void onBackPressed() {
+        if (mDrawerLayout.isDrawerOpen(GravityCompat.START)) {
+            mDrawerLayout.closeDrawer(GravityCompat.START);
+        } else {
+            super.onBackPressed();
         }
     }
 }
