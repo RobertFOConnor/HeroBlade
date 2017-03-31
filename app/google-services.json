@@ -1,0 +1,42 @@
+{
+  "project_info": {
+    "project_number": "886041782213",
+    "firebase_url": "https://socialanxietyapp.firebaseio.com",
+    "project_id": "socialanxietyapp",
+    "storage_bucket": "socialanxietyapp.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:886041782213:android:a0584e29663be314",
+        "android_client_info": {
+          "package_name": "ie.ul.postgrad.socialanxietyapp"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "886041782213-ch2c9rtjqmgp9an65hcragcjr77596p1.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyB1GyrNBPEFC2vCatQp1HIaBrI0PDY7Mko"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 1,
+          "other_platform_oauth_client": []
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
