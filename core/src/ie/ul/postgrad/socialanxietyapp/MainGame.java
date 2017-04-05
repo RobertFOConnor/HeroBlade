@@ -28,6 +28,7 @@ public class MainGame extends ApplicationAdapter {
     private String screenName;
     public static final String AVATAR_SCREEN = "avatar";
     public static final String TREE_GAME_SCREEN = "tree";
+    public static final String ROCK_GAME_SCREEN = "rock";
 
     public MainGame(LibGdxInterface libGdxInterface, String screenName) {
         this.libGdxInterface = libGdxInterface;
@@ -44,10 +45,12 @@ public class MainGame extends ApplicationAdapter {
         camera.translate(WIDTH / 2, HEIGHT / 2);
         batch = new SpriteBatch();
 
-        if(screenName.equals(AVATAR_SCREEN)) {
+        if (screenName.equals(AVATAR_SCREEN)) {
             ScreenManager.setScreen(new AvatarDisplay(libGdxInterface, batch));
-        } else {
-            ScreenManager.setScreen(new CollectingGame(libGdxInterface, batch, camera));
+        } else if (screenName.equals(TREE_GAME_SCREEN)) {
+            ScreenManager.setScreen(new CollectingGame(libGdxInterface, batch, camera, 0));
+        } else if (screenName.equals(ROCK_GAME_SCREEN)) {
+            ScreenManager.setScreen(new CollectingGame(libGdxInterface, batch, camera, 1));
         }
     }
 
@@ -58,7 +61,7 @@ public class MainGame extends ApplicationAdapter {
     @Override
     public void render() {
         update();
-        Gdx.gl.glClearColor(119/255f, 213/255f, 195/255f, 1);
+        Gdx.gl.glClearColor(119 / 255f, 213 / 255f, 195 / 255f, 1);
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
         batch.setProjectionMatrix(camera.combined);
         ScreenManager.getCurrentScreen().render();

@@ -1,0 +1,891 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <array name="null_item">
+        <item name="name">Bagel</item>
+    </array>
+
+    <array name="item_1">
+        <item name="name">Fish</item>
+        <item name="desc">Its dead. RIP in peace.</item>
+        <item name="worth">20</item>
+        <item name="damage">0</item>
+        <item name="energy">100</item>
+    </array>
+
+    <array name="item_2">
+        <item name="name">Berries</item>
+        <item name="desc">A juicy snack.</item>
+        <item name="worth">10</item>
+        <item name="damage">0</item>
+        <item name="energy">50</item>
+    </array>
+
+    <array name="item_3">
+        <item name="name">Coffee Beans</item>
+        <item name="desc">They sure smell good!</item>
+        <item name="worth">10</item>
+        <item name="damage">0</item>
+        <item name="energy">50</item>
+    </array>
+
+    <array name="item_4">
+        <item name="name">Watermelon Slice</item>
+        <item name="desc">It tastes like happiness.</item>
+        <item name="worth">10</item>
+        <item name="damage">0</item>
+        <item name="energy">50</item>
+    </array>
+
+    <array name="item_5">
+        <item name="name">Hemp Seeds</item>
+        <item name="desc">These are used to make oil.</item>
+        <item name="worth">20</item>
+        <item name="damage">0</item>
+        <item name="energy">0</item>
+    </array>
+    <array name="item_6">
+        <item name="name">Apple</item>
+        <item name="desc">A tasty red apple. An ideal snack.</item>
+        <item name="worth">20</item>
+        <item name="damage">0</item>
+        <item name="energy">0</item>
+    </array>
+    <array name="item_7">
+        <item name="name">Carrot</item>
+        <item name="desc">Tasty when raw but goes well in a stew too.</item>
+        <item name="worth">20</item>
+        <item name="damage">0</item>
+        <item name="energy">0</item>
+    </array>
+
+    <array name="item_8">
+        <item name="name">Mushroom</item>
+        <item name="desc"></item>
+        <item name="worth">20</item>
+        <item name="damage">0</item>
+        <item name="energy">0</item>
+    </array>
+
+    <array name="item_9">
+        <item name="name">Red Tulip</item>
+        <item name="desc"></item>
+        <item name="worth">20</item>
+        <item name="damage">0</item>
+        <item name="energy">0</item>
+    </array>
+
+    <array name="item_10">
+        <item name="name">Yellow Dandelion</item>
+        <item name="desc"></item>
+        <item name="worth">20</item>
+        <item name="damage">0</item>
+        <item name="energy">0</item>
+    </array>
+
+    <array name="item_11">
+        <item name="name">Egg</item>
+        <item name="desc"></item>
+        <item name="worth">20</item>
+        <item name="damage">0</item>
+        <item name="energy">0</item>
+    </array>
+
+    <array name="item_12">
+        <item name="name">Potato</item>
+        <item name="desc"></item>
+        <item name="worth">20</item>
+        <item name="damage">0</item>
+        <item name="energy">0</item>
+    </array>
+
+    <array name="item_13">
+        <item name="name">String</item>
+        <item name="desc"></item>
+        <item name="worth">20</item>
+        <item name="damage">0</item>
+        <item name="energy">0</item>
+    </array>
+
+    <array name="item_14">
+        <item name="name">Bamboo Stick</item>
+        <item name="desc"></item>
+        <item name="worth">20</item>
+        <item name="damage">0</item>
+        <item name="energy">0</item>
+    </array>
+
+    <array name="item_15">
+        <item name="name">Bamboo Shoot</item>
+        <item name="desc"></item>
+        <item name="worth">20</item>
+        <item name="damage">0</item>
+        <item name="energy">0</item>
+    </array>
+
+    <array name="item_16">
+        <item name="name">Cloth</item>
+        <item name="desc"></item>
+        <item name="worth">20</item>
+        <item name="damage">0</item>
+        <item name="energy">0</item>
+    </array>
+
+    <array name="item_17">
+        <item name="name">Paper</item>
+        <item name="desc"></item>
+        <item name="worth">20</item>
+        <item name="damage">0</item>
+        <item name="energy">0</item>
+    </array>
+
+    <array name="item_18">
+        <item name="name">Feather</item>
+        <item name="desc"></item>
+        <item name="worth">20</item>
+        <item name="damage">0</item>
+        <item name="energy">0</item>
+    </array>
+
+    <array name="item_19">
+        <item name="name">Ink and Quill</item>
+        <item name="desc"></item>
+        <item name="worth">20</item>
+        <item name="damage">0</item>
+        <item name="energy">0</item>
+        <item name="ing_1_id">18</item>
+        <item name="ing_1_quantity">1</item>
+        <item name="ing_2_id">38</item>
+        <item name="ing_2_quantity">1</item>
+    </array>
+
+    <array name="item_20">
+        <item name="name">Lockpick</item>
+        <item name="desc"></item>
+        <item name="worth">20</item>
+        <item name="damage">0</item>
+        <item name="energy">0</item>
+    </array>
+
+    <array name="item_21">
+        <item name="name">Medicine</item>
+        <item name="desc"></item>
+        <item name="worth">20</item>
+        <item name="damage">0</item>
+        <item name="energy">0</item>
+        <item name="ing_1_id">5</item>
+        <item name="ing_1_quantity">3</item>
+        <item name="ing_2_id">15</item>
+        <item name="ing_2_quantity">5</item>
+        <item name="ing_3_id">28</item>
+        <item name="ing_3_quantity">3</item>
+
+    </array>
+
+    <array name="item_22">
+        <item name="name">Map</item>
+        <item name="desc"></item>
+        <item name="worth">20</item>
+        <item name="damage">0</item>
+        <item name="energy">0</item>
+        <item name="ing_1_id">16</item>
+        <item name="ing_1_quantity">4</item>
+        <item name="ing_2_id">19</item>
+        <item name="ing_2_quantity">1</item>
+    </array>
+
+    <array name="item_23">
+        <item name="name">Wood Log</item>
+        <item name="desc"></item>
+        <item name="worth">20</item>
+        <item name="damage">0</item>
+        <item name="energy">0</item>
+    </array>
+
+    <array name="item_24">
+        <item name="name">Wood Sticks</item>
+        <item name="desc"></item>
+        <item name="worth">20</item>
+        <item name="damage">0</item>
+        <item name="energy">0</item>
+    </array>
+
+    <array name="item_25">
+        <item name="name">Grass</item>
+        <item name="desc"></item>
+        <item name="worth">20</item>
+        <item name="damage">0</item>
+        <item name="energy">0</item>
+    </array>
+
+    <array name="item_26">
+        <item name="name">Flint</item>
+        <item name="desc"></item>
+        <item name="worth">20</item>
+        <item name="damage">0</item>
+        <item name="energy">0</item>
+    </array>
+
+    <array name="item_27">
+        <item name="name">Rock</item>
+        <item name="desc"></item>
+        <item name="worth">20</item>
+        <item name="damage">0</item>
+        <item name="energy">0</item>
+    </array>
+
+    <array name="item_28">
+        <item name="name">Sulphur</item>
+        <item name="desc"></item>
+        <item name="worth">20</item>
+        <item name="damage">0</item>
+        <item name="energy">0</item>
+    </array>
+
+    <array name="item_29">
+        <item name="name">Gold</item>
+        <item name="desc"></item>
+        <item name="worth">20</item>
+        <item name="damage">0</item>
+        <item name="energy">0</item>
+    </array>
+
+    <array name="item_30">
+        <item name="name">Ruby</item>
+        <item name="desc"></item>
+        <item name="worth">20</item>
+        <item name="damage">0</item>
+        <item name="energy">0</item>
+    </array>
+
+    <array name="item_31">
+        <item name="name">Rope</item>
+        <item name="desc"></item>
+        <item name="worth">20</item>
+        <item name="damage">0</item>
+        <item name="energy">0</item>
+        <item name="ing_1_id">25</item>
+        <item name="ing_1_quantity">3</item>
+    </array>
+
+    <array name="item_32">
+        <item name="name">Scissors</item>
+        <item name="desc"></item>
+        <item name="worth">20</item>
+        <item name="damage">0</item>
+        <item name="energy">0</item>
+        <item name="ing_1_id">26</item>
+        <item name="ing_1_quantity">4</item>
+        <item name="ing_2_id">27</item>
+        <item name="ing_2_quantity">1</item>
+    </array>
+
+    <array name="item_33">
+        <item name="name">Bone</item>
+        <item name="desc"></item>
+        <item name="worth">20</item>
+        <item name="damage">0</item>
+        <item name="energy">0</item>
+    </array>
+
+    <array name="item_34">
+        <item name="name">Bowl</item>
+        <item name="desc"></item>
+        <item name="worth">20</item>
+        <item name="damage">0</item>
+        <item name="energy">0</item>
+        <item name="ing_1_id">23</item>
+        <item name="ing_1_quantity">1</item>
+    </array>
+
+    <array name="item_35">
+        <item name="name">Glass Jar</item>
+        <item name="desc"></item>
+        <item name="worth">20</item>
+        <item name="damage">0</item>
+        <item name="energy">0</item>
+    </array>
+
+    <array name="item_36">
+        <item name="name">Jar of Water</item>
+        <item name="desc"></item>
+        <item name="worth">20</item>
+        <item name="damage">0</item>
+        <item name="energy">0</item>
+    </array>
+
+    <array name="item_37">
+        <item name="name">Jar of Coffee</item>
+        <item name="desc"></item>
+        <item name="worth">20</item>
+        <item name="damage">0</item>
+        <item name="energy">0</item>
+        <item name="ing_1_id">36</item>
+        <item name="ing_1_quantity">1</item>
+        <item name="ing_2_id">3</item>
+        <item name="ing_2_quantity">3</item>
+    </array>
+
+    <array name="item_38">
+        <item name="name">Jar of Oil</item>
+        <item name="desc"></item>
+        <item name="worth">20</item>
+        <item name="damage">0</item>
+        <item name="energy">0</item>
+        <item name="ing_1_id">35</item>
+        <item name="ing_1_quantity">1</item>
+        <item name="ing_2_id">5</item>
+        <item name="ing_2_quantity">3</item>
+    </array>
+
+    <array name="item_39">
+        <item name="name">Hourglass</item>
+        <item name="desc"></item>
+        <item name="worth">20</item>
+        <item name="damage">0</item>
+        <item name="energy">0</item>
+        <item name="ing_1_id">35</item>
+        <item name="ing_1_quantity">2</item>
+        <item name="ing_2_id">40</item>
+        <item name="ing_2_quantity">10</item>
+    </array>
+
+    <array name="item_40">
+        <item name="name">Sand</item>
+        <item name="desc"></item>
+        <item name="worth">20</item>
+        <item name="damage">0</item>
+        <item name="energy">0</item>
+    </array>
+
+    <array name="item_41">
+        <item name="name">Gunpowder</item>
+        <item name="desc"></item>
+        <item name="worth">20</item>
+        <item name="damage">0</item>
+        <item name="energy">0</item>
+        <item name="ing_1_id">40</item>
+        <item name="ing_1_quantity">20</item>
+        <item name="ing_1_id">28</item>
+        <item name="ing_1_quantity">20</item>
+        <item name="ing_1_id">26</item>
+        <item name="ing_1_quantity">10</item>
+    </array>
+
+    <array name="item_42">
+        <item name="name">Stick of Dynamite</item>
+        <item name="desc"></item>
+        <item name="worth">20</item>
+        <item name="damage">0</item>
+        <item name="energy">0</item>
+        <item name="ing_1_id">41</item>
+        <item name="ing_1_quantity">10</item>
+        <item name="ing_2_id">31</item>
+        <item name="ing_2_quantity">5</item>
+        <item name="ing_3_id">17</item>
+        <item name="ing_3_quantity">10</item>
+
+    </array>
+
+    <array name="item_43">
+        <item name="name">Oil Lamp</item>
+        <item name="desc"></item>
+        <item name="worth">20</item>
+        <item name="damage">0</item>
+        <item name="energy">0</item>
+        <item name="ing_1_id">38</item>
+        <item name="ing_1_quantity">1</item>
+        <item name="ing_2_id">26</item>
+        <item name="ing_2_quantity">3</item>
+    </array>
+
+    <array name="item_44">
+        <item name="name">Fishing Rod</item>
+        <item name="desc"></item>
+        <item name="worth">20</item>
+        <item name="damage">0</item>
+        <item name="energy">0</item>
+        <item name="ing_1_id">24</item>
+        <item name="ing_1_quantity">5</item>
+        <item name="ing_2_id">13</item>
+        <item name="ing_2_quantity">10</item>
+    </array>
+
+    <array name="item_45">
+        <item name="name">Machete</item>
+        <item name="desc"></item>
+        <item name="worth">20</item>
+        <item name="damage">50</item>
+        <item name="energy">0</item>
+        <item name="ing_1_id">24</item>
+        <item name="ing_1_quantity">3</item>
+        <item name="ing_2_id">26</item>
+        <item name="ing_2_quantity">10</item>
+        <item name="ing_3_id">27</item>
+        <item name="ing_3_quantity">3</item>
+    </array>
+
+    <array name="item_46">
+        <item name="name">Gold Machete</item>
+        <item name="desc"></item>
+        <item name="worth">20</item>
+        <item name="damage">50</item>
+        <item name="energy">0</item>
+        <item name="ing_1_id">24</item>
+        <item name="ing_1_quantity">3</item>
+        <item name="ing_2_id">29</item>
+        <item name="ing_2_quantity">10</item>
+        <item name="ing_3_id">27</item>
+        <item name="ing_3_quantity">3</item>
+    </array>
+
+    <array name="item_47">
+        <item name="name">Boomerang</item>
+        <item name="desc"></item>
+        <item name="worth">20</item>
+        <item name="damage">50</item>
+        <item name="energy">0</item>
+        <item name="ing_1_id">24</item>
+        <item name="ing_1_quantity">3</item>
+        <item name="ing_2_id">26</item>
+        <item name="ing_2_quantity">3</item>
+    </array>
+
+    <array name="item_48">
+        <item name="name">Gold Boomerang</item>
+        <item name="desc"></item>
+        <item name="worth">20</item>
+        <item name="damage">50</item>
+        <item name="energy">0</item>
+        <item name="ing_1_id">29</item>
+        <item name="ing_1_quantity">3</item>
+        <item name="ing_2_id">26</item>
+        <item name="ing_2_quantity">3</item>
+    </array>
+
+    <array name="item_49">
+        <item name="name">Explosive Boomerang</item>
+        <item name="desc"></item>
+        <item name="worth">20</item>
+        <item name="damage">50</item>
+        <item name="energy">0</item>
+        <item name="ing_1_id">42</item>
+        <item name="ing_1_quantity">1</item>
+        <item name="ing_2_id">47</item>
+        <item name="ing_2_quantity">1</item>
+    </array>
+
+    <array name="item_50">
+        <item name="name">Timed Explosive</item>
+        <item name="desc"></item>
+        <item name="worth">20</item>
+        <item name="damage">50</item>
+        <item name="energy">0</item>
+        <item name="ing_1_id">42</item>
+        <item name="ing_1_quantity">3</item>
+        <item name="ing_2_id">39</item>
+        <item name="ing_2_quantity">1</item>
+    </array>
+
+    <array name="item_51">
+        <item name="name">Blowgun</item>
+        <item name="desc"></item>
+        <item name="worth">20</item>
+        <item name="damage">50</item>
+        <item name="energy">0</item>
+        <item name="ing_1_id">14</item>
+        <item name="ing_1_quantity">3</item>
+        <item name="ing_2_id">26</item>
+        <item name="ing_2_quantity">5</item>
+    </array>
+
+    <array name="item_52">
+        <item name="name">Blow Dart</item>
+        <item name="desc"></item>
+        <item name="worth">20</item>
+        <item name="damage">0</item>
+        <item name="energy">0</item>
+        <item name="ing_1_id">18</item>
+        <item name="ing_1_quantity">1</item>
+        <item name="ing_2_id">25</item>
+        <item name="ing_2_quantity">6</item>
+        <item name="ing_3_id">26</item>
+        <item name="ing_3_quantity">1</item>
+    </array>
+
+    <array name="item_53">
+        <item name="name">Gold Blow Dart</item>
+        <item name="desc"></item>
+        <item name="worth">20</item>
+        <item name="damage">50</item>
+        <item name="energy">0</item>
+        <item name="ing_1_id">18</item>
+        <item name="ing_1_quantity">1</item>
+        <item name="ing_3_id">29</item>
+        <item name="ing_3_quantity">1</item>
+    </array>
+
+    <array name="item_54">
+        <item name="name">Bow</item>
+        <item name="desc"></item>
+        <item name="worth">20</item>
+        <item name="damage">50</item>
+        <item name="energy">0</item>
+        <item name="ing_1_id">24</item>
+        <item name="ing_1_quantity">5</item>
+        <item name="ing_2_id">13</item>
+        <item name="ing_2_quantity">10</item>
+        <item name="ing_3_id">26</item>
+        <item name="ing_3_quantity">1</item>
+    </array>
+
+    <array name="item_55">
+        <item name="name">Gold Bow</item>
+        <item name="desc"></item>
+        <item name="worth">20</item>
+        <item name="damage">50</item>
+        <item name="energy">0</item>
+        <item name="ing_1_id">29</item>
+        <item name="ing_1_quantity">6</item>
+        <item name="ing_2_id">13</item>
+        <item name="ing_2_quantity">10</item>
+        <item name="ing_3_id">26</item>
+        <item name="ing_3_quantity">3</item>
+    </array>
+
+    <array name="item_56">
+        <item name="name">Wood Arrow</item>
+        <item name="desc"></item>
+        <item name="worth">20</item>
+        <item name="damage">0</item>
+        <item name="energy">0</item>
+        <item name="ing_1_id">24</item>
+        <item name="ing_1_quantity">1</item>
+        <item name="ing_2_id">18</item>
+        <item name="ing_2_quantity">1</item>
+    </array>
+
+    <array name="item_57">
+        <item name="name">Good Arrow</item>
+        <item name="desc"></item>
+        <item name="worth">20</item>
+        <item name="damage">0</item>
+        <item name="energy">0</item>
+        <item name="ing_1_id">24</item>
+        <item name="ing_1_quantity">1</item>
+        <item name="ing_2_id">18</item>
+        <item name="ing_2_quantity">1</item>
+        <item name="ing_3_id">26</item>
+        <item name="ing_3_quantity">1</item>
+    </array>
+
+    <array name="item_58">
+        <item name="name">Gold Arrow</item>
+        <item name="desc"></item>
+        <item name="worth">20</item>
+        <item name="damage">0</item>
+        <item name="energy">0</item>
+        <item name="ing_1_id">29</item>
+        <item name="ing_1_quantity">1</item>
+        <item name="ing_2_id">18</item>
+        <item name="ing_2_quantity">1</item>
+    </array>
+
+    <array name="item_59">
+        <item name="name">Wood Sword</item>
+        <item name="desc"></item>
+        <item name="worth">20</item>
+        <item name="damage">50</item>
+        <item name="energy">0</item>
+        <item name="ing_1_id">23</item>
+        <item name="ing_1_quantity">3</item>
+        <item name="ing_2_id">27</item>
+        <item name="ing_2_quantity">1</item>
+    </array>
+
+    <array name="item_60">
+        <item name="name">Good Sword</item>
+        <item name="desc"></item>
+        <item name="worth">20</item>
+        <item name="damage">50</item>
+        <item name="energy">0</item>
+        <item name="ing_1_id">23</item>
+        <item name="ing_1_quantity">1</item>
+        <item name="ing_2_id">26</item>
+        <item name="ing_2_quantity">5</item>
+        <item name="ing_3_id">27</item>
+        <item name="ing_3_quantity">3</item>
+    </array>
+
+    <array name="item_61">
+        <item name="name">Gold Sword</item>
+        <item name="desc"></item>
+        <item name="worth">20</item>
+        <item name="damage">50</item>
+        <item name="energy">0</item>
+        <item name="ing_1_id">23</item>
+        <item name="ing_1_quantity">1</item>
+        <item name="ing_2_id">26</item>
+        <item name="ing_2_quantity">5</item>
+        <item name="ing_3_id">29</item>
+        <item name="ing_3_quantity">3</item>
+    </array>
+
+    <array name="item_62">
+        <item name="name">Ruby Sword</item>
+        <item name="desc"></item>
+        <item name="worth">20</item>
+        <item name="damage">50</item>
+        <item name="energy">0</item>
+        <item name="ing_1_id">23</item>
+        <item name="ing_1_quantity">1</item>
+        <item name="ing_2_id">26</item>
+        <item name="ing_2_quantity">5</item>
+        <item name="ing_3_id">30</item>
+        <item name="ing_3_quantity">2</item>
+    </array>
+
+    <array name="item_63">
+        <item name="name">Wood Axe</item>
+        <item name="desc"></item>
+        <item name="worth">20</item>
+        <item name="damage">50</item>
+        <item name="energy">0</item>
+        <item name="ing_1_id">23</item>
+        <item name="ing_1_quantity">1</item>
+        <item name="ing_2_id">24</item>
+        <item name="ing_2_quantity">3</item>
+    </array>
+
+    <array name="item_64">
+        <item name="name">Good Axe</item>
+        <item name="desc"></item>
+        <item name="worth">20</item>
+        <item name="damage">50</item>
+        <item name="energy">0</item>
+        <item name="ing_1_id">26</item>
+        <item name="ing_1_quantity">3</item>
+        <item name="ing_2_id">27</item>
+        <item name="ing_2_quantity">3</item>
+        <item name="ing_3_id">24</item>
+        <item name="ing_3_quantity">5</item>
+    </array>
+
+    <array name="item_65">
+        <item name="name">Gold Axe</item>
+        <item name="desc"></item>
+        <item name="worth">20</item>
+        <item name="damage">50</item>
+        <item name="energy">0</item>
+        <item name="ing_1_id">29</item>
+        <item name="ing_1_quantity">3</item>
+        <item name="ing_2_id">24</item>
+        <item name="ing_2_quantity">5</item>
+    </array>
+
+    <array name="item_66">
+        <item name="name">Ruby Axe</item>
+        <item name="desc"></item>
+        <item name="worth">20</item>
+        <item name="damage">50</item>
+        <item name="energy">0</item>
+        <item name="ing_1_id">30</item>
+        <item name="ing_1_quantity">3</item>
+        <item name="ing_2_id">24</item>
+        <item name="ing_2_quantity">5</item>
+    </array>
+
+    <array name="item_67">
+        <item name="name">Wood Pickaxe</item>
+        <item name="desc"></item>
+        <item name="worth">20</item>
+        <item name="damage">50</item>
+        <item name="energy">0</item>
+        <item name="ing_1_id">24</item>
+        <item name="ing_1_quantity">3</item>
+        <item name="ing_2_id">23</item>
+        <item name="ing_2_quantity">1</item>
+    </array>
+
+    <array name="item_68">
+        <item name="name">Good PickAxe</item>
+        <item name="desc"></item>
+        <item name="worth">20</item>
+        <item name="damage">50</item>
+        <item name="energy">0</item>
+        <item name="ing_1_id">24</item>
+        <item name="ing_1_quantity">5</item>
+        <item name="ing_2_id">26</item>
+        <item name="ing_2_quantity">3</item>
+        <item name="ing_2_id">27</item>
+        <item name="ing_2_quantity">3</item>
+    </array>
+
+    <array name="item_69">
+        <item name="name">Gold PickAxe</item>
+        <item name="desc"></item>
+        <item name="worth">20</item>
+        <item name="damage">50</item>
+        <item name="energy">0</item>
+        <item name="ing_1_id">29</item>
+        <item name="ing_1_quantity">3</item>
+        <item name="ing_2_id">24</item>
+        <item name="ing_2_quantity">5</item>
+    </array>
+
+    <array name="item_70">
+        <item name="name">Ruby Pickaxe</item>
+        <item name="description"></item>
+        <item name="worth">20</item>
+        <item name="damage">50</item>
+        <item name="energy">0</item>
+        <item name="ing_1_id">30</item>
+        <item name="ing_1_quantity">3</item>
+        <item name="ing_2_id">24</item>
+        <item name="ing_2_quantity">5</item>
+    </array>
+
+    <array name="item_71">
+        <item name="name">Wood Shovel</item>
+        <item name="desc"></item>
+        <item name="worth">20</item>
+        <item name="damage">50</item>
+        <item name="energy">0</item>
+        <item name="ing_1_id">24</item>
+        <item name="ing_1_quantity">3</item>
+        <item name="ing_2_id">23</item>
+        <item name="ing_2_quantity">1</item>
+    </array>
+
+    <array name="item_72">
+        <item name="name">Good Shovel</item>
+        <item name="desc"></item>
+        <item name="worth">20</item>
+        <item name="damage">50</item>
+        <item name="energy">0</item>
+        <item name="ing_1_id">24</item>
+        <item name="ing_1_quantity">5</item>
+        <item name="ing_2_id">26</item>
+        <item name="ing_2_quantity">3</item>
+        <item name="ing_3_id">27</item>
+        <item name="ing_3_quantity">3</item>
+    </array>
+
+    <array name="item_73">
+        <item name="name">Gold Shovel</item>
+        <item name="desc"></item>
+        <item name="worth">20</item>
+        <item name="damage">50</item>
+        <item name="energy">0</item>
+        <item name="ing_1_id">29</item>
+        <item name="ing_1_quantity">3</item>
+        <item name="ing_2_id">24</item>
+        <item name="ing_2_quantity">5</item>
+    </array>
+
+    <array name="item_74">
+        <item name="name">Treasure Chest</item>
+        <item name="desc"></item>
+        <item name="worth">20</item>
+        <item name="damage">50</item>
+        <item name="energy">0</item>
+    </array>
+
+    <array name="item_75">
+        <item name="name">Gold Treasure Chest</item>
+        <item name="desc"></item>
+        <item name="worth">20</item>
+        <item name="damage">50</item>
+        <item name="energy">0</item>
+    </array>
+
+    <array name="item_76">
+        <item name="name">Ruby Treasure Chest</item>
+        <item name="desc"></item>
+        <item name="worth">20</item>
+        <item name="damage">50</item>
+        <item name="energy">0</item>
+    </array>
+
+    <array name="item_array_refs">
+        <item>@array/null_item</item>
+        <item>@array/item_1</item>
+        <item>@array/item_2</item>
+        <item>@array/item_3</item>
+        <item>@array/item_4</item>
+        <item>@array/item_5</item>
+        <item>@array/item_6</item>
+        <item>@array/item_7</item>
+        <item>@array/item_8</item>
+        <item>@array/item_9</item>
+        <item>@array/item_10</item>
+        <item>@array/item_11</item>
+        <item>@array/item_12</item>
+        <item>@array/item_13</item>
+        <item>@array/item_14</item>
+        <item>@array/item_15</item>
+        <item>@array/item_16</item>
+        <item>@array/item_17</item>
+        <item>@array/item_18</item>
+        <item>@array/item_19</item>
+        <item>@array/item_20</item>
+        <item>@array/item_21</item>
+        <item>@array/item_22</item>
+        <item>@array/item_23</item>
+        <item>@array/item_24</item>
+        <item>@array/item_25</item>
+        <item>@array/item_26</item>
+        <item>@array/item_27</item>
+        <item>@array/item_28</item>
+        <item>@array/item_29</item>
+        <item>@array/item_30</item>
+        <item>@array/item_31</item>
+        <item>@array/item_32</item>
+        <item>@array/item_33</item>
+        <item>@array/item_34</item>
+        <item>@array/item_35</item>
+        <item>@array/item_36</item>
+        <item>@array/item_37</item>
+        <item>@array/item_38</item>
+        <item>@array/item_39</item>
+        <item>@array/item_40</item>
+        <item>@array/item_41</item>
+        <item>@array/item_42</item>
+        <item>@array/item_43</item>
+        <item>@array/item_44</item>
+        <item>@array/item_45</item>
+        <item>@array/item_46</item>
+        <item>@array/item_47</item>
+        <item>@array/item_48</item>
+        <item>@array/item_49</item>
+        <item>@array/item_50</item>
+        <item>@array/item_51</item>
+        <item>@array/item_52</item>
+        <item>@array/item_53</item>
+        <item>@array/item_54</item>
+        <item>@array/item_55</item>
+        <item>@array/item_56</item>
+        <item>@array/item_57</item>
+        <item>@array/item_58</item>
+        <item>@array/item_59</item>
+        <item>@array/item_60</item>
+        <item>@array/item_61</item>
+        <item>@array/item_62</item>
+        <item>@array/item_63</item>
+        <item>@array/item_64</item>
+        <item>@array/item_65</item>
+        <item>@array/item_66</item>
+        <item>@array/item_67</item>
+        <item>@array/item_68</item>
+        <item>@array/item_69</item>
+        <item>@array/item_70</item>
+        <item>@array/item_71</item>
+        <item>@array/item_72</item>
+        <item>@array/item_73</item>
+        <item>@array/item_74</item>
+        <item>@array/item_75</item>
+        <item>@array/item_76</item>
+
+
+    </array>
+</resources>

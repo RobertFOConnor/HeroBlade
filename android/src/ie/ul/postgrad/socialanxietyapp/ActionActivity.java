@@ -1,7 +1,6 @@
 package ie.ul.postgrad.socialanxietyapp;
 
 import android.content.Intent;
-import android.database.Cursor;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
@@ -13,14 +12,13 @@ import ie.ul.postgrad.socialanxietyapp.game.GameManager;
 import ie.ul.postgrad.socialanxietyapp.game.item.ItemFactory;
 import ie.ul.postgrad.socialanxietyapp.game.Player;
 import ie.ul.postgrad.socialanxietyapp.game.item.WeaponItem;
-import ie.ul.postgrad.socialanxietyapp.game.item.WorldItem;
 
 
 public class ActionActivity extends AppCompatActivity implements View.OnClickListener {
 
     static final int WEAPON_REQUEST = 1;
     public static final String ACTIVE_ITEM_ID = "id";
-    private WorldItem activeItem;
+    //private WorldItem activeItem;
     private Player player;
     WeaponItem weaponItem;
 
@@ -37,7 +35,7 @@ public class ActionActivity extends AppCompatActivity implements View.OnClickLis
         setContentView(R.layout.activity_action);
 
         Bundle bundle = getIntent().getExtras();
-        activeItem = (WorldItem) ItemFactory.buildItem(bundle.getInt(ACTIVE_ITEM_ID));
+        //activeItem = (WorldItem) ItemFactory.buildItem(this, bundle.getInt(ACTIVE_ITEM_ID));
 
         player = GameManager.getInstance().getPlayer();
 
@@ -46,13 +44,13 @@ public class ActionActivity extends AppCompatActivity implements View.OnClickLis
         weaponButton = (Button) findViewById(R.id.weapon_button);
         itemView = (ImageView) findViewById(R.id.item_view);
 
-        itemView.setImageResource(activeItem.getImageID());
-        ((TextView) findViewById(R.id.item_title)).setText(activeItem.getName());
+       // itemView.setImageResource(activeItem.getImageID());
+        //((TextView) findViewById(R.id.item_title)).setText(activeItem.getName());
 
         statusText = ((TextView) findViewById(R.id.status_display));
 
         if (player.getWeapon() != -1) {
-            weaponItem = (WeaponItem) ItemFactory.buildItem(player.getWeapon());
+            weaponItem = (WeaponItem) ItemFactory.buildItem(this, player.getWeapon());
             updateWeapon();
         }
 
@@ -62,7 +60,7 @@ public class ActionActivity extends AppCompatActivity implements View.OnClickLis
         weaponButton.setOnClickListener(this);
     }
 
-    private void doAction() {
+    /*private void doAction() {
         if (activeItem.getHitAmount() > 0) {
             int hitCount = activeItem.onHit();
 
@@ -76,7 +74,7 @@ public class ActionActivity extends AppCompatActivity implements View.OnClickLis
             GameManager.getInstance().updateItemInDatabase(itemId);
 
 
-            String statusMessage = "You have received +" + hitCount + " " + ItemFactory.buildItem(activeItem.getDropItemID()).getName() + ".";
+            String statusMessage = "You have received +" + hitCount + " " + ItemFactory.buildItem(this, activeItem.getDropItemID()).getName() + ".";
             statusText.setText(statusMessage);
 
             activeItem.setHitAmount(activeItem.getHitAmount() - 1);
@@ -90,7 +88,7 @@ public class ActionActivity extends AppCompatActivity implements View.OnClickLis
             }
         }
 
-    }
+    }*/
 
     private void leave() {
         finish();
@@ -102,7 +100,7 @@ public class ActionActivity extends AppCompatActivity implements View.OnClickLis
         switch (v.getId()) {
 
             case R.id.action_button:
-                doAction();
+                //doAction();
                 break;
 
             case R.id.leave_button:

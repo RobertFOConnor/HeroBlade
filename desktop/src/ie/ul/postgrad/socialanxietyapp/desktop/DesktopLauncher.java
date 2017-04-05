@@ -3,8 +3,6 @@ package ie.ul.postgrad.socialanxietyapp.desktop;
 import com.badlogic.gdx.backends.lwjgl.LwjglApplication;
 import com.badlogic.gdx.backends.lwjgl.LwjglApplicationConfiguration;
 
-import ie.ul.postgrad.socialanxietyapp.Avatar;
-import ie.ul.postgrad.socialanxietyapp.LibGdxInterface;
 import ie.ul.postgrad.socialanxietyapp.MainGame;
 
 public class DesktopLauncher {
@@ -13,6 +11,6 @@ public class DesktopLauncher {
         LwjglApplicationConfiguration config = new LwjglApplicationConfiguration();
         config.width = 720 / 2;
         config.height = 1280 / 2;
-        new LwjglApplication(new MainGame(new DesktopLibgdxInterfaceDummy(), MainGame.AVATAR_SCREEN), config);
+        new LwjglApplication(new MainGame(new DesktopLibgdxInterfaceDummy(), MainGame.TREE_GAME_SCREEN), config);
     }
 }

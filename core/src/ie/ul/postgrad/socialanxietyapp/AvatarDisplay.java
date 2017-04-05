@@ -25,7 +25,7 @@ import ie.ul.postgrad.socialanxietyapp.spriter.LibGdxLoader;
 public class AvatarDisplay implements Screen {
 
     private static final float[] BLOND = {255f / 255f, 231f / 255f, 70f / 255f};
-    private static final float[] BLACK = {0f, 0f, 0f};
+    private static final float[] BLACK = {0.2f, 0.2f, 0.2f};
     private static final float[] BROWN = {115 / 255f, 85 / 255f, 59 / 255f};
     private static final float[] GINGER = {250 / 255f, 149 / 255f, 40 / 255f};
     private static final float[] GRAY = {0.6f, 0.6f, 0.6f};

@@ -9,9 +9,11 @@ import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
+import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.math.Vector2;
+import com.badlogic.gdx.utils.Array;
 import com.brashmonkey.spriter.Animation;
 import com.brashmonkey.spriter.Data;
 import com.brashmonkey.spriter.Drawer;
@@ -30,7 +32,7 @@ public class CollectingGame implements Screen {
     private OrthographicCamera camera;
     private SpriteBatch batch;
     private ShapeRenderer shapeRenderer;
-    private Texture bg, leftArrow, rightArrow;
+    private Texture bg, resource, leftArrow, rightArrow;
     private Vector2 touch;
 
     //Gameplay variables
@@ -60,12 +62,21 @@ public class CollectingGame implements Screen {
     private Drawer drawer;
     private Player player;
 
-    public CollectingGame(LibGdxInterface libGdxInterface, SpriteBatch sb, OrthographicCamera camera) {
+    private Sprite plusLog;
+
+    int type;
+
+    private Array<Sprite> clouds;
+    private float[] cloudSpeeds;
+
+    public CollectingGame(LibGdxInterface libGdxInterface, SpriteBatch sb, OrthographicCamera camera, int type) {
         this.batch = sb;
         this.camera = camera;
 
         this.libGdxInterface = libGdxInterface;
         avatar = libGdxInterface.getAvatar();
+
+        this.type = type;
     }
 
     @Override
@@ -92,8 +103,18 @@ public class CollectingGame implements Screen {
 
         player = new Player(data.getEntity(0));
         player.setScale((MainGame.HEIGHT / 1920f) * 1.3f);
-        player.setAnimation("idle");
-        player.setPosition(MainGame.WIDTH / 2-100, MainGame.HEIGHT / 2 - 230);
+        player.setAnimation("axe_idle");
+        player.setPosition(MainGame.WIDTH / 3, MainGame.HEIGHT / 8);
+
+        Player.PlayerListener myListener = new LibGdxAnimationListener() {
+            @Override
+            public void animationFinished(Animation animation) {
+                if (player.getAnimation().name.equals("axe_strike") || player.getAnimation().name.equals("axe_super_strike")) {
+                    player.setAnimation("axe_idle");
+                }
+            }
+        };
+        player.addListener(myListener);
 
         Loader loader = new LibGdxLoader(data);
         loader.load(handle.file()); //Load all sprites
@@ -103,12 +124,33 @@ public class CollectingGame implements Screen {
     }
 
     private void initializeGame() {
-        if ((int) (Math.random() * 2) == 0) {
-            bg = new Texture("tree_bg.png");
+        clouds = new Array<Sprite>();
+
+        int cloudNum = 8;
+        cloudSpeeds = new float[cloudNum];
+
+        for (int i = 0; i < cloudNum; i++) {
+            Sprite cloud = new Sprite(new Texture("cloud_1.png"));
+            cloud.setScale((MainGame.HEIGHT / 1920f) * 4f);
+            clouds.add(cloud);
+
+            cloudSpeeds[i] = -((WIDTH * 0.008f) + (float) (Math.random() * (WIDTH * 0.01f)));
+        }
+
+        for (Sprite s : clouds) {
+            resetCloud(s);
+        }
+
+        plusLog = new Sprite(new Texture("plus_wood_log.png"));
+        plusLog.setPosition(WIDTH, HEIGHT);
+
+        bg = new Texture("bg.png");
+        if (type == 0) {
+            resource = new Texture("tree.png");
             hitSound = loadSound("data/chop.ogg");
             collectSound = loadSound("data/wood_get.ogg");
         } else {
-            bg = new Texture("rock_bg.png");
+            resource = new Texture("rock.png");
             hitSound = loadSound("data/pick.ogg");
             collectSound = loadSound("data/rock_get.ogg");
         }
@@ -147,6 +189,8 @@ public class CollectingGame implements Screen {
         if (timeLeft <= 0) {
             paused = true;
         } else if (sequence.length == seqPos) {
+            player.setAnimation("axe_super_strike");
+
             collectSound.play();
             winCount++;
             generateSequence();
@@ -156,10 +200,40 @@ public class CollectingGame implements Screen {
             if (roundTime > 1000) {
                 roundTime -= 150;
             }
+
+            plusLog.setPosition(WIDTH / 2, HEIGHT / 2);
+            plusLog.setAlpha(1f);
+            plusLog.setScale((MainGame.HEIGHT / 1920f) * 3f);
         }
 
         player.update();
         player.setObject("hair", 1f, 1, avatar.getHairtype());
+
+        if (type == 1) {
+            player.setObject("item_0064", 1f, 0, 10);
+        }
+
+        for (int i = 0; i < clouds.size; i++) {
+            Sprite s = clouds.get(i);
+            s.translateX(cloudSpeeds[i]);
+
+            if (s.getX() < -400) {
+                resetCloud(s);
+            }
+        }
+
+        if (plusLog.getY() < HEIGHT / 1.5f) {
+            plusLog.translateY(1f);
+
+            if (plusLog.getColor().a > 0) {
+                plusLog.setAlpha(plusLog.getColor().a - 0.01f);
+            }
+            plusLog.setScale(plusLog.getScaleX() + 0.01f);
+        }
+    }
+
+    private void resetCloud(Sprite cloud) {
+        cloud.setPosition(WIDTH, HEIGHT / 4 + (int) (Math.random() * (HEIGHT - (HEIGHT / 4 - 50))));
     }
 
     @Override
@@ -172,10 +246,18 @@ public class CollectingGame implements Screen {
             batch.begin();
             batch.draw(bg, 0, 0, WIDTH, HEIGHT);
 
+            for (Sprite s : clouds) {
+                s.draw(batch);
+            }
+
+            batch.draw(resource, WIDTH / 3f, HEIGHT / 8, WIDTH * 0.56f, HEIGHT * 0.46f);
+
             drawer.setColor(1, 1, 1, 1);
             drawer.draw(player);
             drawer.setColor(AvatarDisplay.hairColorArray[avatar.getHairColor()][0], AvatarDisplay.hairColorArray[avatar.getHairColor()][1], AvatarDisplay.hairColorArray[avatar.getHairColor()][2], 1);
             drawer.draw(player.getObject("hair"));
+            drawer.setColor(1, 1, 1, 1);
+            drawer.draw(player.getObject("item_0064"));
 
             int xPos = (WIDTH / 2) - (((sequence.length - seqPos) * (arrowSize + arrowSpace)) / 2);
 
@@ -193,6 +275,10 @@ public class CollectingGame implements Screen {
                 xPos += (arrowSize + arrowSpace);
             }
             font.draw(batch, "Score: " + winCount, padding, padding * 2);
+
+            if (plusLog.getY() < HEIGHT / 1.5f) {
+                plusLog.draw(batch);
+            }
 
             batch.end();
             shapeRenderer.setProjectionMatrix(camera.combined);
@@ -237,6 +323,8 @@ public class CollectingGame implements Screen {
     }
 
     private void hitTree(int dir) {
+        player.setAnimation("axe_strike");
+
         if (sequence.length != seqPos && !paused) {
             if (sequence[seqPos] == dir) {
                 seqPos++;

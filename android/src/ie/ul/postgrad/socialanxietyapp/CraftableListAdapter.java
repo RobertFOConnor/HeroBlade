@@ -10,13 +10,11 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.google.android.gms.games.Game;
-
 import java.util.ArrayList;
 
 import ie.ul.postgrad.socialanxietyapp.game.GameManager;
 import ie.ul.postgrad.socialanxietyapp.game.InventoryItemArray;
-import ie.ul.postgrad.socialanxietyapp.game.Player;
+import ie.ul.postgrad.socialanxietyapp.game.item.Item;
 import ie.ul.postgrad.socialanxietyapp.game.item.WeaponItem;
 
 /**
@@ -30,9 +28,9 @@ public class CraftableListAdapter extends BaseAdapter {
     private String[] ingredients;
     private int[] imageId;
     private static LayoutInflater inflater = null;
-    private ArrayList<WeaponItem> items;
+    private ArrayList<Item> items;
 
-    public CraftableListAdapter(Context context, ArrayList<WeaponItem> items) {
+    public CraftableListAdapter(Context context, ArrayList<Item> items) {
         this.items = items;
         result = new String[items.size()];
         ingredients = new String[items.size()];
@@ -40,7 +38,7 @@ public class CraftableListAdapter extends BaseAdapter {
 
         for (int i = 0; i < items.size(); i++) {
             result[i] = items.get(i).getName();
-            ingredients[i] = items.get(i).getIngredientsString();
+            ingredients[i] = items.get(i).getIngredientsString(context);
             imageId[i] = items.get(i).getImageID();
         }
 
@@ -91,22 +89,22 @@ public class CraftableListAdapter extends BaseAdapter {
 
                 boolean canCraft = true;
 
-                WeaponItem selectedItem = items.get(position);
+                Item selectedItem = items.get(position);
                 InventoryItemArray playerItems = GameManager.getInstance().getInventory().getItems();
                 SparseIntArray ingredients = selectedItem.getIngredients();
 
-                for(int i = 0; i < ingredients.size(); i++) {
+                for (int i = 0; i < ingredients.size(); i++) {
                     int playerCount = playerItems.get(ingredients.keyAt(i));
                     int neededCount = ingredients.valueAt(i);
 
-                    if(playerCount < neededCount) {
+                    if (playerCount < neededCount) {
                         canCraft = false;
                     }
                 }
 
-                if(canCraft) {
+                if (canCraft) {
 
-                    for(int i = 0; i < ingredients.size(); i++) {
+                    for (int i = 0; i < ingredients.size(); i++) {
                         int itemId = ingredients.keyAt(i);
 
                         GameManager.getInstance().getInventory().removeItem(ingredients.keyAt(i), ingredients.valueAt(i));
@@ -116,9 +114,9 @@ public class CraftableListAdapter extends BaseAdapter {
                     GameManager.getInstance().getInventory().addItem(selectedItem.getId(), 1);
                     GameManager.getInstance().updateItemInDatabase(selectedItem.getId());
 
-                    Toast.makeText(context, "You crafted a new "+selectedItem.getName(), Toast.LENGTH_SHORT).show();
+                    Toast.makeText(context, "You crafted a new " + selectedItem.getName(), Toast.LENGTH_SHORT).show();
                 } else {
-                    Toast.makeText(context, "You can't craft a "+selectedItem.getName(), Toast.LENGTH_SHORT).show();
+                    Toast.makeText(context, "You can't craft a " + selectedItem.getName(), Toast.LENGTH_SHORT).show();
                 }
             }
         });

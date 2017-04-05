@@ -36,7 +36,6 @@ import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
-import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.CameraPosition;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MapStyleOptions;
@@ -47,8 +46,7 @@ import java.util.ArrayList;
 
 import ie.ul.postgrad.socialanxietyapp.game.GameManager;
 import ie.ul.postgrad.socialanxietyapp.game.InventoryItemArray;
-import ie.ul.postgrad.socialanxietyapp.game.item.ItemFactory;
-import ie.ul.postgrad.socialanxietyapp.game.item.WorldItem;
+import ie.ul.postgrad.socialanxietyapp.game.item.MarkerFactory;
 
 public class MapsActivity extends AppCompatActivity implements OnMapReadyCallback, GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener,
         LocationListener, GoogleMap.OnMarkerClickListener {
@@ -77,6 +75,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
     private DrawerLayout mDrawerLayout;
     private ListView mDrawerList;
 
+    private Marker currMarker;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -110,7 +109,6 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
 
         mDrawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
         mDrawerList = (ListView) findViewById(R.id.left_drawer);
-
     }
 
     @Override
@@ -415,17 +413,6 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
                             snippet = snippet + "\n" + attributions;
                         }
 
-                        //TEMP LOGIC FOR OBJECT PLACEMENT
-
-                        WorldItem item;
-                        if (snippet.toLowerCase().startsWith("a") || snippet.toLowerCase().startsWith("h") || snippet.toLowerCase().startsWith("u")) {
-                            item = (WorldItem) ItemFactory.buildItem(301);
-                        } else if (snippet.toLowerCase().startsWith("b") || snippet.toLowerCase().startsWith("d")) {
-                            item = (WorldItem) ItemFactory.buildItem(302);
-                        } else {
-                            item = (WorldItem) ItemFactory.buildItem(300);
-                        }
-
                         LatLng latLng = placeLikelihood.getPlace().getLatLng();
 
                         //if (!player.hasUsedLocation(latLng)) {
@@ -439,14 +426,21 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
                         }
 
                         if (!doesMarkerExist) {
-                            final Marker m = mMap.addMarker(new MarkerOptions()
-                                    .position(placeLikelihood.getPlace().getLatLng())
-                                    .title("You are too far away from this " + item.getName() + ".")
-                                    .icon(BitmapDescriptorFactory.fromResource(item.getMarkerIconID()))
-                                    .snippet((String) placeLikelihood.getPlace().getName()));
 
-                            m.setTag(item.getId());
-                            markers.add(m);
+                            int markerCount = getResources().getStringArray(R.array.marker_array_refs).length;
+
+                            int id = 1 + (int) (Math.random() * (markerCount - 1));
+                            /*if (snippet.toLowerCase().startsWith("a") || snippet.toLowerCase().startsWith("e") || snippet.toLowerCase().startsWith("s") || snippet.toLowerCase().startsWith("p") || snippet.toLowerCase().startsWith("t") || snippet.toLowerCase().startsWith("l")) {
+                                id = 2;
+                            }*/
+
+                            String snip = snippet.toLowerCase();
+                            if (snip.contains("river") || snip.contains("bridge") || snip.contains("sea") || snip.contains("ocean")) {
+                                id = 3;
+                            }
+
+
+                            markers.add(MarkerFactory.buildMarker(getApplicationContext(), mMap, placeLikelihood.getPlace(), id));
                         }
                         //}
                     }
@@ -485,37 +479,33 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
     @Override
     public boolean onMarkerClick(Marker marker) {
 
-        if (marker.getTag() != "player") {
-            if (marker.getTitle().equals(getString(R.string.click_to_inspect))) {
+        if (currMarker == null) {
+            currMarker = marker;
+        } else if (currMarker.equals(marker)) {
 
-                if ((int) marker.getTag() != 500) {
-                    //player.addUsedLocation(marker.getPosition());
-                    Intent i = new Intent(this, ActionActivity.class);
-                    i.putExtra(ActionActivity.ACTIVE_ITEM_ID, (int) marker.getTag());
-                    startActivity(i);
-                } else {
-                    Intent i = new Intent(getApplicationContext(), TradeListActivity.class);
-                    if (marker.getSnippet().contains(",")) {
-                        i.putExtra(TradeListActivity.TRADE_LOCATION_ID, marker.getSnippet().substring(0, marker.getSnippet().indexOf(',')));
-                    } else {
-                        i.putExtra(TradeListActivity.TRADE_LOCATION_ID, marker.getSnippet());
-                    }
-                    startActivity(i);
-                }
-            }
-
+            //Below code checks user distance from marker.
             Location location = new Location(marker.getId());
             location.setLatitude(marker.getPosition().latitude);
             location.setLongitude(marker.getPosition().longitude);
 
             float distance = location.distanceTo(mCurrentLocation);
 
-            if (distance > 0) {
-                marker.setTitle(getString(R.string.click_to_inspect));
-            } else {
-                marker.setTitle("You are too far away!");
+            int markerId = (int) marker.getTag();
+
+            if (markerId == 4 && distance < 5) { //TEMP
+                Intent i = new Intent(getApplicationContext(), AndroidLauncher.class); //LibGDX Tree game Activity!
+                i.putExtra(AndroidLauncher.screenString, MainGame.TREE_GAME_SCREEN);
+                startActivity(i);
+            } else if (markerId == 5 && distance < 5) { //TEMP
+                Intent i = new Intent(getApplicationContext(), AndroidLauncher.class); //LibGDX Rock game Activity!
+                i.putExtra(AndroidLauncher.screenString, MainGame.ROCK_GAME_SCREEN);
+                startActivity(i);
             }
+            currMarker = null;
         }
+
+        currMarker = marker;
+
         return false;
     }
 
@@ -567,6 +557,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
             DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
             drawer.closeDrawer(GravityCompat.START);
         }
+
     }
 
     @Override
