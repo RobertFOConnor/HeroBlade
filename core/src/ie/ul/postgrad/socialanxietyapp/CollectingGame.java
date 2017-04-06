@@ -323,6 +323,7 @@ public class CollectingGame implements Screen {
     }
 
     private void hitTree(int dir) {
+        player.setAnimation("axe_idle");
         player.setAnimation("axe_strike");
 
         if (sequence.length != seqPos && !paused) {

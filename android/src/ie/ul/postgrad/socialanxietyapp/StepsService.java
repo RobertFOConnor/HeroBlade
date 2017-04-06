@@ -59,7 +59,7 @@ public class StepsService extends Service implements SensorEventListener {
         totalDistance += 0.8f;
         dbHelper.insertStepsEntry(totalDistance);
 
-        if (dbHelper.getSteps() % 100 == 0) { // send notification every 100 steps //TEMP//
+        if (dbHelper.getSteps() % 300 == 0) { // send notification every 100 steps //TEMP//
             notifyOpenedChest();
         }
     }
@@ -86,7 +86,7 @@ public class StepsService extends Service implements SensorEventListener {
                 new NotificationCompat.Builder(this)
                         .setSmallIcon(R.drawable.ic_chest_open)
                         .setContentTitle("You've unlocked a treasure chest!")
-                        .setContentText("You walked 100 steps! The chest has been opened.")
+                        .setContentText("You walked 300 steps! The chest has been opened.")
                         .setVibrate(new long[]{1000, 1000})
                         .setLights(Color.BLUE, 3000, 3000)
                         .setAutoCancel(true)
