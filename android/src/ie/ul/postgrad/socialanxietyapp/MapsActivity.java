@@ -549,6 +549,10 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
                     i = new Intent(getApplicationContext(), CraftingActivity.class);
                     startActivity(i);
                     break;
+                case 4:
+                    i = new Intent(getApplicationContext(), StepsGraphActivity.class);
+                    startActivity(i);
+                    break;
                 case 5:
                     i = new Intent(getApplicationContext(), SettingsActivity.class);
                     startActivity(i);

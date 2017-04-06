@@ -287,6 +287,27 @@ public class DBHelper extends SQLiteOpenHelper {
         return steps;
     }
 
+    public ArrayList<Integer> getDailySteps() {
+
+        ArrayList<Integer> steps = new ArrayList<>();
+
+        String selectQuery = selectAllQuery(TRAVEL_TABLE_NAME) + " WHERE " + TRAVEL_COLUMN_PLAYER_ID + "=" + 1;
+        try {
+            SQLiteDatabase db = this.getReadableDatabase();
+            Cursor c = db.rawQuery(selectQuery, null);
+            if (c.moveToFirst()) {
+                steps.add(c.getInt((c.getColumnIndex(TRAVEL_COLUMN_STEPS_COUNT))));
+            }
+            while (c.moveToNext()) {
+                steps.add(c.getInt((c.getColumnIndex(TRAVEL_COLUMN_STEPS_COUNT))));
+                db.close();
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return steps;
+    }
+
     public int getDistance() {
         int distance = 0;
         String selectQuery = selectAllQuery(TRAVEL_TABLE_NAME) + " WHERE " + TRAVEL_COLUMN_PLAYER_ID + "=" + 1;
