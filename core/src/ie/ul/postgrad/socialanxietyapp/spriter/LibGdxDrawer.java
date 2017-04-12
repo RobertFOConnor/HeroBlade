@@ -2,9 +2,10 @@ package ie.ul.postgrad.socialanxietyapp.spriter;
 
 /**
  * Created by Robert on 11-Mar-17.
+ * <p>
+ * Drawer for drawing spriter animations.
  */
 
-import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
@@ -14,8 +15,8 @@ import com.brashmonkey.spriter.Timeline.Key.Object;
 
 public class LibGdxDrawer extends Drawer<Sprite> {
 
-    SpriteBatch batch;
-    ShapeRenderer renderer;
+    private SpriteBatch batch;
+    private ShapeRenderer renderer;
 
     public LibGdxDrawer(Loader<Sprite> loader, SpriteBatch batch, ShapeRenderer renderer) {
         super(loader);

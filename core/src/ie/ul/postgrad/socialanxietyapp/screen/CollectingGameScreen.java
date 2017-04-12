@@ -1,4 +1,4 @@
-package ie.ul.postgrad.socialanxietyapp;
+package ie.ul.postgrad.socialanxietyapp.screen;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
@@ -21,12 +21,14 @@ import com.brashmonkey.spriter.Loader;
 import com.brashmonkey.spriter.Player;
 import com.brashmonkey.spriter.SCMLReader;
 
-import ie.ul.postgrad.socialanxietyapp.screen.Screen;
+import ie.ul.postgrad.socialanxietyapp.Avatar;
+import ie.ul.postgrad.socialanxietyapp.LibGdxInterface;
+import ie.ul.postgrad.socialanxietyapp.MainGame;
 import ie.ul.postgrad.socialanxietyapp.spriter.LibGdxAnimationListener;
 import ie.ul.postgrad.socialanxietyapp.spriter.LibGdxDrawer;
 import ie.ul.postgrad.socialanxietyapp.spriter.LibGdxLoader;
 
-public class CollectingGame implements Screen {
+public class CollectingGameScreen implements Screen {
 
     //Display variables
     private OrthographicCamera camera;
@@ -54,28 +56,21 @@ public class CollectingGame implements Screen {
     //Audio
     private Sound hitSound;
     private Sound collectSound;
+
+    //Sprites
     private BitmapFont font;
-
-    private final LibGdxInterface libGdxInterface;
     private Avatar avatar;
-
     private Drawer drawer;
     private Player player;
-
     private Sprite plusLog;
-
-    int type;
-
+    private int type;
     private Array<Sprite> clouds;
     private float[] cloudSpeeds;
 
-    public CollectingGame(LibGdxInterface libGdxInterface, SpriteBatch sb, OrthographicCamera camera, int type) {
+    public CollectingGameScreen(LibGdxInterface libGdxInterface, SpriteBatch sb, OrthographicCamera camera, int type) {
         this.batch = sb;
         this.camera = camera;
-
-        this.libGdxInterface = libGdxInterface;
-        avatar = libGdxInterface.getAvatar();
-
+        this.avatar = libGdxInterface.getAvatar();
         this.type = type;
     }
 
@@ -116,7 +111,7 @@ public class CollectingGame implements Screen {
         };
         player.addListener(myListener);
 
-        Loader loader = new LibGdxLoader(data);
+        Loader<Sprite> loader = new LibGdxLoader(data);
         loader.load(handle.file()); //Load all sprites
         drawer = new LibGdxDrawer(loader, batch, shapeRenderer);
 
@@ -254,7 +249,7 @@ public class CollectingGame implements Screen {
 
             drawer.setColor(1, 1, 1, 1);
             drawer.draw(player);
-            drawer.setColor(AvatarDisplay.hairColorArray[avatar.getHairColor()][0], AvatarDisplay.hairColorArray[avatar.getHairColor()][1], AvatarDisplay.hairColorArray[avatar.getHairColor()][2], 1);
+            drawer.setColor(AvatarScreen.hairColorArray[avatar.getHairColor()][0], AvatarScreen.hairColorArray[avatar.getHairColor()][1], AvatarScreen.hairColorArray[avatar.getHairColor()][2], 1);
             drawer.draw(player.getObject("hair"));
             drawer.setColor(1, 1, 1, 1);
             drawer.draw(player.getObject("item_0064"));

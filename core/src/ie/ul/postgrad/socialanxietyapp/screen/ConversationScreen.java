@@ -1,4 +1,4 @@
-package ie.ul.postgrad.socialanxietyapp;
+package ie.ul.postgrad.socialanxietyapp.screen;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.files.FileHandle;
@@ -14,7 +14,8 @@ import com.brashmonkey.spriter.Loader;
 import com.brashmonkey.spriter.Player;
 import com.brashmonkey.spriter.SCMLReader;
 
-import ie.ul.postgrad.socialanxietyapp.screen.Screen;
+import ie.ul.postgrad.socialanxietyapp.Avatar;
+import ie.ul.postgrad.socialanxietyapp.LibGdxInterface;
 import ie.ul.postgrad.socialanxietyapp.spriter.LibGdxDrawer;
 import ie.ul.postgrad.socialanxietyapp.spriter.LibGdxLoader;
 
@@ -23,9 +24,11 @@ import static ie.ul.postgrad.socialanxietyapp.MainGame.WIDTH;
 
 /**
  * Created by Robert on 12-Apr-17.
+ * <p>
+ * This screen is shown during a conversation with an NPC.
  */
 
-class ConversationDisplay implements Screen {
+public class ConversationScreen implements Screen {
 
     private Texture bg;
     private Drawer drawer;
@@ -35,10 +38,10 @@ class ConversationDisplay implements Screen {
     private Color hairColor;
     private LibGdxInterface libGdxInterface;
 
-    ConversationDisplay(LibGdxInterface libGdxInterface, SpriteBatch sb) {
+    public ConversationScreen(LibGdxInterface libGdxInterface, SpriteBatch sb) {
         this.libGdxInterface = libGdxInterface;
         avatar = libGdxInterface.getAvatar();
-        float[][] hcArr = AvatarDisplay.hairColorArray; //set up correct avatar hair color.
+        float[][] hcArr = AvatarScreen.hairColorArray; //set up correct avatar hair color.
         hairColor = new Color(hcArr[avatar.getHairColor()][0], hcArr[avatar.getHairColor()][1], hcArr[avatar.getHairColor()][2], 1);
         this.sb = sb;
     }
@@ -65,7 +68,7 @@ class ConversationDisplay implements Screen {
     }
 
     //For now, toggle characters during convo.
-    void updateConvo(int charId) {
+    public void updateConvo(int charId) {
         if (charId == 0) {
             currPlayer = player;
         } else {

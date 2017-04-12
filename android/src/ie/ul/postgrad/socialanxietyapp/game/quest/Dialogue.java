@@ -2,6 +2,8 @@ package ie.ul.postgrad.socialanxietyapp.game.quest;
 
 /**
  * Created by Robert on 07-Apr-17.
+ *
+ * Stores sentences contained in a piece of dialogue spoken by an NPC.
  */
 
 public class Dialogue {

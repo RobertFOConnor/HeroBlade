@@ -19,7 +19,7 @@ public class Item {
     private SparseIntArray ingredients;
 
 
-    protected Item(int id, String name, String description, int imageID, SparseIntArray ingredients) {
+    Item(int id, String name, String description, int imageID, SparseIntArray ingredients) {
         this.id = id;
         this.name = name;
         this.description = description;

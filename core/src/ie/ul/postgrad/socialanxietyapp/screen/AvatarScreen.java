@@ -1,7 +1,8 @@
-package ie.ul.postgrad.socialanxietyapp;
+package ie.ul.postgrad.socialanxietyapp.screen;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.files.FileHandle;
+import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.brashmonkey.spriter.Animation;
@@ -11,7 +12,9 @@ import com.brashmonkey.spriter.Loader;
 import com.brashmonkey.spriter.Player;
 import com.brashmonkey.spriter.SCMLReader;
 
-import ie.ul.postgrad.socialanxietyapp.screen.Screen;
+import ie.ul.postgrad.socialanxietyapp.Avatar;
+import ie.ul.postgrad.socialanxietyapp.LibGdxInterface;
+import ie.ul.postgrad.socialanxietyapp.MainGame;
 import ie.ul.postgrad.socialanxietyapp.spriter.LibGdxAnimationListener;
 import ie.ul.postgrad.socialanxietyapp.spriter.LibGdxDrawer;
 import ie.ul.postgrad.socialanxietyapp.spriter.LibGdxLoader;
@@ -22,7 +25,7 @@ import ie.ul.postgrad.socialanxietyapp.spriter.LibGdxLoader;
  * Libgdx screen. This is where the players avatar is drawn on screen.
  */
 
-public class AvatarDisplay implements Screen {
+public class AvatarScreen implements Screen {
 
     private static final float[] BLOND = {255f / 255f, 231f / 255f, 70f / 255f};
     private static final float[] BLACK = {0.2f, 0.2f, 0.2f};
@@ -43,7 +46,7 @@ public class AvatarDisplay implements Screen {
     private final LibGdxInterface libGdxInterface;
     private Avatar avatar;
 
-    public AvatarDisplay(LibGdxInterface libGdxInterface, SpriteBatch sb) {
+    public AvatarScreen(LibGdxInterface libGdxInterface, SpriteBatch sb) {
         this.libGdxInterface = libGdxInterface;
         avatar = libGdxInterface.getAvatar();
 
@@ -73,7 +76,7 @@ public class AvatarDisplay implements Screen {
         player.addListener(myListener);
 
 
-        Loader loader = new LibGdxLoader(data);
+        Loader<Sprite> loader = new LibGdxLoader(data);
         loader.load(handle.file()); //Load all sprites
         drawer = new LibGdxDrawer(loader, sb, renderer);
     }

@@ -1,9 +1,5 @@
 package ie.ul.postgrad.socialanxietyapp.spriter;
 
-/**
- * Created by Robert on 11-Mar-17.
- */
-
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.graphics.Pixmap;
@@ -24,10 +20,15 @@ import java.util.HashMap;
 import java.util.Map.Entry;
 import java.util.Set;
 
+/**
+ * Created by Robert on 11-Mar-17.
+ * <p>
+ * Loader for loading spriter animations.
+ */
+
 public class LibGdxLoader extends Loader<Sprite> implements Disposable {
 
-    public static int standardAtlasWidth = 2048, standardAtlasHeight = 2048;
-
+    private static int standardAtlasWidth = 2048, standardAtlasHeight = 2048;
     private PixmapPacker packer;
     private HashMap<FileReference, Pixmap> pixmaps;
     private HashMap<Pixmap, Boolean> pixmapsToDispose;
@@ -38,12 +39,12 @@ public class LibGdxLoader extends Loader<Sprite> implements Disposable {
         this(data, true);
     }
 
-    public LibGdxLoader(Data data, boolean pack) {
+    private LibGdxLoader(Data data, boolean pack) {
         this(data, standardAtlasWidth, standardAtlasHeight);
         this.pack = pack;
     }
 
-    public LibGdxLoader(Data data, int atlasWidth, int atlasHeight) {
+    private LibGdxLoader(Data data, int atlasWidth, int atlasHeight) {
         super(data);
         this.pack = true;
         this.atlasWidth = atlasWidth;
@@ -83,7 +84,7 @@ public class LibGdxLoader extends Loader<Sprite> implements Disposable {
     /**
      * Packs all loaded sprites into an atlas. Has to called after loading all sprites.
      */
-    protected void generatePackedSprites() {
+    private void generatePackedSprites() {
         if (this.packer == null) return;
         TextureAtlas tex = this.packer.generateTextureAtlas(TextureFilter.Linear, TextureFilter.Linear, false);
         Set<FileReference> keys = this.resources.keySet();
@@ -121,7 +122,7 @@ public class LibGdxLoader extends Loader<Sprite> implements Disposable {
         this.disposePixmaps();
     }
 
-    protected void createSprite(FileReference ref, Pixmap image) {
+    private void createSprite(FileReference ref, Pixmap image) {
         Texture tex = new Texture(image);
         tex.setFilter(TextureFilter.Linear, TextureFilter.Linear);
         int width = (int) data.getFile(ref.folder, ref.file).size.width;
@@ -131,7 +132,7 @@ public class LibGdxLoader extends Loader<Sprite> implements Disposable {
         pixmapsToDispose.put(image, true);
     }
 
-    protected void disposePixmaps() {
+    private void disposePixmaps() {
         Pixmap[] maps = new Pixmap[this.pixmapsToDispose.size()];
         this.pixmapsToDispose.keySet().toArray(maps);
         for (Pixmap pix : maps) {
