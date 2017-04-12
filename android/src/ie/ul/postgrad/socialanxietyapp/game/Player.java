@@ -14,6 +14,7 @@ public class Player {
     private int level;
     private int money;
     private int weapon_id;
+    private int currQuestId;
 
     public Player(String name, String email, int xp, int level, int money) {
         this.name = name;
@@ -22,6 +23,7 @@ public class Player {
         this.level = level;
         this.money = money;
         this.weapon_id = -1;
+        currQuestId = 1;
     }
 
     public Player() {
@@ -94,6 +96,10 @@ public class Player {
 
     public void setEmail(String email) {
         this.email = email;
+    }
+
+    public int getCurrQuestId() {
+        return currQuestId;
     }
 
     /*

@@ -19,7 +19,7 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
         <activity
-            android:name=".WelcomeActivity"
+            android:name=".account.WelcomeActivity"
             android:screenOrientation="portrait">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -28,13 +28,13 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".CreateAccountActivity"
+            android:name=".account.CreateAccountActivity"
             android:screenOrientation="portrait" />
         <activity
             android:name=".SelfRatingActivity"
             android:screenOrientation="portrait" />
         <activity
-            android:name=".LogInActivity"
+            android:name=".account.LogInActivity"
             android:screenOrientation="portrait" />
         <!--
              The API key for Google Maps-based APIs is defined as a string resource.
@@ -49,16 +49,13 @@
             android:value="AIzaSyD-gjLZErvV-DKZ4njFLYMi-X1-lVM0sq4" />
 
         <activity
-            android:name=".MapsActivity"
+            android:name=".map.MapsActivity"
             android:screenOrientation="portrait" />
         <activity
-            android:name=".ResetPasswordActivity"
+            android:name=".account.ResetPasswordActivity"
             android:screenOrientation="portrait" />
         <activity
             android:name=".InventoryActivity"
-            android:screenOrientation="portrait" />
-        <activity
-            android:name=".ActionActivity"
             android:screenOrientation="portrait" />
         <activity
             android:name=".PlayerAvatarActivity"
@@ -77,8 +74,14 @@
         <activity
             android:name=".AndroidLauncher"
             android:label="@string/app_name"
-            android:screenOrientation="portrait"></activity>
-        <activity android:name=".StepsGraphActivity"></activity>
+            android:screenOrientation="portrait" />
+        <activity android:name=".StepsGraphActivity" />
+        <activity
+            android:name=".ResourceResultActivity"
+            android:theme="@style/Theme.Transparent" />
+        <activity android:name=".ConversationActivity">
+
+        </activity>
     </application>
 
 </manifest>

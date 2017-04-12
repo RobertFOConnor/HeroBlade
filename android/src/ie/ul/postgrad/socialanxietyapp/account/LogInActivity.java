@@ -1,4 +1,4 @@
-package ie.ul.postgrad.socialanxietyapp;
+package ie.ul.postgrad.socialanxietyapp.account;
 
 import android.content.Intent;
 import android.graphics.Typeface;
@@ -13,6 +13,10 @@ import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
+
+import ie.ul.postgrad.socialanxietyapp.FontManager;
+import ie.ul.postgrad.socialanxietyapp.R;
+import ie.ul.postgrad.socialanxietyapp.map.MapsActivity;
 
 public class LogInActivity extends AppCompatActivity implements View.OnClickListener {
 

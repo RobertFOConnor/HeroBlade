@@ -1,4 +1,4 @@
-package ie.ul.postgrad.socialanxietyapp;
+package ie.ul.postgrad.socialanxietyapp.account;
 
 import android.content.Intent;
 import android.graphics.Typeface;
@@ -15,6 +15,10 @@ import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+
+import ie.ul.postgrad.socialanxietyapp.FontManager;
+import ie.ul.postgrad.socialanxietyapp.R;
+import ie.ul.postgrad.socialanxietyapp.map.MapsActivity;
 
 public class CreateAccountActivity extends AppCompatActivity {
 

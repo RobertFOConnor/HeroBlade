@@ -1,4 +1,4 @@
-package ie.ul.postgrad.socialanxietyapp;
+package ie.ul.postgrad.socialanxietyapp.account;
 
 import android.graphics.Typeface;
 import android.os.Bundle;
@@ -14,6 +14,9 @@ import android.widget.Toast;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
+
+import ie.ul.postgrad.socialanxietyapp.FontManager;
+import ie.ul.postgrad.socialanxietyapp.R;
 
 public class ResetPasswordActivity extends AppCompatActivity {
 

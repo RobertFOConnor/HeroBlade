@@ -1,6 +1,7 @@
 package ie.ul.postgrad.socialanxietyapp.game;
 
 import android.content.Context;
+import android.widget.Toast;
 
 import com.google.firebase.auth.FirebaseAuth;
 
@@ -8,6 +9,8 @@ import java.util.ArrayList;
 
 import ie.ul.postgrad.socialanxietyapp.Avatar;
 import ie.ul.postgrad.socialanxietyapp.DBHelper;
+import ie.ul.postgrad.socialanxietyapp.game.item.ItemFactory;
+import ie.ul.postgrad.socialanxietyapp.game.quest.Quest;
 
 /**
  * Created by Robert on 15-Mar-17.
@@ -28,6 +31,7 @@ public class GameManager {
     // Firebase objects for login.
     private FirebaseAuth mAuth = FirebaseAuth.getInstance();
 
+    private Quest activeQuest;
 
     private static final GameManager ourInstance = new GameManager();
 
@@ -96,5 +100,20 @@ public class GameManager {
 
     public static DBHelper getDatabaseHelper() {
         return databaseHelper;
+    }
+
+    public void givePlayer(Context context, int itemId, int quantity) {
+        GameManager.getInstance().getInventory().addItem(itemId, quantity);
+        GameManager.getInstance().updateItemInDatabase(itemId);
+
+        Toast.makeText(context, "You recieved " + quantity + " " + ItemFactory.buildItem(context, itemId).getName(), Toast.LENGTH_SHORT).show();
+    }
+
+    public Quest getActiveQuest() {
+        return activeQuest;
+    }
+
+    public void setActiveQuest(Quest activeQuest) {
+        this.activeQuest = activeQuest;
     }
 }

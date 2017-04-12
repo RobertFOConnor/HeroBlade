@@ -9,4 +9,6 @@ public interface LibGdxInterface {
     void saveAvatar(Avatar avatar);
 
     Avatar getAvatar();
+
+    int getNPCId();
 }

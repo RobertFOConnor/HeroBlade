@@ -1,5 +1,6 @@
-package ie.ul.postgrad.socialanxietyapp;
+package ie.ul.postgrad.socialanxietyapp.map;
 
+import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.content.res.Resources;
@@ -18,7 +19,9 @@ import android.view.Gravity;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.AdapterView;
+import android.widget.Button;
 import android.widget.ListView;
 import android.widget.TextView;
 
@@ -44,12 +47,31 @@ import com.google.android.gms.maps.model.MarkerOptions;
 
 import java.util.ArrayList;
 
+import ie.ul.postgrad.socialanxietyapp.AndroidLauncher;
+import ie.ul.postgrad.socialanxietyapp.ConversationActivity;
+import ie.ul.postgrad.socialanxietyapp.CraftingActivity;
+import ie.ul.postgrad.socialanxietyapp.InventoryActivity;
+import ie.ul.postgrad.socialanxietyapp.MainGame;
+import ie.ul.postgrad.socialanxietyapp.NavigationDrawerListAdapter;
+import ie.ul.postgrad.socialanxietyapp.R;
+import ie.ul.postgrad.socialanxietyapp.ResourceResultActivity;
+import ie.ul.postgrad.socialanxietyapp.SettingsActivity;
+import ie.ul.postgrad.socialanxietyapp.StepsGraphActivity;
+import ie.ul.postgrad.socialanxietyapp.StepsService;
 import ie.ul.postgrad.socialanxietyapp.game.GameManager;
 import ie.ul.postgrad.socialanxietyapp.game.InventoryItemArray;
 import ie.ul.postgrad.socialanxietyapp.game.item.MarkerFactory;
+import ie.ul.postgrad.socialanxietyapp.game.quest.Quest;
+import ie.ul.postgrad.socialanxietyapp.game.quest.QuestFactory;
+
+import static ie.ul.postgrad.socialanxietyapp.NavigationDrawerListAdapter.ACHIEVEMENTS;
+import static ie.ul.postgrad.socialanxietyapp.NavigationDrawerListAdapter.CRAFTING;
+import static ie.ul.postgrad.socialanxietyapp.NavigationDrawerListAdapter.INVENTORY;
+import static ie.ul.postgrad.socialanxietyapp.NavigationDrawerListAdapter.QUESTS;
+import static ie.ul.postgrad.socialanxietyapp.NavigationDrawerListAdapter.SETTINGS;
 
 public class MapsActivity extends AppCompatActivity implements OnMapReadyCallback, GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener,
-        LocationListener, GoogleMap.OnMarkerClickListener {
+        LocationListener {
 
     private static final String TAG = MapsActivity.class.getSimpleName();
     private GoogleMap mMap;
@@ -75,7 +97,11 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
     private DrawerLayout mDrawerLayout;
     private ListView mDrawerList;
 
-    private Marker currMarker;
+    private ViewGroup infoWindow;
+    private TextView infoTitle;
+    private TextView infoSnippet;
+    private Button infoButton;
+    private OnInfoWindowElemTouchListener infoButtonListener;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -88,11 +114,9 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
         }
         setContentView(R.layout.activity_maps);
 
-
         //Connect to Google API client
         buildGoogleApiClient();
         mGoogleApiClient.connect();
-
 
         distanceText = (TextView) findViewById(R.id.distance_text);
         stepsText = (TextView) findViewById(R.id.steps_text);
@@ -127,8 +151,237 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
     private void updateDistanceText() {
         stepsText.setText("Steps: " + GameManager.getDatabaseHelper().getSteps() + "");
         distanceText.setText("Distance: " + GameManager.getDatabaseHelper().getDistance() + "m");
-        //distanceText.setText("Distance: " + String.format("%.2f", ((float) GameManager.getDatabaseHelper().getDistance())/1000f) + "km");
     }
+
+    /**
+     * Manipulates the map when it's available.
+     * This callback is triggered when the map is ready to be used.
+     */
+    @Override
+    public void onMapReady(GoogleMap map) {
+        mMap = map;
+
+        final MapWrapperLayout mapWrapperLayout = (MapWrapperLayout) findViewById(R.id.map_wrapper);
+
+        mapWrapperLayout.init(map, getPixelsFromDp(this, 59)); // Setup wrapper with default offset.
+
+        // We want to reuse the info window for all the markers,
+        // so create only one class member instance
+        this.infoWindow = (ViewGroup) getLayoutInflater().inflate(R.layout.custom_info_window_quick, null);
+        this.infoTitle = (TextView) infoWindow.findViewById(R.id.title);
+        this.infoSnippet = (TextView) infoWindow.findViewById(R.id.snippet);
+        this.infoButton = (Button) infoWindow.findViewById(R.id.collect_button);
+
+        // Setting custom OnTouchListener which deals with the pressed state
+        // so it shows up
+        this.infoButtonListener = new OnInfoWindowElemTouchListener(infoButton,
+                getResources().getDrawable(R.drawable.info_button_default, getTheme()),
+                getResources().getDrawable(R.drawable.info_button_pressed, getTheme())) {
+            @Override
+            protected void onClickConfirmed(View v, Marker marker) {
+                // Here the marker id is passed to the result activity.
+                int markerId = (int) marker.getTag();
+                marker.remove();
+
+                System.out.println("markerid " + markerId);
+
+                Location location = new Location(marker.getId());
+                location.setLatitude(marker.getPosition().latitude);
+                location.setLongitude(marker.getPosition().longitude);
+                float distance = location.distanceTo(mCurrentLocation);
+
+                if (distance < 500) {
+
+                    if (markerId > 5) {
+                        Intent intent = new Intent(getApplicationContext(), ResourceResultActivity.class);
+                        intent.putExtra(ResourceResultActivity.MARKER_ID, markerId);
+                        startActivity(intent);
+
+                    } else if (markerId == 4) { //TEMP
+                        Intent i = new Intent(getApplicationContext(), AndroidLauncher.class); //LibGDX Tree game Activity!
+                        i.putExtra(AndroidLauncher.screenString, MainGame.TREE_GAME_SCREEN);
+                        startActivity(i);
+                    } else if (markerId == 5) { //TEMP
+                        Intent i = new Intent(getApplicationContext(), AndroidLauncher.class); //LibGDX Rock game Activity!
+                        i.putExtra(AndroidLauncher.screenString, MainGame.ROCK_GAME_SCREEN);
+                        startActivity(i);
+                    } else if (markerId == 2) {
+                        Intent i = new Intent(getApplicationContext(), ConversationActivity.class); //Quest Activity!
+                        startActivity(i);
+                    }
+                }
+
+            }
+        };
+        this.infoButton.setOnTouchListener(infoButtonListener);
+
+        map.setInfoWindowAdapter(new GoogleMap.InfoWindowAdapter() {
+            @Override
+            public View getInfoWindow(Marker marker) {
+                return null;
+            }
+
+            @Override
+            public View getInfoContents(Marker marker) {
+                // Setting up the infoWindow with current's marker info
+                infoTitle.setText(marker.getTitle());
+                infoSnippet.setText(marker.getSnippet());
+                infoButtonListener.setMarker(marker);
+
+                // We must call this to set the current marker and infoWindow references
+                // to the MapWrapperLayout
+                mapWrapperLayout.setMarkerWithInfoWindow(marker, infoWindow);
+                return infoWindow;
+            }
+        });
+
+        try {
+            // Customise the styling of the base map using a JSON object defined
+            // in a raw resource file.
+            boolean success = mMap.setMapStyle(
+                    MapStyleOptions.loadRawResourceStyle(
+                            this, R.raw.style_json));
+
+            if (!success) {
+                Log.e(TAG, "Style parsing failed.");
+            }
+        } catch (Resources.NotFoundException e) {
+            Log.e(TAG, "Can't find style. Error: ", e);
+        }
+
+        // Calculate ActionBar height
+        int actionBarHeight = 0;
+        TypedValue tv = new TypedValue();
+        if (getTheme().resolveAttribute(android.R.attr.actionBarSize, tv, true)) {
+            actionBarHeight = TypedValue.complexToDimensionPixelSize(tv.data, getResources().getDisplayMetrics());
+        }
+
+        mMap.setPadding(0, actionBarHeight, 0, 0);
+
+        // Turn on the My Location layer and the related control on the map.
+        updateLocationUI();
+
+        Quest quest = GameManager.getInstance().getActiveQuest();
+        if (quest != null) {
+            markers.add(MarkerFactory.buildQuestMarker(getApplicationContext(), mMap, quest.getLocation(), quest));
+        }
+
+        // Add markers for nearby places.
+        updateMarkers();
+
+        // Use a custom info window adapter to handle multiple lines of text in the
+        // info window contents.
+
+
+        if (mCameraPosition != null) {
+            mMap.moveCamera(CameraUpdateFactory.newCameraPosition(mCameraPosition));
+        } else if (mCurrentLocation != null) {
+            mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(
+                    new LatLng(mCurrentLocation.getLatitude(),
+                            mCurrentLocation.getLongitude()), DEFAULT_ZOOM));
+        } else {
+            Log.d(TAG, "Current location is null. Using defaults.");
+            mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(mDefaultLocation, DEFAULT_ZOOM));
+            mMap.getUiSettings().setMyLocationButtonEnabled(false);
+        }
+
+        /*try {
+            mMap.getUiSettings().setMyLocationButtonEnabled(false);
+            mMap.setMyLocationEnabled(false);
+
+            if (mCurrentLocation != null) {
+
+                MarkerOptions playerMarker = new MarkerOptions()
+                        .position(new LatLng(mCurrentLocation.getLatitude(), mCurrentLocation.getLongitude()))
+                        .title(GameManager.getInstance().getPlayer().getName())
+                        .icon(BitmapDescriptorFactory.fromResource(R.drawable.avatar))
+                        .zIndex(1000)
+                        .snippet("I'm feeling hungry.");
+
+                mMap.addMarker(playerMarker).setTag("player");
+            }
+        } catch (SecurityException e) {
+            e.printStackTrace();
+        }*/
+    }
+
+    /**
+     * Adds markers for places nearby the device and turns the My Location feature on or off,
+     * provided location permission has been granted.
+     */
+    private void updateMarkers() {
+        if (mMap == null) {
+            return;
+        }
+
+        if (mLocationPermissionGranted) {
+            // Get the businesses and other points of interest located
+            // nearest to the device's current location.
+            @SuppressWarnings("MissingPermission")
+            PendingResult<PlaceLikelihoodBuffer> result = Places.PlaceDetectionApi
+                    .getCurrentPlace(mGoogleApiClient, null);
+            result.setResultCallback(new ResultCallback<PlaceLikelihoodBuffer>() {
+                @Override
+                public void onResult(@NonNull PlaceLikelihoodBuffer likelyPlaces) {
+                    for (PlaceLikelihood placeLikelihood : likelyPlaces) {
+                        // Add a marker for each place near the device's current location, with an
+                        // info window showing place information.
+                        String attributions = (String) placeLikelihood.getPlace().getAttributions();
+                        String snippet = (String) placeLikelihood.getPlace().getAddress();
+                        if (attributions != null) {
+                            snippet = snippet + "\n" + attributions;
+                        }
+                        LatLng latLng = placeLikelihood.getPlace().getLatLng();
+
+                        //if (!player.hasUsedLocation(latLng)) {
+
+                        boolean doesMarkerExist = false;
+
+                        for (Marker marker : markers) { //Check if marker has already been placed on map.
+                            if (marker.getPosition().equals(latLng)) {
+                                doesMarkerExist = true;
+                            }
+                        }
+
+                        if (!doesMarkerExist) {
+
+                            if (GameManager.getInstance().getActiveQuest() == null) {
+
+                                Quest quest = QuestFactory.buildQuest(1, placeLikelihood.getPlace().getLatLng());
+                                quest.updateQuest();
+                                GameManager.getInstance().setActiveQuest(quest);
+
+                                markers.add(MarkerFactory.buildQuestMarker(getApplicationContext(), mMap, placeLikelihood.getPlace().getLatLng(), quest));
+                            }
+
+                            if (placeLikelihood.getPlace().getPlaceTypes().size() > 2) {
+                                int markerCount = getResources().getStringArray(R.array.marker_array_refs).length;
+                                int id = 2;
+                                while (id == 2) {
+                                    id = 1 + (int) (Math.random() * (markerCount - 1));
+                                }
+
+                                String snip = snippet.toLowerCase();
+                                if (snip.contains("river") || snip.contains("bridge") || snip.contains("sea") || snip.contains("ocean")) {
+                                    id = 3;
+                                }
+
+                                markers.add(MarkerFactory.buildMarker(getApplicationContext(), mMap, placeLikelihood.getPlace().getLatLng(), id));
+                            }
+                        }
+                    }
+                    likelyPlaces.release(); // Release the place likelihood buffer.
+                }
+            });
+        } else {
+            mMap.addMarker(new MarkerOptions()
+                    .position(mDefaultLocation)
+                    .title("Title")
+                    .snippet("Info snippet."));
+        }
+
+    }
+
 
     @Override
     protected void onStop() {
@@ -217,99 +470,10 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
         updateMarkers();
     }
 
-    /**
-     * Manipulates the map when it's available.
-     * This callback is triggered when the map is ready to be used.
-     */
-    @Override
-    public void onMapReady(GoogleMap map) {
-        mMap = map;
 
-        try {
-            // Customise the styling of the base map using a JSON object defined
-            // in a raw resource file.
-            boolean success = mMap.setMapStyle(
-                    MapStyleOptions.loadRawResourceStyle(
-                            this, R.raw.style_json));
-
-            if (!success) {
-                Log.e(TAG, "Style parsing failed.");
-            }
-        } catch (Resources.NotFoundException e) {
-            Log.e(TAG, "Can't find style. Error: ", e);
-        }
-
-        // Calculate ActionBar height
-        int actionBarHeight = 0;
-        TypedValue tv = new TypedValue();
-        if (getTheme().resolveAttribute(android.R.attr.actionBarSize, tv, true)) {
-            actionBarHeight = TypedValue.complexToDimensionPixelSize(tv.data, getResources().getDisplayMetrics());
-        }
-
-        mMap.setPadding(0, actionBarHeight, 0, 0);
-
-        // Turn on the My Location layer and the related control on the map.
-        updateLocationUI();
-        // Add markers for nearby places.
-        updateMarkers();
-
-        // Use a custom info window adapter to handle multiple lines of text in the
-        // info window contents.
-        mMap.setInfoWindowAdapter(new GoogleMap.InfoWindowAdapter() {
-
-            @Override
-            // Return null here, so that getInfoContents() is called next.
-            public View getInfoWindow(Marker arg0) {
-                return null;
-            }
-
-            @Override
-            public View getInfoContents(Marker marker) {
-                // Inflate the layouts for the info window, title and snippet.
-                View infoWindow = getLayoutInflater().inflate(R.layout.custom_info_contents, null);
-
-                TextView title = ((TextView) infoWindow.findViewById(R.id.title));
-                title.setText(marker.getTitle());
-
-                TextView snippet = ((TextView) infoWindow.findViewById(R.id.snippet));
-                snippet.setText(marker.getSnippet());
-
-                return infoWindow;
-            }
-        });
-
-        if (mCameraPosition != null) {
-            mMap.moveCamera(CameraUpdateFactory.newCameraPosition(mCameraPosition));
-        } else if (mCurrentLocation != null) {
-            mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(
-                    new LatLng(mCurrentLocation.getLatitude(),
-                            mCurrentLocation.getLongitude()), DEFAULT_ZOOM));
-        } else {
-            Log.d(TAG, "Current location is null. Using defaults.");
-            mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(mDefaultLocation, DEFAULT_ZOOM));
-            mMap.getUiSettings().setMyLocationButtonEnabled(false);
-        }
-
-        mMap.setOnMarkerClickListener(this);
-
-        /*try {
-            mMap.getUiSettings().setMyLocationButtonEnabled(false);
-            mMap.setMyLocationEnabled(false);
-
-            if (mCurrentLocation != null) {
-
-                MarkerOptions playerMarker = new MarkerOptions()
-                        .position(new LatLng(mCurrentLocation.getLatitude(), mCurrentLocation.getLongitude()))
-                        .title(GameManager.getInstance().getPlayer().getName())
-                        .icon(BitmapDescriptorFactory.fromResource(R.drawable.avatar))
-                        .zIndex(1000)
-                        .snippet("I'm feeling hungry.");
-
-                mMap.addMarker(playerMarker).setTag("player");
-            }
-        } catch (SecurityException e) {
-            e.printStackTrace();
-        }*/
+    public static int getPixelsFromDp(Context context, float dp) {
+        final float scale = context.getResources().getDisplayMetrics().density;
+        return (int) (dp * scale + 0.5f);
     }
 
     /**
@@ -385,77 +549,6 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
         updateLocationUI();
     }
 
-    /**
-     * Adds markers for places nearby the device and turns the My Location feature on or off,
-     * provided location permission has been granted.
-     */
-    private void updateMarkers() {
-        if (mMap == null) {
-            return;
-        }
-
-        if (mLocationPermissionGranted) {
-            // Get the businesses and other points of interest located
-            // nearest to the device's current location.
-            @SuppressWarnings("MissingPermission")
-            PendingResult<PlaceLikelihoodBuffer> result = Places.PlaceDetectionApi
-                    .getCurrentPlace(mGoogleApiClient, null);
-            result.setResultCallback(new ResultCallback<PlaceLikelihoodBuffer>() {
-                @Override
-                public void onResult(@NonNull PlaceLikelihoodBuffer likelyPlaces) {
-                    boolean tradePost = false;
-                    for (PlaceLikelihood placeLikelihood : likelyPlaces) {
-                        // Add a marker for each place near the device's current location, with an
-                        // info window showing place information.
-                        String attributions = (String) placeLikelihood.getPlace().getAttributions();
-                        String snippet = (String) placeLikelihood.getPlace().getAddress();
-                        if (attributions != null) {
-                            snippet = snippet + "\n" + attributions;
-                        }
-
-                        LatLng latLng = placeLikelihood.getPlace().getLatLng();
-
-                        //if (!player.hasUsedLocation(latLng)) {
-
-                        boolean doesMarkerExist = false;
-
-                        for (Marker marker : markers) { //Check if marker has already been placed on map.
-                            if (marker.getPosition().equals(latLng)) {
-                                doesMarkerExist = true;
-                            }
-                        }
-
-                        if (!doesMarkerExist) {
-
-                            int markerCount = getResources().getStringArray(R.array.marker_array_refs).length;
-
-                            int id = 1 + (int) (Math.random() * (markerCount - 1));
-                            /*if (snippet.toLowerCase().startsWith("a") || snippet.toLowerCase().startsWith("e") || snippet.toLowerCase().startsWith("s") || snippet.toLowerCase().startsWith("p") || snippet.toLowerCase().startsWith("t") || snippet.toLowerCase().startsWith("l")) {
-                                id = 2;
-                            }*/
-
-                            String snip = snippet.toLowerCase();
-                            if (snip.contains("river") || snip.contains("bridge") || snip.contains("sea") || snip.contains("ocean")) {
-                                id = 3;
-                            }
-
-
-                            markers.add(MarkerFactory.buildMarker(getApplicationContext(), mMap, placeLikelihood.getPlace(), id));
-                        }
-                        //}
-                    }
-                    // Release the place likelihood buffer.
-                    likelyPlaces.release();
-                }
-            });
-        } else {
-            mMap.addMarker(new MarkerOptions()
-                    .position(mDefaultLocation)
-                    .title("Title")
-                    .snippet("Info snippet."));
-        }
-
-    }
 
     /**
      * Updates the map's UI settings based on whether the user has granted location permission.
@@ -477,39 +570,6 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
     }
 
     @Override
-    public boolean onMarkerClick(Marker marker) {
-
-        if (currMarker == null) {
-            currMarker = marker;
-        } else if (currMarker.equals(marker)) {
-
-            //Below code checks user distance from marker.
-            Location location = new Location(marker.getId());
-            location.setLatitude(marker.getPosition().latitude);
-            location.setLongitude(marker.getPosition().longitude);
-
-            float distance = location.distanceTo(mCurrentLocation);
-
-            int markerId = (int) marker.getTag();
-
-            if (markerId == 4 && distance < 5) { //TEMP
-                Intent i = new Intent(getApplicationContext(), AndroidLauncher.class); //LibGDX Tree game Activity!
-                i.putExtra(AndroidLauncher.screenString, MainGame.TREE_GAME_SCREEN);
-                startActivity(i);
-            } else if (markerId == 5 && distance < 5) { //TEMP
-                Intent i = new Intent(getApplicationContext(), AndroidLauncher.class); //LibGDX Rock game Activity!
-                i.putExtra(AndroidLauncher.screenString, MainGame.ROCK_GAME_SCREEN);
-                startActivity(i);
-            }
-            currMarker = null;
-        }
-
-        currMarker = marker;
-
-        return false;
-    }
-
-    @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
         getMenuInflater().inflate(R.menu.menu_maps, menu);
@@ -521,7 +581,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
         // TODO Auto-generated method stub
         switch (item.getItemId()) {
             case android.R.id.home:
-                mDrawerLayout.openDrawer(Gravity.LEFT);
+                mDrawerLayout.openDrawer(Gravity.START);
                 return true;
             default:
                 return super.onOptionsItemSelected(item);
@@ -533,27 +593,26 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
         public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
             Intent i;
             switch (position) {
-                case 1:
+                case INVENTORY:
                     i = new Intent(getApplicationContext(), InventoryActivity.class);
                     Bundle bundle = new Bundle();
                     bundle.putParcelable("player_items", new InventoryItemArray(GameManager.getInstance().getInventory().getItems()));
                     i.putExtras(bundle);
                     startActivity(i);
                     break;
-                case 2:
-                    i = new Intent(getApplicationContext(), AndroidLauncher.class); //LibGDX Activity!
-                    i.putExtra(AndroidLauncher.screenString, MainGame.TREE_GAME_SCREEN);
-                    startActivity(i);
+                case QUESTS:
+                    //i = new Intent(getApplicationContext(), ConversationActivity.class);
+                    //startActivity(i);
                     break;
-                case 3:
+                case CRAFTING:
                     i = new Intent(getApplicationContext(), CraftingActivity.class);
                     startActivity(i);
                     break;
-                case 4:
+                case ACHIEVEMENTS:
                     i = new Intent(getApplicationContext(), StepsGraphActivity.class);
                     startActivity(i);
                     break;
-                case 5:
+                case SETTINGS:
                     i = new Intent(getApplicationContext(), SettingsActivity.class);
                     startActivity(i);
                     break;

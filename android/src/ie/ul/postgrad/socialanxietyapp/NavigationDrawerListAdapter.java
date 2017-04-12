@@ -10,6 +10,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import ie.ul.postgrad.socialanxietyapp.game.GameManager;
+import ie.ul.postgrad.socialanxietyapp.map.MapsActivity;
 
 /**
  * Created by Robert on 18/03/2017.
@@ -21,6 +22,14 @@ public class NavigationDrawerListAdapter extends BaseAdapter {
     private int[] iconIds;
     private static LayoutInflater inflater = null;
     private Context context;
+
+    //Menu item indexes.
+    public static final int PROFILE = 0;
+    public static final int INVENTORY = 1;
+    public static final int QUESTS = 2;
+    public static final int CRAFTING = 3;
+    public static final int ACHIEVEMENTS = 4;
+    public static final int SETTINGS = 5;
 
     public NavigationDrawerListAdapter(Context context, String[] titles, int[] iconIds) {
         this.titles = titles;
@@ -59,7 +68,7 @@ public class NavigationDrawerListAdapter extends BaseAdapter {
         Holder holder = new Holder();
         View rowView;
 
-        if (position == 0) {
+        if (position == PROFILE) {
             rowView = inflater.inflate(R.layout.fragment_nav_profile_display, null);
             ((TextView) rowView.findViewById(R.id.name_display)).setText(GameManager.getInstance().getPlayer().getName());
             ((TextView) rowView.findViewById(R.id.level_display)).setText("Level: " + GameManager.getInstance().getPlayer().getLevel() + "");

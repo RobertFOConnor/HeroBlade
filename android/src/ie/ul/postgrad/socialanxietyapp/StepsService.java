@@ -15,6 +15,8 @@ import android.os.IBinder;
 import android.support.annotation.Nullable;
 import android.support.v4.app.NotificationCompat;
 
+import ie.ul.postgrad.socialanxietyapp.map.MapsActivity;
+
 /**
  * Created by Robert on 16-Mar-17.
  * <p>
@@ -94,14 +96,8 @@ public class StepsService extends Service implements SensorEventListener {
 
         mBuilder.setContentIntent(resultPendingIntent);
 
-        // Set an ID for the notification
-        int mNotificationId = 1234;
-        // Get an instance of the NotificationManager service
-        NotificationManager mNotifyMgr =
-                (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
-
-
-        // Build the notification and issue it.
-        mNotifyMgr.notify(mNotificationId, mBuilder.build());
+        int mNotificationId = 1234;// Set an ID for the notification
+        NotificationManager notificationManager = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);// Get an instance of NotificationManager service
+        notificationManager.notify(mNotificationId, mBuilder.build()); // Build the notification and issue it.
     }
 }

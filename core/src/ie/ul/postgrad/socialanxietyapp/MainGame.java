@@ -27,6 +27,7 @@ public class MainGame extends ApplicationAdapter {
 
     private String screenName;
     public static final String AVATAR_SCREEN = "avatar";
+    public static final String CONVERSATION_SCREEN = "convo";
     public static final String TREE_GAME_SCREEN = "tree";
     public static final String ROCK_GAME_SCREEN = "rock";
 
@@ -43,6 +44,7 @@ public class MainGame extends ApplicationAdapter {
 
         camera = new OrthographicCamera(WIDTH, HEIGHT);
         camera.translate(WIDTH / 2, HEIGHT / 2);
+        camera.update();
         batch = new SpriteBatch();
 
         if (screenName.equals(AVATAR_SCREEN)) {
@@ -51,16 +53,13 @@ public class MainGame extends ApplicationAdapter {
             ScreenManager.setScreen(new CollectingGame(libGdxInterface, batch, camera, 0));
         } else if (screenName.equals(ROCK_GAME_SCREEN)) {
             ScreenManager.setScreen(new CollectingGame(libGdxInterface, batch, camera, 1));
+        } else if (screenName.equals(CONVERSATION_SCREEN)) {
+            ScreenManager.setScreen(new ConversationDisplay(libGdxInterface, batch));
         }
-    }
-
-    private void update() {
-        camera.update();
     }
 
     @Override
     public void render() {
-        update();
         Gdx.gl.glClearColor(119 / 255f, 213 / 255f, 195 / 255f, 1);
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
         batch.setProjectionMatrix(camera.combined);
@@ -70,5 +69,11 @@ public class MainGame extends ApplicationAdapter {
     @Override
     public void dispose() {
         batch.dispose();
+    }
+
+    public void updateConvo(int charId) {
+        if(ScreenManager.getCurrentScreen() instanceof ConversationDisplay) {
+            ((ConversationDisplay)(ScreenManager.getCurrentScreen())).updateConvo(charId);
+        }
     }
 }

@@ -19,4 +19,9 @@ public class DesktopLibgdxInterfaceDummy implements LibGdxInterface {
     public Avatar getAvatar() {
         return new Avatar(2, 2);
     }
+
+    @Override
+    public int getNPCId() {
+        return 0;
+    }
 }

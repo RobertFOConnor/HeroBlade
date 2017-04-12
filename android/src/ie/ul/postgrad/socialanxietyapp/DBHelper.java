@@ -273,13 +273,11 @@ public class DBHelper extends SQLiteOpenHelper {
             Cursor c = db.rawQuery(selectQuery, null);
             if (c.moveToFirst()) {
                 steps = c.getInt((c.getColumnIndex(TRAVEL_COLUMN_STEPS_COUNT)));
-                System.out.println("STEPS: " + c.getInt((c.getColumnIndex(TRAVEL_COLUMN_STEPS_COUNT))) + "DISTANCE: " + c.getInt((c.getColumnIndex(TRAVEL_COLUMN_DISTANCE))) + " DATE: " + c.getString((c.getColumnIndex(TRAVEL_COLUMN_CREATION_DATE))));
-            }
+             }
 
             while (c.moveToNext()) {
                 steps += c.getInt((c.getColumnIndex(TRAVEL_COLUMN_STEPS_COUNT)));
-                System.out.println("STEPS: " + c.getInt((c.getColumnIndex(TRAVEL_COLUMN_STEPS_COUNT))) + " DISTANCE: " + c.getInt((c.getColumnIndex(TRAVEL_COLUMN_DISTANCE))) + "M DATE: " + c.getString((c.getColumnIndex(TRAVEL_COLUMN_CREATION_DATE))));
-            }
+             }
             db.close();
         } catch (Exception e) {
             e.printStackTrace();

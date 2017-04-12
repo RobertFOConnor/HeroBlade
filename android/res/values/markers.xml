@@ -39,6 +39,10 @@
     <array name="marker_coffee_plant">
         <item name="name">Coffee Plant</item>
         <item name="Description">There could be some fresh coffee beans.</item>
+        <item name="drop_item_id_1">3</item>
+        <item name="drop_item_chance_1">0.8</item>
+        <item name="drop_item_id_1">3</item>
+        <item name="drop_item_chance_1">0.8</item>
     </array>
 
     <array name="marker_melon_plant">
