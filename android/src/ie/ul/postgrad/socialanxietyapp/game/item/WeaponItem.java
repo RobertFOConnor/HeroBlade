@@ -4,7 +4,7 @@ import android.util.SparseIntArray;
 
 /**
  * Created by Robert on 24-Feb-17.
- *
+ * <p>
  * An item which can be equipped by the user and used as a weapon.
  */
 
@@ -15,7 +15,7 @@ public class WeaponItem extends Item {
     private SparseIntArray ingredients;
 
     protected WeaponItem(int id, String name, String description, int imageID, int damage, int durability, SparseIntArray ingredients) {
-        super(id, name, description, imageID);
+        super(id, name, description, imageID, ingredients);
         this.damage = damage;
         this.durability = durability;
         this.ingredients = ingredients;
@@ -31,19 +31,5 @@ public class WeaponItem extends Item {
 
     public SparseIntArray getIngredients() {
         return ingredients;
-    }
-
-    public String getIngredientsString() {
-        String s = "Requires: ";
-
-        for (int i = 0; i < ingredients.size(); i++) {
-            s += ingredients.valueAt(i) + " " + ItemFactory.buildItem(ingredients.keyAt(i)).getName();
-            if (i >= ingredients.size()-1) {
-                s += ".";
-            } else {
-                s += ", ";
-            }
-        }
-        return s;
     }
 }

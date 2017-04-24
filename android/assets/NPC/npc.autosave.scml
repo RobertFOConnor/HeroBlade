@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<spriter_data scml_version="1.0" generator="BrashMonkey Spriter" generator_version="r10">
+    <folder id="0" name="bodies">
+        <file id="0" name="bodies/npc_body.png" width="204" height="131" pivot_x="0" pivot_y="1"/>
+    </folder>
+    <folder id="1" name="heads">
+        <file id="0" name="heads/npc_head.png" width="308" height="253" pivot_x="0" pivot_y="1"/>
+    </folder>
+    <folder id="2" name="arms">
+        <file id="0" name="arms/npc_arm.png" width="85" height="130" pivot_x="0" pivot_y="1"/>
+    </folder>
+    <folder id="3" name="eyes">
+        <file id="0" name="eyes/npc_eyes.png" width="136" height="24" pivot_x="0" pivot_y="1"/>
+    </folder>
+    <folder id="4" name="mouths">
+        <file id="0" name="mouths/npc_mouth.png" width="138" height="25" pivot_x="0" pivot_y="1"/>
+    </folder>
+    <folder id="5" name="pants">
+        <file id="0" name="pants/pants.png" width="140" height="101" pivot_x="0" pivot_y="1"/>
+    </folder>
+    <folder id="6" name="shoes">
+        <file id="0" name="shoes/shoe.png" width="20" height="13" pivot_x="0" pivot_y="1"/>
+    </folder>
+    <folder id="7" name="hands">
+        <file id="0" name="hands/npc_hand.png" width="51" height="40" pivot_x="0" pivot_y="1"/>
+    </folder>
+    <entity id="0" name="entity_000">
+        <animation id="0" name="idle" length="500" interval="100">
+            <mainline>
+                <key id="0"/>
+            </mainline>
+        </animation>
+    </entity>
+</spriter_data>

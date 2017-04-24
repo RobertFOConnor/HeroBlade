@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <array name="marker_null">
+        <item name="name">Null Marker</item>
+        <item name="Description">Nothing to see here.</item>
+    </array>
+
+    <array name="marker_enemy">
+        <item name="name">Hostile Enemy</item>
+        <item name="Description">They could be trouble. Better have a weapon ready.</item>
+    </array>
+
+    <array name="marker_quest">
+        <item name="name">Quest Location</item>
+        <item name="Description">These fields should be changed for quest data.</item>
+    </array>
+
+    <array name="marker_fishing">
+        <item name="name">Fishing Spot</item>
+        <item name="Description">This area is ideal for fishing.</item>
+    </array>
+
+    <array name="marker_tree">
+        <item name="name">Tree</item>
+        <item name="Description">Can be chopped down using an axe.</item>
+    </array>
+
+    <array name="marker_rock">
+        <item name="name">Rock</item>
+        <item name="Description">Can be mined for minerals using a pickaxe.</item>
+    </array>
+
+    <array name="marker_berry_bush">
+        <item name="name">Berry Bush</item>
+        <item name="Description">Good source for a healthy snack.</item>
+    </array>
+
+    <array name="marker_coffee_plant">
+        <item name="name">Coffee Plant</item>
+        <item name="Description">There could be some fresh coffee beans.</item>
+        <item name="drop_item_id_1">3</item>
+        <item name="drop_item_chance_1">0.8</item>
+        <item name="drop_item_id_1">3</item>
+        <item name="drop_item_chance_1">0.8</item>
+    </array>
+
+    <array name="marker_melon_plant">
+        <item name="name">Melon Plant</item>
+        <item name="Description">Melons are a great source of energy.</item>
+    </array>
+
+    <array name="marker_bamboo">
+        <item name="name">Bamboo Plant</item>
+        <item name="Description">It has to be healthy if pandas like it so much.</item>
+    </array>
+
+    <array name="marker_hemp">
+        <item name="name">Hemp Fiber Plant</item>
+        <item name="Description">Gives cloth which is useful for making clothes.</item>
+    </array>
+
+    <array name="marker_array_refs">
+        <item>@array/marker_null</item>
+        <item>@array/marker_enemy</item>
+        <item>@array/marker_quest</item>
+        <item>@array/marker_fishing</item>
+        <item>@array/marker_tree</item>
+        <item>@array/marker_rock</item>
+        <item>@array/marker_berry_bush</item>
+        <item>@array/marker_coffee_plant</item>
+        <item>@array/marker_melon_plant</item>
+        <item>@array/marker_bamboo</item>
+        <item>@array/marker_hemp</item>
+    </array>
+
+</resources>

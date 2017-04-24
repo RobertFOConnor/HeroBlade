@@ -33,9 +33,9 @@ public class InventoryListAdapter extends BaseAdapter {
 
         for (int i = 0; i < inventory.size(); i++) {
             int itemId = inventory.keyAt(i);
-            result[i] = ItemFactory.buildItem(itemId).getName();
+            result[i] = ItemFactory.buildItem(context, itemId).getName();
             itemCount[i] = inventory.valueAt(i);
-            imageId[i] = ItemFactory.buildItem(itemId).getImageID();
+            imageId[i] = ItemFactory.buildItem(context, itemId).getImageID();
         }
 
         this.context = context;

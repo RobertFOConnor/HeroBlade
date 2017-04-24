@@ -15,6 +15,8 @@ import android.os.IBinder;
 import android.support.annotation.Nullable;
 import android.support.v4.app.NotificationCompat;
 
+import ie.ul.postgrad.socialanxietyapp.map.MapsActivity;
+
 /**
  * Created by Robert on 16-Mar-17.
  * <p>
@@ -59,7 +61,7 @@ public class StepsService extends Service implements SensorEventListener {
         totalDistance += 0.8f;
         dbHelper.insertStepsEntry(totalDistance);
 
-        if (dbHelper.getSteps() % 100 == 0) { // send notification every 100 steps //TEMP//
+        if (dbHelper.getSteps() % 300 == 0) { // send notification every 100 steps //TEMP//
             notifyOpenedChest();
         }
     }
@@ -86,7 +88,7 @@ public class StepsService extends Service implements SensorEventListener {
                 new NotificationCompat.Builder(this)
                         .setSmallIcon(R.drawable.ic_chest_open)
                         .setContentTitle("You've unlocked a treasure chest!")
-                        .setContentText("You walked 100 steps! The chest has been opened.")
+                        .setContentText("You walked 300 steps! The chest has been opened.")
                         .setVibrate(new long[]{1000, 1000})
                         .setLights(Color.BLUE, 3000, 3000)
                         .setAutoCancel(true)
@@ -94,14 +96,8 @@ public class StepsService extends Service implements SensorEventListener {
 
         mBuilder.setContentIntent(resultPendingIntent);
 
-        // Set an ID for the notification
-        int mNotificationId = 1234;
-        // Get an instance of the NotificationManager service
-        NotificationManager mNotifyMgr =
-                (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
-
-
-        // Build the notification and issue it.
-        mNotifyMgr.notify(mNotificationId, mBuilder.build());
+        int mNotificationId = 1234;// Set an ID for the notification
+        NotificationManager notificationManager = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);// Get an instance of NotificationManager service
+        notificationManager.notify(mNotificationId, mBuilder.build()); // Build the notification and issue it.
     }
 }

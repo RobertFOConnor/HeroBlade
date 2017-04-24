@@ -6,13 +6,10 @@ import android.widget.ListView;
 
 import java.util.ArrayList;
 
+import ie.ul.postgrad.socialanxietyapp.game.item.Item;
 import ie.ul.postgrad.socialanxietyapp.game.item.ItemFactory;
-import ie.ul.postgrad.socialanxietyapp.game.item.WeaponItem;
 
 public class CraftingActivity extends AppCompatActivity {
-
-    private static final int CRAFTABLE_START_ID = 600;
-    private static final int CRAFTABLE_ITEM_COUNT = 10;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -20,10 +17,13 @@ public class CraftingActivity extends AppCompatActivity {
 
         setContentView(R.layout.activity_crafting);
 
-        ArrayList<WeaponItem> items = new ArrayList<>();
+        ArrayList<Item> items = new ArrayList<>();
 
-        for (int i = 0; i < CRAFTABLE_ITEM_COUNT; i++) {
-            items.add((WeaponItem) ItemFactory.buildItem(CRAFTABLE_START_ID + i));
+        for (int i = 1; i < getResources().getStringArray(R.array.item_array_refs).length; i++) {
+            Item item = ItemFactory.buildItem(this, i);
+            if (item.getIngredients().size() > 0) {
+                items.add(item);
+            }
         }
 
         ListView itemList = (ListView) findViewById(R.id.craft_item_list);

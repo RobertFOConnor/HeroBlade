@@ -40,11 +40,11 @@ public class Inventory {
 
     public InventoryItemArray getWeapons() {
         InventoryItemArray arr = new InventoryItemArray();
-        for (int i = 0; i < items.size(); i++) {
+        /*for (int i = 0; i < items.size(); i++) {
             if (ItemFactory.buildItem(items.keyAt(i)) instanceof WeaponItem) {
                 arr.put(items.keyAt(i), items.valueAt(i));
             }
-        }
+        }*/
         return arr;
     }
 }

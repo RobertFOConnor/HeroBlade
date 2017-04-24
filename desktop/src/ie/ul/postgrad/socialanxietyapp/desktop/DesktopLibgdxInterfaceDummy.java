@@ -5,9 +5,11 @@ import ie.ul.postgrad.socialanxietyapp.LibGdxInterface;
 
 /**
  * Created by Robert on 26/03/2017.
+ * <p>
+ * Dummy implementation of LibGdx interface for desktop testing.
  */
 
-public class DesktopLibgdxInterfaceDummy implements LibGdxInterface {
+class DesktopLibgdxInterfaceDummy implements LibGdxInterface {
 
 
     @Override
@@ -18,5 +20,10 @@ public class DesktopLibgdxInterfaceDummy implements LibGdxInterface {
     @Override
     public Avatar getAvatar() {
         return new Avatar(2, 2);
+    }
+
+    @Override
+    public int getNPCId() {
+        return 0;
     }
 }

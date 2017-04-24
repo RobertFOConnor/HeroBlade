@@ -18,7 +18,6 @@ public class AndroidLauncher extends AndroidApplication implements LibGdxInterfa
         Bundle bundle = getIntent().getExtras();
         String screen = (String) bundle.get(screenString);
 
-
         initialize(new MainGame(this, screen), config);
     }
 
@@ -31,5 +30,10 @@ public class AndroidLauncher extends AndroidApplication implements LibGdxInterfa
     @Override
     public Avatar getAvatar() {
         return GameManager.getDatabaseHelper().getAvatar(1);
+    }
+
+    @Override
+    public int getNPCId() {
+        return 0;
     }
 }

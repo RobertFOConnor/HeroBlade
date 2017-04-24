@@ -1,7 +1,7 @@
 package ie.ul.postgrad.socialanxietyapp;
 
 /**
- * Created by Bobbalicious on 26/03/2017.
+ * Created by Robert on 26/03/2017.
  *
  * Represents the players avatar in the game.
  *

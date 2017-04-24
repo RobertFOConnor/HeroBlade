@@ -1,5 +1,7 @@
 package ie.ul.postgrad.socialanxietyapp;
 
+import android.content.Context;
+import android.content.res.TypedArray;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.util.DisplayMetrics;

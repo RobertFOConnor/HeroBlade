@@ -131,11 +131,16 @@ public class DBHelper extends SQLiteOpenHelper {
         Cursor cursor = db.query(PLAYERS_TABLE_NAME, new String[]{PLAYERS_COLUMN_ID,
                         PLAYERS_COLUMN_NAME, PLAYERS_COLUMN_EMAIL, PLAYERS_COLUMN_XP, PLAYERS_COLUMN_LEVEL, PLAYERS_COLUMN_MONEY}, PLAYERS_COLUMN_ID + "=?",
                 new String[]{String.valueOf(id)}, null, null, null, null);
+
         if (cursor != null) {
             cursor.moveToFirst();
         }
 
-        return new Player(cursor.getString(1), cursor.getString(2), Integer.parseInt(cursor.getString(3)), Integer.parseInt(cursor.getString(4)), Integer.parseInt(cursor.getString(5)));
+        Player player = new Player(cursor.getString(1), cursor.getString(2), Integer.parseInt(cursor.getString(3)), Integer.parseInt(cursor.getString(4)), Integer.parseInt(cursor.getString(5)));
+
+        cursor.close();
+        db.close();
+        return player;
     }
 
     public Cursor getInventoryData(int id) {
@@ -231,6 +236,7 @@ public class DBHelper extends SQLiteOpenHelper {
                     currentDateStepCounts = c.getInt((c.getColumnIndex(TRAVEL_COLUMN_STEPS_COUNT)));
                 } while (c.moveToNext());
             }
+            c.close();
             db.close();
         } catch (Exception e) {
             e.printStackTrace();
@@ -256,8 +262,9 @@ public class DBHelper extends SQLiteOpenHelper {
                 if (row != -1) {
                     createSuccessful = true;
                 }
-                db.close();
+
             }
+            db.close();
 
         } catch (Exception e) {
             e.printStackTrace();
@@ -274,6 +281,34 @@ public class DBHelper extends SQLiteOpenHelper {
             if (c.moveToFirst()) {
                 steps = c.getInt((c.getColumnIndex(TRAVEL_COLUMN_STEPS_COUNT)));
             }
+
+            while (c.moveToNext()) {
+                steps += c.getInt((c.getColumnIndex(TRAVEL_COLUMN_STEPS_COUNT)));
+            }
+            c.close();
+            db.close();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return steps;
+    }
+
+    public ArrayList<Integer> getDailySteps() {
+
+        ArrayList<Integer> steps = new ArrayList<>();
+
+        String selectQuery = selectAllQuery(TRAVEL_TABLE_NAME) + " WHERE " + TRAVEL_COLUMN_PLAYER_ID + "=" + 1;
+        try {
+            SQLiteDatabase db = this.getReadableDatabase();
+            Cursor c = db.rawQuery(selectQuery, null);
+            if (c.moveToFirst()) {
+                steps.add(c.getInt((c.getColumnIndex(TRAVEL_COLUMN_STEPS_COUNT))));
+            }
+            while (c.moveToNext()) {
+                steps.add(c.getInt((c.getColumnIndex(TRAVEL_COLUMN_STEPS_COUNT))));
+
+            }
+            c.close();
             db.close();
         } catch (Exception e) {
             e.printStackTrace();
@@ -290,6 +325,10 @@ public class DBHelper extends SQLiteOpenHelper {
             if (c.moveToFirst()) {
                 distance = c.getInt((c.getColumnIndex(TRAVEL_COLUMN_DISTANCE)));
             }
+            while (c.moveToNext()) {
+                distance += c.getInt((c.getColumnIndex(TRAVEL_COLUMN_DISTANCE)));
+            }
+            c.close();
             db.close();
         } catch (Exception e) {
             e.printStackTrace();

@@ -99,7 +99,7 @@ public class PlayerAvatarActivity extends AppCompatActivity implements View.OnCl
 
     private void updateWeaponButton() {
         if (player.getWeapon() != -1) {
-            WeaponItem weaponItem = (WeaponItem) ItemFactory.buildItem(player.getWeapon());
+            WeaponItem weaponItem = (WeaponItem) ItemFactory.buildItem(this, player.getWeapon());
             weaponButton.setText("Player Weapon (" + weaponItem.getName() + ")");
             wepaonView.setImageDrawable(getDrawable(weaponItem.getImageID()));
         }
