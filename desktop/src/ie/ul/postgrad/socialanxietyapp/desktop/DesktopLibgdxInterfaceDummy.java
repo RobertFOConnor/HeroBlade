@@ -1,5 +1,7 @@
 package ie.ul.postgrad.socialanxietyapp.desktop;
 
+import com.badlogic.gdx.Gdx;
+
 import ie.ul.postgrad.socialanxietyapp.Avatar;
 import ie.ul.postgrad.socialanxietyapp.LibGdxInterface;
 
@@ -25,5 +27,15 @@ class DesktopLibgdxInterfaceDummy implements LibGdxInterface {
     @Override
     public int getNPCId() {
         return 0;
+    }
+
+    @Override
+    public void collectResource() {
+
+    }
+
+    @Override
+    public void finishGame() {
+        Gdx.app.exit();
     }
 }

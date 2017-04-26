@@ -30,12 +30,24 @@ public class ResourceResultActivity extends AppCompatActivity {
 
         ArrayList<Integer> collectedItems = new ArrayList<>();
 
+        //TEMP
+
         if (markerId == 6) {
             collectedItems.add(2);
             collectedItems.add(24);
         } else if (markerId == 7) {
             collectedItems.add(3);
             collectedItems.add(25);
+        } else if (markerId == 8) {
+            collectedItems.add(4);
+        } else if (markerId == 9) {
+            collectedItems.add(14);
+            collectedItems.add(15);
+        } else if (markerId == 10) {
+            collectedItems.add(16);
+            collectedItems.add(17);
+        } else if (markerId == 11) {
+            collectedItems.add(26);
         }
 
         for (Integer itemId : collectedItems) {

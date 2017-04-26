@@ -85,6 +85,11 @@ public class ConversationActivity extends AndroidApplication implements LibGdxIn
     }
 
     @Override
+    public void collectResource() {
+        //empty method. (This isn't called from this activity. (used for changing avatar appearance.))
+    }
+
+    @Override
     public Avatar getAvatar() {
         return GameManager.getDatabaseHelper().getAvatar(1);
     }
@@ -92,5 +97,10 @@ public class ConversationActivity extends AndroidApplication implements LibGdxIn
     @Override
     public int getNPCId() {
         return quest.getCharacterId();
+    }
+
+    @Override
+    public void finishGame() {
+        finish();
     }
 }

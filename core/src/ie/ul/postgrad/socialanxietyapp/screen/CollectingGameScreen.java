@@ -67,7 +67,10 @@ public class CollectingGameScreen implements Screen {
     private Array<Sprite> clouds;
     private float[] cloudSpeeds;
 
+    private LibGdxInterface libGdxInterface;
+
     public CollectingGameScreen(LibGdxInterface libGdxInterface, SpriteBatch sb, OrthographicCamera camera, int type) {
+        this.libGdxInterface = libGdxInterface;
         this.batch = sb;
         this.camera = camera;
         this.avatar = libGdxInterface.getAvatar();
@@ -119,41 +122,30 @@ public class CollectingGameScreen implements Screen {
     }
 
     private void initializeGame() {
-        clouds = new Array<Sprite>();
+        initClouds();
 
-        int cloudNum = 8;
-        cloudSpeeds = new float[cloudNum];
-
-        for (int i = 0; i < cloudNum; i++) {
-            Sprite cloud = new Sprite(new Texture("cloud_1.png"));
-            cloud.setScale((MainGame.HEIGHT / 1920f) * 4f);
-            clouds.add(cloud);
-
-            cloudSpeeds[i] = -((WIDTH * 0.008f) + (float) (Math.random() * (WIDTH * 0.01f)));
-        }
-
-        for (Sprite s : clouds) {
-            resetCloud(s);
-        }
-
-        plusLog = new Sprite(new Texture("plus_wood_log.png"));
-        plusLog.setPosition(WIDTH, HEIGHT);
 
         bg = new Texture("bg.png");
         if (type == 0) {
             resource = new Texture("tree.png");
             hitSound = loadSound("data/chop.ogg");
             collectSound = loadSound("data/wood_get.ogg");
+
+            plusLog = new Sprite(new Texture("plus_wood_log.png"));
+            plusLog.setPosition(WIDTH, HEIGHT);
         } else {
             resource = new Texture("rock.png");
             hitSound = loadSound("data/pick.ogg");
             collectSound = loadSound("data/rock_get.ogg");
+
+            plusLog = new Sprite(new Texture("plus_rock.png"));
+            plusLog.setPosition(WIDTH, HEIGHT);
         }
 
         startTime = System.nanoTime();
         currTime = System.nanoTime();
-        roundTime = 5000;
-        timeLeft = 5000;
+        roundTime = 30000;
+        timeLeft = 30000;
         winCount = 0;
         seqPos = 0;
         paused = false;
@@ -182,6 +174,7 @@ public class CollectingGameScreen implements Screen {
         timeLeft = roundTime - ((currTime - startTime) / 1000000);
 
         if (timeLeft <= 0) {
+            libGdxInterface.finishGame();
             paused = true;
         } else if (sequence.length == seqPos) {
             player.setAnimation("axe_super_strike");
@@ -190,7 +183,9 @@ public class CollectingGameScreen implements Screen {
             winCount++;
             generateSequence();
             seqPos = 0;
-            startTime = currTime;
+            //startTime = currTime;
+
+            libGdxInterface.collectResource(); //add resource to player inventory using interface
 
             if (roundTime > 1000) {
                 roundTime -= 150;
@@ -318,17 +313,35 @@ public class CollectingGameScreen implements Screen {
     }
 
     private void hitTree(int dir) {
-        player.setAnimation("axe_idle");
-        player.setAnimation("axe_strike");
-
         if (sequence.length != seqPos && !paused) {
             if (sequence[seqPos] == dir) {
+                player.setAnimation("axe_idle");
+                player.setAnimation("axe_strike");
+
                 seqPos++;
                 long id = hitSound.play();
                 hitSound.setPitch(id, .9f + (float) (Math.random() * .4f));
-            } else {
-                paused = true;
             }
+        }
+    }
+
+    //initializes the background clouds.
+    private void initClouds() {
+        clouds = new Array<Sprite>();
+
+        int cloudNum = 8;
+        cloudSpeeds = new float[cloudNum];
+
+        for (int i = 0; i < cloudNum; i++) {
+            Sprite cloud = new Sprite(new Texture("cloud_1.png"));
+            cloud.setScale((MainGame.HEIGHT / 1920f) * 4f);
+            clouds.add(cloud);
+
+            cloudSpeeds[i] = -((WIDTH * 0.008f) + (float) (Math.random() * (WIDTH * 0.001f)));
+        }
+
+        for (Sprite s : clouds) {
+            resetCloud(s);
         }
     }
 }

@@ -106,7 +106,7 @@ public class GameManager {
         GameManager.getInstance().getInventory().addItem(itemId, quantity);
         GameManager.getInstance().updateItemInDatabase(itemId);
 
-        Toast.makeText(context, "You recieved " + quantity + " " + ItemFactory.buildItem(context, itemId).getName(), Toast.LENGTH_SHORT).show();
+        //Toast.makeText(context, "You received " + quantity + " " + ItemFactory.buildItem(context, itemId).getName(), Toast.LENGTH_SHORT).show();
     }
 
     public Quest getActiveQuest() {

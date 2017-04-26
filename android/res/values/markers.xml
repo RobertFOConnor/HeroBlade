@@ -60,6 +60,11 @@
         <item name="Description">Gives cloth which is useful for making clothes.</item>
     </array>
 
+    <array name="marker_flint">
+        <item name="name">Flint</item>
+        <item name="Description">A small dark rock used for crafting tools.</item>
+    </array>
+
     <array name="marker_array_refs">
         <item>@array/marker_null</item>
         <item>@array/marker_enemy</item>
@@ -72,6 +77,7 @@
         <item>@array/marker_melon_plant</item>
         <item>@array/marker_bamboo</item>
         <item>@array/marker_hemp</item>
+        <item>@array/marker_flint</item>
     </array>
 
 </resources>

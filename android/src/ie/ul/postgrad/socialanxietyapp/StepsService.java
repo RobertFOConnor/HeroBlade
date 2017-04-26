@@ -62,7 +62,7 @@ public class StepsService extends Service implements SensorEventListener {
         dbHelper.insertStepsEntry(totalDistance);
 
         if (dbHelper.getSteps() % 300 == 0) { // send notification every 100 steps //TEMP//
-            notifyOpenedChest();
+            //notifyOpenedChest();
         }
     }
 

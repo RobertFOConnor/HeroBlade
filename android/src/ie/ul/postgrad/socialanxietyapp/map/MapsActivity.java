@@ -120,6 +120,8 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
 
         distanceText = (TextView) findViewById(R.id.distance_text);
         stepsText = (TextView) findViewById(R.id.steps_text);
+        distanceText.setVisibility(View.INVISIBLE);
+        stepsText.setVisibility(View.INVISIBLE);
 
         //Start step counter and location service
         Intent mStepsIntent = new Intent(getApplicationContext(), StepsService.class);
@@ -182,8 +184,6 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
                 // Here the marker id is passed to the result activity.
                 int markerId = (int) marker.getTag();
                 marker.remove();
-
-                System.out.println("markerid " + markerId);
 
                 Location location = new Location(marker.getId());
                 location.setLatitude(marker.getPosition().latitude);

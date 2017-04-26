@@ -13,4 +13,8 @@ public interface LibGdxInterface {
     Avatar getAvatar();
 
     int getNPCId();
+
+    void collectResource();
+
+    void finishGame();
 }
