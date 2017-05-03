@@ -22,6 +22,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
 
@@ -101,6 +102,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
     private ViewGroup infoWindow;
     private TextView infoTitle;
     private TextView infoSnippet;
+    private ImageView infoImg;
     private Button infoButton;
     private OnInfoWindowElemTouchListener infoButtonListener;
 
@@ -179,6 +181,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
         this.infoWindow = (ViewGroup) getLayoutInflater().inflate(R.layout.custom_info_window_quick, null);
         this.infoTitle = (TextView) infoWindow.findViewById(R.id.title);
         this.infoSnippet = (TextView) infoWindow.findViewById(R.id.snippet);
+        this.infoImg = (ImageView) infoWindow.findViewById(R.id.info_img);
         this.infoButton = (Button) infoWindow.findViewById(R.id.collect_button);
 
         // Setting custom OnTouchListener which deals with the pressed state
@@ -236,6 +239,9 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
                 // Setting up the infoWindow with current's marker info
                 infoTitle.setText(marker.getTitle());
                 infoSnippet.setText(marker.getSnippet());
+                Context c = getApplicationContext();
+                infoImg.setImageDrawable(c.getResources().getDrawable(c.getResources().getIdentifier("marker_" + String.format("%04d", marker.getTag()), "drawable", c.getPackageName()), getTheme()));
+
                 infoButtonListener.setMarker(marker);
 
                 // We must call this to set the current marker and infoWindow references
