@@ -4,6 +4,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
+
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 
@@ -32,7 +33,9 @@ public class WelcomeActivity extends AppCompatActivity implements View.OnClickLi
 
         // Check if user is already signed in
         if (mFirebaseUser != null) {
-            startIntent(MapsActivity.class);
+            Intent intent = new Intent(getApplicationContext(), MapsActivity.class);
+            intent.putExtra(MapsActivity.USERNAME_KEY, "");
+            startActivity(intent);
             finish();
         }
     }

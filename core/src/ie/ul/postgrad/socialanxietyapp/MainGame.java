@@ -7,6 +7,7 @@ import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 
 import ie.ul.postgrad.socialanxietyapp.screen.AvatarScreen;
+import ie.ul.postgrad.socialanxietyapp.screen.BattleScreen;
 import ie.ul.postgrad.socialanxietyapp.screen.CollectingGameScreen;
 import ie.ul.postgrad.socialanxietyapp.screen.ConversationScreen;
 import ie.ul.postgrad.socialanxietyapp.screen.ScreenManager;
@@ -35,6 +36,7 @@ public class MainGame extends ApplicationAdapter {
     public static final String CONVERSATION_SCREEN = "convo";
     public static final String TREE_GAME_SCREEN = "tree";
     public static final String ROCK_GAME_SCREEN = "rock";
+    public static final String BATTLE_SCREEN = "battle";
 
     public MainGame(LibGdxInterface libGdxInterface, String screenName) {
         this.libGdxInterface = libGdxInterface;
@@ -59,12 +61,14 @@ public class MainGame extends ApplicationAdapter {
             ScreenManager.setScreen(new CollectingGameScreen(libGdxInterface, batch, camera, 1));
         } else if (screenName.equals(CONVERSATION_SCREEN)) {
             ScreenManager.setScreen(new ConversationScreen(libGdxInterface, batch));
+        } else if (screenName.equals(BATTLE_SCREEN)) {
+            ScreenManager.setScreen(new BattleScreen(libGdxInterface, batch));
         }
     }
 
     @Override
     public void render() {
-        Gdx.gl.glClearColor(119 / 255f, 213 / 255f, 195 / 255f, 1);
+        Gdx.gl.glClearColor(0 / 255f, 161 / 255f, 169 / 255f, 1);
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
         batch.setProjectionMatrix(camera.combined);
         ScreenManager.getCurrentScreen().render();

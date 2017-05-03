@@ -15,8 +15,10 @@ public class Player {
     private int money;
     private int weapon_id;
     private int currQuestId;
+    private int maxHealth;
+    private int currHealth;
 
-    public Player(String name, String email, int xp, int level, int money) {
+    public Player(String name, String email, int xp, int level, int money, int maxHealth, int currHealth) {
         this.name = name;
         this.email = email;
         this.xp = xp;
@@ -24,6 +26,8 @@ public class Player {
         this.money = money;
         this.weapon_id = -1;
         currQuestId = 1;
+        this.maxHealth = maxHealth;
+        this.currHealth = currHealth;
     }
 
     public Player() {
@@ -32,6 +36,8 @@ public class Player {
         level = 1;
         money = 0;
         weapon_id = -1;
+        maxHealth = 10;
+        currHealth = maxHealth;
     }
 
     public int getWeapon() {
@@ -57,18 +63,16 @@ public class Player {
     public void setXp(int xp) {
         this.xp = xp;
 
-        if(canLevelUp()) { //Check for level up
-            setLevel(getLevel()+1);
+        if (xp >= getXPNeeded()) { //Check for level up
+            setLevel(getLevel() + 1);
+            setMaxHealth(getMaxHealth() + 5);
+            setCurrHealth(getMaxHealth());
         }
-    }
-
-    private boolean canLevelUp() {
-        return (xp > getXPNeeded());
     }
 
     public int getXPNeeded() {
         int xpNeeded = 0;
-        for(int i = 0; i <= level; i++) {
+        for (int i = 0; i <= level; i++) {
             xpNeeded += XPLevels.XP_LEVELS[i];
         }
         return xpNeeded;
@@ -100,6 +104,22 @@ public class Player {
 
     public int getCurrQuestId() {
         return currQuestId;
+    }
+
+    public int getMaxHealth() {
+        return maxHealth;
+    }
+
+    public void setMaxHealth(int maxHealth) {
+        this.maxHealth = maxHealth;
+    }
+
+    public int getCurrHealth() {
+        return currHealth;
+    }
+
+    public void setCurrHealth(int currHealth) {
+        this.currHealth = currHealth;
     }
 
     /*

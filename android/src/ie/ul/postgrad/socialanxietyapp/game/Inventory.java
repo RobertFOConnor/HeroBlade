@@ -1,5 +1,7 @@
 package ie.ul.postgrad.socialanxietyapp.game;
 
+import android.content.Context;
+
 import ie.ul.postgrad.socialanxietyapp.game.item.ItemFactory;
 import ie.ul.postgrad.socialanxietyapp.game.item.WeaponItem;
 
@@ -33,18 +35,17 @@ public class Inventory {
         }
     }
 
-
     public InventoryItemArray getItems() {
         return items;
     }
 
-    public InventoryItemArray getWeapons() {
+    public InventoryItemArray getWeapons(Context context) {
         InventoryItemArray arr = new InventoryItemArray();
-        /*for (int i = 0; i < items.size(); i++) {
-            if (ItemFactory.buildItem(items.keyAt(i)) instanceof WeaponItem) {
+        for (int i = 0; i < items.size(); i++) {
+            if (ItemFactory.buildItem(context, items.keyAt(i)) instanceof WeaponItem) {
                 arr.put(items.keyAt(i), items.valueAt(i));
             }
-        }*/
+        }
         return arr;
     }
 }

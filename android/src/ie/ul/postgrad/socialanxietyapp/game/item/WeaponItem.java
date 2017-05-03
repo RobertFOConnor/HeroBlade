@@ -11,13 +11,17 @@ import android.util.SparseIntArray;
 public class WeaponItem extends Item {
 
     private int damage; //How much damage the weapon can do.
-    private int durability; //How many hits the weapon can last.
+    private int critDamage; //How much damage a critical hit can do.
+    private int maxHealth; //How many hits the weapon can last.
+    private int currHealth; //How much health does the weapon have left.
     private SparseIntArray ingredients;
 
-    protected WeaponItem(int id, String name, String description, int imageID, int damage, int durability, SparseIntArray ingredients) {
+    protected WeaponItem(int id, String name, String description, int imageID, int damage, int critDamage, int maxHealth, int currHealth, SparseIntArray ingredients) {
         super(id, name, description, imageID, ingredients);
         this.damage = damage;
-        this.durability = durability;
+        this.critDamage = critDamage;
+        this.maxHealth = maxHealth;
+        this.currHealth = currHealth;
         this.ingredients = ingredients;
     }
 
@@ -25,8 +29,20 @@ public class WeaponItem extends Item {
         return damage;
     }
 
-    public int getDurability() {
-        return durability;
+    public int getCritDamage() {
+        return critDamage;
+    }
+
+    public int getMaxHealth() {
+        return maxHealth;
+    }
+
+    public int getCurrHealth() {
+        return currHealth;
+    }
+
+    public void setCurrHealth(int currHealth) {
+        this.currHealth = currHealth;
     }
 
     public SparseIntArray getIngredients() {

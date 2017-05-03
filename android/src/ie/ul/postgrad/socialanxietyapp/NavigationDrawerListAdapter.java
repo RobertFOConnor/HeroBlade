@@ -78,8 +78,8 @@ public class NavigationDrawerListAdapter extends BaseAdapter {
                 public void onClick(View view) {
                     /*Intent i = new Intent(context, PlayerAvatarActivity.class);
                     context.startActivity(i);*/
-                    Intent i = new Intent(context, AndroidLauncher.class); //LibGDX Activity!
-                    i.putExtra(AndroidLauncher.screenString, MainGame.AVATAR_SCREEN);
+                    Intent i = new Intent(context, PlayerAvatarActivity.class); //LibGDX Activity!
+                    //i.putExtra(AndroidLauncher.screenString, MainGame.AVATAR_SCREEN);
                     context.startActivity(i);
 
                     if (context instanceof MapsActivity) {

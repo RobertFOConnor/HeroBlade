@@ -48,6 +48,7 @@ import com.google.android.gms.maps.model.MarkerOptions;
 import java.util.ArrayList;
 
 import ie.ul.postgrad.socialanxietyapp.AndroidLauncher;
+import ie.ul.postgrad.socialanxietyapp.BattleActivity;
 import ie.ul.postgrad.socialanxietyapp.ConversationActivity;
 import ie.ul.postgrad.socialanxietyapp.CraftingActivity;
 import ie.ul.postgrad.socialanxietyapp.InventoryActivity;
@@ -103,6 +104,9 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
     private Button infoButton;
     private OnInfoWindowElemTouchListener infoButtonListener;
 
+    public static final String USERNAME_KEY = "user";
+    private String userName = "";
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -135,12 +139,14 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
 
         mDrawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
         mDrawerList = (ListView) findViewById(R.id.left_drawer);
+
+        userName = (String) getIntent().getExtras().get(USERNAME_KEY);
     }
 
     @Override
     protected void onStart() {
         super.onStart();
-        GameManager.getInstance().startGame(this);
+        GameManager.getInstance().startGame(this, userName);
         updateDistanceText();
 
         String[] menuTitles = new String[]{"Inventory", "Quests", "Crafting", "Achievements", "Settings"};
@@ -197,16 +203,19 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
                         intent.putExtra(ResourceResultActivity.MARKER_ID, markerId);
                         startActivity(intent);
 
-                    } else if (markerId == 4) { //TEMP
+                    } else if (markerId == MarkerFactory.ID_TREE) { //TEMP
                         Intent i = new Intent(getApplicationContext(), AndroidLauncher.class); //LibGDX Tree game Activity!
                         i.putExtra(AndroidLauncher.screenString, MainGame.TREE_GAME_SCREEN);
                         startActivity(i);
-                    } else if (markerId == 5) { //TEMP
+                    } else if (markerId == MarkerFactory.ID_ROCK) { //TEMP
                         Intent i = new Intent(getApplicationContext(), AndroidLauncher.class); //LibGDX Rock game Activity!
                         i.putExtra(AndroidLauncher.screenString, MainGame.ROCK_GAME_SCREEN);
                         startActivity(i);
-                    } else if (markerId == 2) {
+                    } else if (markerId == MarkerFactory.ID_QUEST) {
                         Intent i = new Intent(getApplicationContext(), ConversationActivity.class); //Quest Activity!
+                        startActivity(i);
+                    } else if (markerId == MarkerFactory.ID_ENEMY) {
+                        Intent i = new Intent(getApplicationContext(), BattleActivity.class); //Battle Activity!
                         startActivity(i);
                     }
                 }

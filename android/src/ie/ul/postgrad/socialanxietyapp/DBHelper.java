@@ -21,32 +21,47 @@ import ie.ul.postgrad.socialanxietyapp.game.Player;
 
 public class DBHelper extends SQLiteOpenHelper {
 
-    public static final int DATABASE_VERSION = 6;
+    public static final int DATABASE_VERSION = 8;
+
     public static final String DATABASE_NAME = "AnxietyApp.db";
     public static final String PLAYERS_TABLE_NAME = "players";
     public static final String PLAYERS_COLUMN_ID = "id";
     public static final String PLAYERS_COLUMN_NAME = "name";
     public static final String PLAYERS_COLUMN_EMAIL = "email";
-    public static final String PLAYERS_COLUMN_XP = "xp";
     public static final String PLAYERS_COLUMN_LEVEL = "level";
+    public static final String PLAYERS_COLUMN_XP = "xp";
     public static final String PLAYERS_COLUMN_MONEY = "money";
+    public static final String PLAYERS_COLUMN_MAX_HEALTH = "max_health";
+    public static final String PLAYERS_COLUMN_CURR_HEALTH = "curr_health";
+    public static final String PLAYERS_COLUMN_QUESTS = "quests";
 
     public static final String INVENTORY_TABLE_NAME = "inventory";
     public static final String INVENTORY_COLUMN_PLAYER_ID = "player_id";
     public static final String INVENTORY_COLUMN_ID = "item_id";
     public static final String INVENTORY_COLUMN_QUANTITY = "quantity";
-    public static final String INVENTORY_COLUMN_DAMAGE = "damage";
 
-    public static final String TRAVEL_TABLE_NAME = "travel";
+    public static final String WEAPON_TABLE_NAME = "weapon_inventory";
+    public static final String WEAPON_COLUMN_PLAYER_ID = "player_id";
+    public static final String WEAPON_COLUMN_ID = "weapon_id";
+    public static final String WEAPON_COLUMN_CURR_HEALTH = "durability";
+
+    public static final String TRAVEL_TABLE_NAME = "statistics";
     public static final String TRAVEL_COLUMN_PLAYER_ID = "player_id";
     public static final String TRAVEL_COLUMN_CREATION_DATE = "creation_date";
     public static final String TRAVEL_COLUMN_STEPS_COUNT = "step_count";
     public static final String TRAVEL_COLUMN_DISTANCE = "distance";
+    public static final String TRAVEL_COLUMN_TIME_PLAYED = "time_played";
 
     public static final String AVATAR_TABLE_NAME = "avatar";
     public static final String AVATAR_COLUMN_PLAYER_ID = "player_id";
+    public static final String AVATAR_COLUMN_SKIN_COLOR = "skin_color";
     public static final String AVATAR_COLUMN_HAIR_TYPE = "hair_type";
     public static final String AVATAR_COLUMN_HAIR_COLOR = "hair_color";
+    public static final String AVATAR_COLUMN_EYE_TYPE = "eye_type";
+    public static final String AVATAR_COLUMN_EYE_COLOR = "eye_color";
+    public static final String AVATAR_COLUMN_SHIRT = "shirt";
+    public static final String AVATAR_COLUMN_PANTS = "pants";
+    public static final String AVATAR_COLUMN_SHOES = "shoes";
 
 
     public DBHelper(Context context) {
@@ -54,7 +69,7 @@ public class DBHelper extends SQLiteOpenHelper {
     }
 
     public void onCreate(SQLiteDatabase db) {
-        db.execSQL("CREATE TABLE " + PLAYERS_TABLE_NAME + " (id integer primary key, name text, email text, xp integer, level integer, money integer)");
+        db.execSQL("CREATE TABLE " + PLAYERS_TABLE_NAME + " (id integer primary key, name text, email text, xp integer, level integer, money integer, max_health integer, curr_health integer)");
         db.execSQL("CREATE TABLE " + INVENTORY_TABLE_NAME + " (player_id integer key, item_id integer, quantity integer)");
         db.execSQL("CREATE TABLE " + TRAVEL_TABLE_NAME + " (player_id integer key, creation_date text, step_count integer, distance integer)");
         db.execSQL("CREATE TABLE " + AVATAR_TABLE_NAME + " (player_id integer key, hair_type integer, hair_color integer)");
@@ -100,10 +115,13 @@ public class DBHelper extends SQLiteOpenHelper {
         if (cursor.getCount() > 0) {
             cursor.moveToFirst();
         }
-        return new Avatar(cursor.getInt(1), cursor.getInt(2));
+        Avatar avatar = new Avatar(cursor.getInt(1), cursor.getInt(2));
+        cursor.close();
+        db.close();
+        return avatar;
     }
 
-    public boolean insertPlayer(String name, String email, int xp, int level, int money) {
+    public boolean insertPlayer(String name, String email, int xp, int level, int money, int maxHealth) {
         SQLiteDatabase db = this.getWritableDatabase();
         ContentValues contentValues = new ContentValues();
         contentValues.put(PLAYERS_COLUMN_NAME, name);
@@ -111,6 +129,8 @@ public class DBHelper extends SQLiteOpenHelper {
         contentValues.put(PLAYERS_COLUMN_XP, xp);
         contentValues.put(PLAYERS_COLUMN_LEVEL, level);
         contentValues.put(PLAYERS_COLUMN_MONEY, money);
+        contentValues.put(PLAYERS_COLUMN_MAX_HEALTH, maxHealth);
+        contentValues.put(PLAYERS_COLUMN_CURR_HEALTH, maxHealth);
         db.insert(PLAYERS_TABLE_NAME, null, contentValues);
         return true;
     }
@@ -129,14 +149,14 @@ public class DBHelper extends SQLiteOpenHelper {
         SQLiteDatabase db = this.getReadableDatabase();
 
         Cursor cursor = db.query(PLAYERS_TABLE_NAME, new String[]{PLAYERS_COLUMN_ID,
-                        PLAYERS_COLUMN_NAME, PLAYERS_COLUMN_EMAIL, PLAYERS_COLUMN_XP, PLAYERS_COLUMN_LEVEL, PLAYERS_COLUMN_MONEY}, PLAYERS_COLUMN_ID + "=?",
+                        PLAYERS_COLUMN_NAME, PLAYERS_COLUMN_EMAIL, PLAYERS_COLUMN_XP, PLAYERS_COLUMN_LEVEL, PLAYERS_COLUMN_MONEY, PLAYERS_COLUMN_MAX_HEALTH, PLAYERS_COLUMN_CURR_HEALTH}, PLAYERS_COLUMN_ID + "=?",
                 new String[]{String.valueOf(id)}, null, null, null, null);
 
         if (cursor != null) {
             cursor.moveToFirst();
         }
 
-        Player player = new Player(cursor.getString(1), cursor.getString(2), Integer.parseInt(cursor.getString(3)), Integer.parseInt(cursor.getString(4)), Integer.parseInt(cursor.getString(5)));
+        Player player = new Player(cursor.getString(1), cursor.getString(2), Integer.parseInt(cursor.getString(3)), Integer.parseInt(cursor.getString(4)), Integer.parseInt(cursor.getString(5)), Integer.parseInt(cursor.getString(6)), Integer.parseInt(cursor.getString(7)));
 
         cursor.close();
         db.close();
@@ -161,6 +181,8 @@ public class DBHelper extends SQLiteOpenHelper {
         contentValues.put(PLAYERS_COLUMN_XP, player.getXp());
         contentValues.put(PLAYERS_COLUMN_LEVEL, player.getLevel());
         contentValues.put(PLAYERS_COLUMN_MONEY, player.getMoney());
+        contentValues.put(PLAYERS_COLUMN_MAX_HEALTH, player.getMaxHealth());
+        contentValues.put(PLAYERS_COLUMN_CURR_HEALTH, player.getCurrHealth());
         db.update(PLAYERS_TABLE_NAME, contentValues, PLAYERS_COLUMN_ID + " = ? ", new String[]{Integer.toString(1)});
         return true;
     }
@@ -175,33 +197,11 @@ public class DBHelper extends SQLiteOpenHelper {
         return true;
     }
 
-    public Integer deletePlayer(Integer id) {
-        SQLiteDatabase db = this.getWritableDatabase();
-        return db.delete(PLAYERS_TABLE_NAME,
-                PLAYERS_COLUMN_ID + " = ? ",
-                new String[]{Integer.toString(id)});
-    }
-
     public Integer deleteItem(Integer id) {
         SQLiteDatabase db = this.getWritableDatabase();
         return db.delete(INVENTORY_TABLE_NAME,
                 INVENTORY_COLUMN_ID + " = ? ",
                 new String[]{Integer.toString(id)});
-    }
-
-    public ArrayList<String> getAllPlayers() {
-        ArrayList<String> array_list = new ArrayList<>();
-
-        SQLiteDatabase db = this.getReadableDatabase();
-        Cursor res = db.rawQuery(selectAllQuery(PLAYERS_TABLE_NAME), null);
-        res.moveToFirst();
-
-        while (!res.isAfterLast()) {
-            array_list.add(res.getString(res.getColumnIndex(PLAYERS_COLUMN_NAME)));
-            res.moveToNext();
-        }
-        res.close();
-        return array_list;
     }
 
     public InventoryItemArray getInventory() {

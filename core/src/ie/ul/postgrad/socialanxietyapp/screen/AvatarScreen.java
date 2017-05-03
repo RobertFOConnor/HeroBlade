@@ -61,9 +61,9 @@ public class AvatarScreen implements Screen {
         Data data = reader.getData();
 
         player = new Player(data.getEntity(0));
-        player.setScale((MainGame.HEIGHT / 1920f) * 2f);
+        player.setScale((MainGame.HEIGHT / 1920f) * 4.5f);
         player.setAnimation("idle");
-        player.setPosition(MainGame.WIDTH / 2, MainGame.HEIGHT / 2 - 150);
+        player.setPosition(MainGame.WIDTH / 2, 0);
 
         Player.PlayerListener myListener = new LibGdxAnimationListener() {
             @Override
@@ -91,7 +91,7 @@ public class AvatarScreen implements Screen {
         if (Gdx.input.justTouched()) {
             player.setAnimation("scratch");
 
-            if (Gdx.input.getX() < MainGame.WIDTH / 2) {
+            /*if (Gdx.input.getX() < MainGame.WIDTH / 2) {
 
                 hairIndex++;
                 if (hairIndex >= 9) { //No. of hairstyles
@@ -106,7 +106,7 @@ public class AvatarScreen implements Screen {
             }
             avatar.setHairtype(hairIndex);
             avatar.setHairColor(hairColorIndex);
-            libGdxInterface.saveAvatar(avatar);
+            libGdxInterface.saveAvatar(avatar);*/
         }
         player.setObject("hair", 1f, 1, hairIndex);
     }

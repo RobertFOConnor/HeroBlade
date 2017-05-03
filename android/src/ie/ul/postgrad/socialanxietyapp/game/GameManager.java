@@ -1,7 +1,6 @@
 package ie.ul.postgrad.socialanxietyapp.game;
 
 import android.content.Context;
-import android.widget.Toast;
 
 import com.google.firebase.auth.FirebaseAuth;
 
@@ -9,7 +8,6 @@ import java.util.ArrayList;
 
 import ie.ul.postgrad.socialanxietyapp.Avatar;
 import ie.ul.postgrad.socialanxietyapp.DBHelper;
-import ie.ul.postgrad.socialanxietyapp.game.item.ItemFactory;
 import ie.ul.postgrad.socialanxietyapp.game.quest.Quest;
 
 /**
@@ -45,13 +43,13 @@ public class GameManager {
         visitedLoactions = new ArrayList<>();
     }
 
-    public void startGame(Context context) {
+    public void startGame(Context context, String userName) {
         //Initialize database helper
         databaseHelper = new DBHelper(context);
 
         //Add new player to database
         if (databaseHelper.numberOfPlayers() == 0) {
-            databaseHelper.insertPlayer(mAuth.getCurrentUser().getEmail(), mAuth.getCurrentUser().getEmail(), 0, 1, 0);
+            databaseHelper.insertPlayer(userName, mAuth.getCurrentUser().getEmail(), 0, 1, 0, 10);
             databaseHelper.insertAvatar(new Avatar(0, 0));
         }
 
@@ -115,5 +113,10 @@ public class GameManager {
 
     public void setActiveQuest(Quest activeQuest) {
         this.activeQuest = activeQuest;
+    }
+
+    public void awardXP(int xp) {
+        player.setXp(player.getXp() + xp);
+        updatePlayerInDatabase();
     }
 }

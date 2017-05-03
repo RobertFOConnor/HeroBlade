@@ -10,6 +10,7 @@ import android.widget.TextView;
 import java.util.ArrayList;
 
 import ie.ul.postgrad.socialanxietyapp.game.GameManager;
+import ie.ul.postgrad.socialanxietyapp.game.Player;
 import ie.ul.postgrad.socialanxietyapp.game.item.ItemFactory;
 
 public class ResourceResultActivity extends AppCompatActivity {
@@ -59,6 +60,13 @@ public class ResourceResultActivity extends AppCompatActivity {
             GameManager.getInstance().givePlayer(this, itemId, 1);
 
         }
+
+        TextView tv = new TextView(this);
+        tv.setText("+50XP");
+        tv.setTextColor(Color.BLACK);
+        resourceList.addView(tv);
+
+        GameManager.getInstance().awardXP(50);
 
         findViewById(R.id.continue_button).setOnClickListener(new View.OnClickListener() {
             @Override

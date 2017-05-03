@@ -9,4 +9,5 @@
 
 
     <color name="transparent">#00000000</color>
+    <color name="half_transparent">#50000000</color>
 </resources>

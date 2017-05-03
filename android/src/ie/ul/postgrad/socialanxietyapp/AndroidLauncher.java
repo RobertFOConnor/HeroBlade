@@ -40,15 +40,16 @@ public class AndroidLauncher extends AndroidApplication implements LibGdxInterfa
 
     @Override
     public void collectResource() {
-        if(screen.equals(MainGame.TREE_GAME_SCREEN)) {
+        if (screen.equals(MainGame.TREE_GAME_SCREEN)) {
             GameManager.getInstance().givePlayer(this, 23, 1);
-        } else if(screen.equals(MainGame.ROCK_GAME_SCREEN)) {
+        } else if (screen.equals(MainGame.ROCK_GAME_SCREEN)) {
             GameManager.getInstance().givePlayer(this, 27, 1);
         }
     }
 
     @Override
     public void finishGame() {
+        GameManager.getInstance().awardXP(100);
         finish();
     }
 }

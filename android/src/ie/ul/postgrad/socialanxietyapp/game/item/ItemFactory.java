@@ -53,8 +53,8 @@ public class ItemFactory {
         itemValues.recycle();
 
 
-        if(damage > -1) {
-            return new WeaponItem(id, name, description, imageId, 0, 0, ingredients);
+        if(damage > 0) {
+            return new WeaponItem(id, name, description, imageId, damage, damage+2, 10, 10, ingredients);
         } else {
             return new Item(id, name, description, imageId, ingredients);
         }

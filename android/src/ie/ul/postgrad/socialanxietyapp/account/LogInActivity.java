@@ -56,7 +56,9 @@ public class LogInActivity extends AppCompatActivity implements View.OnClickList
                                 Toast.makeText(LogInActivity.this, getString(R.string.authentication_failed) + task.getException(),
                                         Toast.LENGTH_SHORT).show();
                             } else {
-                                startActivity(new Intent(LogInActivity.this, MapsActivity.class));
+                                Intent intent = new Intent(getApplicationContext(), MapsActivity.class);
+                                intent.putExtra(MapsActivity.USERNAME_KEY, "");
+                                startActivity(intent);
                                 Toast.makeText(LogInActivity.this, getString(R.string.login_success), Toast.LENGTH_SHORT).show();
                                 finish();
                             }

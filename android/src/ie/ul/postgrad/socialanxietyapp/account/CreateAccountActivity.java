@@ -58,7 +58,9 @@ public class CreateAccountActivity extends AppCompatActivity {
                                                 Toast.LENGTH_SHORT).show();
                                     } else {
                                         Toast.makeText(CreateAccountActivity.this, "Account Created!", Toast.LENGTH_SHORT).show();
-                                        startActivity(new Intent(getApplicationContext(), MapsActivity.class));
+                                        Intent intent = new Intent(getApplicationContext(), MapsActivity.class);
+                                        intent.putExtra(MapsActivity.USERNAME_KEY, name);
+                                        startActivity(intent);
                                     }
                                 }
                             });

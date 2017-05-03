@@ -22,13 +22,13 @@ public class WeaponSelectionActivity extends AppCompatActivity {
         setContentView(R.layout.activity_inventory);
 
         itemList = (ListView) findViewById(R.id.item_list);
-        InventoryListAdapter adapter = new InventoryListAdapter(this, GameManager.getInstance().getInventory().getWeapons());
+        InventoryListAdapter adapter = new InventoryListAdapter(this, GameManager.getInstance().getInventory().getWeapons(this));
         itemList.setAdapter(adapter);
 
         itemList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                int selectedItemID = GameManager.getInstance().getInventory().getWeapons().keyAt((int) itemList.getItemAtPosition(position));
+                int selectedItemID = GameManager.getInstance().getInventory().getWeapons(getApplicationContext()).keyAt((int) itemList.getItemAtPosition(position));
 
                 Intent returnIntent = new Intent();
                 returnIntent.putExtra("result",selectedItemID);
