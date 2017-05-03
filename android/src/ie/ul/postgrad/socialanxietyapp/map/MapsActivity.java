@@ -141,12 +141,13 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
         mDrawerList = (ListView) findViewById(R.id.left_drawer);
 
         userName = (String) getIntent().getExtras().get(USERNAME_KEY);
+
+        GameManager.getInstance().startGame(this, userName);
     }
 
     @Override
     protected void onStart() {
         super.onStart();
-        GameManager.getInstance().startGame(this, userName);
         updateDistanceText();
 
         String[] menuTitles = new String[]{"Inventory", "Quests", "Crafting", "Achievements", "Settings"};

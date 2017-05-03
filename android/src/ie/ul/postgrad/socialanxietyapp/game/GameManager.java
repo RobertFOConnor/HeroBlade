@@ -8,6 +8,9 @@ import java.util.ArrayList;
 
 import ie.ul.postgrad.socialanxietyapp.Avatar;
 import ie.ul.postgrad.socialanxietyapp.DBHelper;
+import ie.ul.postgrad.socialanxietyapp.game.item.IDs;
+import ie.ul.postgrad.socialanxietyapp.game.item.ItemFactory;
+import ie.ul.postgrad.socialanxietyapp.game.item.WeaponItem;
 import ie.ul.postgrad.socialanxietyapp.game.quest.Quest;
 
 /**
@@ -22,7 +25,7 @@ public class GameManager {
     //Game objects
     private Player player;
     private Inventory inventory;
-    private ArrayList<ConsumedLocation> visitedLoactions;
+    private ArrayList<ConsumedLocation> visitedLocations;
 
     //SQLLite objects
     private static DBHelper databaseHelper;
@@ -40,7 +43,7 @@ public class GameManager {
     private GameManager() {
         player = new Player();
         inventory = new Inventory();
-        visitedLoactions = new ArrayList<>();
+        visitedLocations = new ArrayList<>();
     }
 
     public void startGame(Context context, String userName) {
@@ -49,12 +52,12 @@ public class GameManager {
 
         //Add new player to database
         if (databaseHelper.numberOfPlayers() == 0) {
-            databaseHelper.insertPlayer(userName, mAuth.getCurrentUser().getEmail(), 0, 1, 0, 10);
+            databaseHelper.insertPlayer(userName, mAuth.getCurrentUser().getEmail(), 0, 1, 0, 20);
             databaseHelper.insertAvatar(new Avatar(0, 0));
         }
 
         setPlayer(databaseHelper.getPlayer(1));
-        setInventory(new Inventory(databaseHelper.getInventory()));
+        setInventory(new Inventory(databaseHelper.getInventory(), databaseHelper.getWeapons(), context));
     }
 
     public Player getPlayer() {
@@ -88,6 +91,20 @@ public class GameManager {
         }
     }
 
+    public void updateWeaponInDatabase(int itemId, int currHealth) {
+
+        if (databaseHelper.getWeaponsData(itemId).moveToFirst()) {
+            if (currHealth > 0) {
+                databaseHelper.updateWeapon(1, itemId, currHealth);
+                System.out.println("WEAPON UPDATED!");
+            } else {
+                databaseHelper.deleteWeapon(itemId);
+            }
+        } else {
+            databaseHelper.insertWeapon(1, itemId, currHealth);
+        }
+    }
+
     public void updatePlayerInDatabase() {
         databaseHelper.updatePlayer(player);
     }
@@ -101,8 +118,14 @@ public class GameManager {
     }
 
     public void givePlayer(Context context, int itemId, int quantity) {
-        GameManager.getInstance().getInventory().addItem(itemId, quantity);
-        GameManager.getInstance().updateItemInDatabase(itemId);
+        if (IDs.isWeapon(itemId)) {
+            WeaponItem weaponItem = (WeaponItem) ItemFactory.buildItem(context, itemId);
+            getInventory().getWeapons().add(weaponItem);
+            updateWeaponInDatabase(weaponItem.getId(), weaponItem.getCurrHealth());
+        } else {
+            getInventory().addItem(itemId, quantity);
+            updateItemInDatabase(itemId);
+        }
 
         //Toast.makeText(context, "You received " + quantity + " " + ItemFactory.buildItem(context, itemId).getName(), Toast.LENGTH_SHORT).show();
     }

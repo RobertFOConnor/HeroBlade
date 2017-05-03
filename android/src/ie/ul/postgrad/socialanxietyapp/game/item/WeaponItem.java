@@ -10,6 +10,7 @@ import android.util.SparseIntArray;
 
 public class WeaponItem extends Item {
 
+    private int databaseId;
     private int damage; //How much damage the weapon can do.
     private int critDamage; //How much damage a critical hit can do.
     private int maxHealth; //How many hits the weapon can last.
@@ -47,5 +48,13 @@ public class WeaponItem extends Item {
 
     public SparseIntArray getIngredients() {
         return ingredients;
+    }
+
+    public int getDatabaseId() {
+        return databaseId;
+    }
+
+    public void setDatabaseId(int databaseId) {
+        this.databaseId = databaseId;
     }
 }

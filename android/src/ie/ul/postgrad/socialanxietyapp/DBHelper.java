@@ -12,6 +12,8 @@ import java.util.Calendar;
 
 import ie.ul.postgrad.socialanxietyapp.game.InventoryItemArray;
 import ie.ul.postgrad.socialanxietyapp.game.Player;
+import ie.ul.postgrad.socialanxietyapp.game.item.ItemFactory;
+import ie.ul.postgrad.socialanxietyapp.game.item.WeaponItem;
 
 /**
  * Created by Robert on 14-Mar-17.
@@ -21,7 +23,7 @@ import ie.ul.postgrad.socialanxietyapp.game.Player;
 
 public class DBHelper extends SQLiteOpenHelper {
 
-    public static final int DATABASE_VERSION = 8;
+    public static final int DATABASE_VERSION = 9;
 
     public static final String DATABASE_NAME = "AnxietyApp.db";
     public static final String PLAYERS_TABLE_NAME = "players";
@@ -43,7 +45,7 @@ public class DBHelper extends SQLiteOpenHelper {
     public static final String WEAPON_TABLE_NAME = "weapon_inventory";
     public static final String WEAPON_COLUMN_PLAYER_ID = "player_id";
     public static final String WEAPON_COLUMN_ID = "weapon_id";
-    public static final String WEAPON_COLUMN_CURR_HEALTH = "durability";
+    public static final String WEAPON_COLUMN_CURR_HEALTH = "curr_health";
 
     public static final String TRAVEL_TABLE_NAME = "statistics";
     public static final String TRAVEL_COLUMN_PLAYER_ID = "player_id";
@@ -63,14 +65,17 @@ public class DBHelper extends SQLiteOpenHelper {
     public static final String AVATAR_COLUMN_PANTS = "pants";
     public static final String AVATAR_COLUMN_SHOES = "shoes";
 
+    private Context context;
 
     public DBHelper(Context context) {
         super(context, DATABASE_NAME, null, DATABASE_VERSION);
+        this.context = context;
     }
 
     public void onCreate(SQLiteDatabase db) {
         db.execSQL("CREATE TABLE " + PLAYERS_TABLE_NAME + " (id integer primary key, name text, email text, xp integer, level integer, money integer, max_health integer, curr_health integer)");
         db.execSQL("CREATE TABLE " + INVENTORY_TABLE_NAME + " (player_id integer key, item_id integer, quantity integer)");
+        db.execSQL("CREATE TABLE " + WEAPON_TABLE_NAME + " (player_id integer key, weapon_id integer, curr_health integer)");
         db.execSQL("CREATE TABLE " + TRAVEL_TABLE_NAME + " (player_id integer key, creation_date text, step_count integer, distance integer)");
         db.execSQL("CREATE TABLE " + AVATAR_TABLE_NAME + " (player_id integer key, hair_type integer, hair_color integer)");
     }
@@ -145,6 +150,16 @@ public class DBHelper extends SQLiteOpenHelper {
         return true;
     }
 
+    public boolean insertWeapon(int player_id, int weapon_id, int curr_health) {
+        SQLiteDatabase db = this.getWritableDatabase();
+        ContentValues contentValues = new ContentValues();
+        contentValues.put(WEAPON_COLUMN_PLAYER_ID, player_id);
+        contentValues.put(WEAPON_COLUMN_ID, weapon_id);
+        contentValues.put(WEAPON_COLUMN_CURR_HEALTH, curr_health);
+        db.insert(WEAPON_TABLE_NAME, null, contentValues);
+        return true;
+    }
+
     public Player getPlayer(int id) {
         SQLiteDatabase db = this.getReadableDatabase();
 
@@ -166,6 +181,11 @@ public class DBHelper extends SQLiteOpenHelper {
     public Cursor getInventoryData(int id) {
         SQLiteDatabase db = this.getReadableDatabase();
         return db.rawQuery(selectAllQuery(INVENTORY_TABLE_NAME) + " WHERE " + INVENTORY_COLUMN_ID + "=" + id, null);
+    }
+
+    public Cursor getWeaponsData(int id) {
+        SQLiteDatabase db = this.getReadableDatabase();
+        return db.rawQuery(selectAllQuery(WEAPON_TABLE_NAME) + " WHERE " + WEAPON_COLUMN_ID + "=" + id, null);
     }
 
     public int numberOfPlayers() {
@@ -197,10 +217,27 @@ public class DBHelper extends SQLiteOpenHelper {
         return true;
     }
 
+    public boolean updateWeapon(Integer player_id, int weapon_id, int curr_health) {
+        SQLiteDatabase db = this.getWritableDatabase();
+        ContentValues contentValues = new ContentValues();
+        contentValues.put(WEAPON_COLUMN_PLAYER_ID, player_id);
+        contentValues.put(WEAPON_COLUMN_ID, weapon_id);
+        contentValues.put(WEAPON_COLUMN_CURR_HEALTH, curr_health);
+        db.update(WEAPON_TABLE_NAME, contentValues, WEAPON_COLUMN_ID + " = ? ", new String[]{Integer.toString(weapon_id)});
+        return true;
+    }
+
     public Integer deleteItem(Integer id) {
         SQLiteDatabase db = this.getWritableDatabase();
         return db.delete(INVENTORY_TABLE_NAME,
                 INVENTORY_COLUMN_ID + " = ? ",
+                new String[]{Integer.toString(id)});
+    }
+
+    public Integer deleteWeapon(Integer id) {
+        SQLiteDatabase db = this.getWritableDatabase();
+        return db.delete(WEAPON_TABLE_NAME,
+                WEAPON_COLUMN_ID + " = ? ",
                 new String[]{Integer.toString(id)});
     }
 
@@ -213,6 +250,23 @@ public class DBHelper extends SQLiteOpenHelper {
 
         while (!res.isAfterLast()) {
             array_list.put(Integer.parseInt(res.getString(res.getColumnIndex(INVENTORY_COLUMN_ID))), Integer.parseInt(res.getString(res.getColumnIndex(INVENTORY_COLUMN_QUANTITY))));
+            res.moveToNext();
+        }
+        res.close();
+        return array_list;
+    }
+
+    public ArrayList<WeaponItem> getWeapons() {
+        ArrayList<WeaponItem> array_list = new ArrayList<>();
+
+        SQLiteDatabase db = this.getReadableDatabase();
+        Cursor res = db.rawQuery(selectAllQuery(WEAPON_TABLE_NAME), null);
+        res.moveToFirst();
+
+        while (!res.isAfterLast()) {
+            WeaponItem weaponItem = (WeaponItem) ItemFactory.buildItem(context, Integer.parseInt(res.getString(res.getColumnIndex(WEAPON_COLUMN_ID))));
+            weaponItem.setCurrHealth(Integer.parseInt(res.getString(res.getColumnIndex(WEAPON_COLUMN_CURR_HEALTH))));
+            array_list.add(weaponItem);
             res.moveToNext();
         }
         res.close();

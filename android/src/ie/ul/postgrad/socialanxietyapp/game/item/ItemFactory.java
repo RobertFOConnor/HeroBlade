@@ -58,6 +58,5 @@ public class ItemFactory {
         } else {
             return new Item(id, name, description, imageId, ingredients);
         }
-
     }
 }

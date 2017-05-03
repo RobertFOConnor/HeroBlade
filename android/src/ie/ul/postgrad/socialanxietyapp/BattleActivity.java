@@ -16,6 +16,7 @@ import ie.ul.postgrad.socialanxietyapp.game.Enemy;
 import ie.ul.postgrad.socialanxietyapp.game.EnemyFactory;
 import ie.ul.postgrad.socialanxietyapp.game.GameManager;
 import ie.ul.postgrad.socialanxietyapp.game.Player;
+import ie.ul.postgrad.socialanxietyapp.game.item.WeaponItem;
 
 public class BattleActivity extends AndroidApplication implements LibGdxInterface, View.OnClickListener {
 
@@ -23,6 +24,8 @@ public class BattleActivity extends AndroidApplication implements LibGdxInterfac
 
     private Player player;
     private Enemy enemy;
+    private int weaponIndex;
+
     private LinearLayout textDisplay;
     private GridLayout battleMenu;
     private TextView dialogueText;
@@ -49,12 +52,13 @@ public class BattleActivity extends AndroidApplication implements LibGdxInterfac
 
 
         player = GameManager.getInstance().getPlayer();
+
+        weaponIndex = 0;
+
         myHealth = (ProgressBar) findViewById(R.id.user_health);
         myHealth.setScaleY(3f);
         myHealth.setMax(player.getMaxHealth());
         myHealth.setProgress(player.getCurrHealth());
-        myHealth.setMax(20);
-        myHealth.setProgress(20);
 
         enemyHealth = (ProgressBar) findViewById(R.id.enemy_health);
         enemyHealth.setScaleY(3f);
@@ -85,14 +89,27 @@ public class BattleActivity extends AndroidApplication implements LibGdxInterfac
         switch (v.getId()) {
 
             case R.id.attack_button:
-                enemy.setCurrHealth(enemy.getCurrHealth() - 3);
+                WeaponItem weaponItem = GameManager.getInstance().getInventory().getWeapons().get(weaponIndex);
+
+                enemy.setCurrHealth(enemy.getCurrHealth() - weaponItem.getDamage());
                 enemyHealth.setProgress(enemy.getCurrHealth());
                 showText();
-                dialogueText.setText("Your sword did 3 damage!");
+                dialogueText.setText(player.getName() + "'s " + weaponItem.getName() + " did " + weaponItem.getDamage() + " damage!");
+                weaponItem.setCurrHealth(weaponItem.getCurrHealth() - 1);
+                GameManager.getInstance().getInventory().getWeapons().set(weaponIndex, weaponItem);
+                GameManager.getInstance().updateWeaponInDatabase(weaponItem.getId(), weaponItem.getCurrHealth());
+
+
+                System.out.println("CURR: " + GameManager.getInstance().getInventory().getWeapons().get(0).getCurrHealth());
                 break;
             case R.id.change_weapon_button:
                 Intent intent = new Intent(this, WeaponSelectionActivity.class);
                 startActivityForResult(intent, WEAPON_REQUEST);
+                break;
+            case R.id.run_button:
+                finish();
+                break;
+
         }
     }
 
@@ -103,11 +120,9 @@ public class BattleActivity extends AndroidApplication implements LibGdxInterfac
             // Make sure the request was successful
             if (resultCode == RESULT_OK) {
                 // The user picked a weapon.
-                int result = data.getIntExtra("result", 0);
-                //player.setWeapon(result);
-                //updateWeaponButton();
+                weaponIndex = data.getIntExtra("result", 0);
                 showText();
-                dialogueText.setText("You have changed weapon.");
+                dialogueText.setText(player.getName() + " changed weapon to " + GameManager.getInstance().getInventory().getWeapons().get(weaponIndex).getName() + ".");
             }
         }
     }
@@ -154,8 +169,8 @@ public class BattleActivity extends AndroidApplication implements LibGdxInterfac
                 myHealth.setProgress(myHealth.getProgress() - 3);
                 dialogueText.setText(enemy.getName() + " throws a punch dealing 3 damage.");
             } else {
-                myHealth.setProgress(myHealth.getProgress() - 5);
-                dialogueText.setText(enemy.getName() + " throws a critical punch dealing 5 damage.");
+                myHealth.setProgress(myHealth.getProgress() - 4);
+                dialogueText.setText(enemy.getName() + " throws a critical punch dealing 4 damage.");
             }
             player.setCurrHealth(myHealth.getProgress());
             GameManager.getInstance().updatePlayerInDatabase();
@@ -230,7 +245,7 @@ public class BattleActivity extends AndroidApplication implements LibGdxInterfac
 
     @Override
     public int getNPCId() {
-        return 2;
+        return 1;
     }
 
     @Override
