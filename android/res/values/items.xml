@@ -10,7 +10,7 @@
         <item name="desc">Its dead. RIP in peace.</item>
         <item name="worth">20</item>
         <item name="damage">0</item>
-        <item name="energy">100</item>
+        <item name="energy">5</item>
     </array>
 
     <array name="item_2">
@@ -18,7 +18,7 @@
         <item name="desc">A juicy snack.</item>
         <item name="worth">10</item>
         <item name="damage">0</item>
-        <item name="energy">50</item>
+        <item name="energy">5</item>
     </array>
 
     <array name="item_3">
@@ -26,7 +26,7 @@
         <item name="desc">They sure smell good!</item>
         <item name="worth">10</item>
         <item name="damage">0</item>
-        <item name="energy">50</item>
+        <item name="energy">2</item>
     </array>
 
     <array name="item_4">
@@ -34,7 +34,7 @@
         <item name="desc">It tastes like happiness.</item>
         <item name="worth">10</item>
         <item name="damage">0</item>
-        <item name="energy">50</item>
+        <item name="energy">10</item>
     </array>
 
     <array name="item_5">
@@ -49,14 +49,14 @@
         <item name="desc">A tasty red apple. An ideal snack.</item>
         <item name="worth">20</item>
         <item name="damage">0</item>
-        <item name="energy">0</item>
+        <item name="energy">5</item>
     </array>
     <array name="item_7">
         <item name="name">Carrot</item>
         <item name="desc">Tasty when raw but goes well in a stew too.</item>
         <item name="worth">20</item>
         <item name="damage">0</item>
-        <item name="energy">0</item>
+        <item name="energy">3</item>
     </array>
 
     <array name="item_8">
@@ -64,7 +64,7 @@
         <item name="desc"></item>
         <item name="worth">20</item>
         <item name="damage">0</item>
-        <item name="energy">0</item>
+        <item name="energy">3</item>
     </array>
 
     <array name="item_9">
@@ -88,7 +88,7 @@
         <item name="desc"></item>
         <item name="worth">20</item>
         <item name="damage">0</item>
-        <item name="energy">0</item>
+        <item name="energy">4</item>
     </array>
 
     <array name="item_12">
@@ -96,7 +96,7 @@
         <item name="desc"></item>
         <item name="worth">20</item>
         <item name="damage">0</item>
-        <item name="energy">0</item>
+        <item name="energy">5</item>
     </array>
 
     <array name="item_13">

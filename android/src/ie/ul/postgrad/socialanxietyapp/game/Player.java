@@ -120,6 +120,9 @@ public class Player {
 
     public void setCurrHealth(int currHealth) {
         this.currHealth = currHealth;
+        if (currHealth > maxHealth) {
+            this.currHealth = maxHealth;
+        }
     }
 
     /*

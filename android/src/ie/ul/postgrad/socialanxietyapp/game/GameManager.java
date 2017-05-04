@@ -1,6 +1,7 @@
 package ie.ul.postgrad.socialanxietyapp.game;
 
 import android.content.Context;
+import android.widget.Toast;
 
 import com.google.firebase.auth.FirebaseAuth;
 
@@ -9,6 +10,7 @@ import java.util.UUID;
 
 import ie.ul.postgrad.socialanxietyapp.Avatar;
 import ie.ul.postgrad.socialanxietyapp.DBHelper;
+import ie.ul.postgrad.socialanxietyapp.game.item.FoodItem;
 import ie.ul.postgrad.socialanxietyapp.game.item.IDs;
 import ie.ul.postgrad.socialanxietyapp.game.item.ItemFactory;
 import ie.ul.postgrad.socialanxietyapp.game.item.WeaponItem;
@@ -143,5 +145,14 @@ public class GameManager {
     public void awardXP(int xp) {
         player.setXp(player.getXp() + xp);
         updatePlayerInDatabase();
+    }
+
+    public void consumeFoodItem(Context context, int id) {
+        FoodItem food = ((FoodItem) ItemFactory.buildItem(context, id));
+        player.setCurrHealth(player.getCurrHealth() + food.getEnergy());
+        inventory.removeItem(id, 1);
+        updateItemInDatabase(id);
+        updatePlayerInDatabase();
+        Toast.makeText(context, player.getName() + " ate a " + food.getName() + " and restored +" + food.getEnergy() + " health.", Toast.LENGTH_SHORT).show();
     }
 }

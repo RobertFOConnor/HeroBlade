@@ -2,10 +2,15 @@ package ie.ul.postgrad.socialanxietyapp;
 
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
+import android.util.SparseIntArray;
 import android.view.View;
 import android.widget.ListView;
 
+import java.util.ArrayList;
+
 import ie.ul.postgrad.socialanxietyapp.game.GameManager;
+import ie.ul.postgrad.socialanxietyapp.game.item.Item;
+import ie.ul.postgrad.socialanxietyapp.game.item.ItemFactory;
 
 public class InventoryActivity extends AppCompatActivity implements View.OnClickListener {
 
@@ -19,7 +24,15 @@ public class InventoryActivity extends AppCompatActivity implements View.OnClick
         setContentView(R.layout.activity_inventory);
 
         itemList = (ListView) findViewById(R.id.item_list);
-        itemAdapter = new InventoryListAdapter(this, GameManager.getInstance().getInventory().getItems());
+
+        SparseIntArray itemArray = GameManager.getInstance().getInventory().getItems();
+        ArrayList<Item> items = new ArrayList<>();
+
+        for(int i = 0; i < itemArray.size(); i++) {
+            items.add(ItemFactory.buildItem(this, itemArray.keyAt(i)));
+        }
+
+        itemAdapter = new InventoryListAdapter(this, items);
         weaponAdapter = new WeaponListAdapter(this, GameManager.getInstance().getInventory().getWeapons());
         itemList.setAdapter(itemAdapter);
 
