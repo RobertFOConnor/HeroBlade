@@ -97,7 +97,7 @@ public class BattleActivity extends AndroidApplication implements LibGdxInterfac
                 dialogueText.setText(player.getName() + "'s " + weaponItem.getName() + " did " + weaponItem.getDamage() + " damage!");
                 weaponItem.setCurrHealth(weaponItem.getCurrHealth() - 1);
                 GameManager.getInstance().getInventory().getWeapons().set(weaponIndex, weaponItem);
-                GameManager.getInstance().updateWeaponInDatabase(weaponItem.getId(), weaponItem.getCurrHealth());
+                GameManager.getInstance().updateWeaponInDatabase(weaponItem.getUUID(), weaponItem.getId(), weaponItem.getCurrHealth());
 
 
                 System.out.println("CURR: " + GameManager.getInstance().getInventory().getWeapons().get(0).getCurrHealth());

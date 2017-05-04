@@ -16,8 +16,6 @@ import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.util.TypedValue;
 import android.view.Gravity;
-import android.view.Menu;
-import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
@@ -49,13 +47,13 @@ import com.google.android.gms.maps.model.MarkerOptions;
 import java.util.ArrayList;
 
 import ie.ul.postgrad.socialanxietyapp.AndroidLauncher;
-import ie.ul.postgrad.socialanxietyapp.AvatarCustomizationActivity;
 import ie.ul.postgrad.socialanxietyapp.BattleActivity;
 import ie.ul.postgrad.socialanxietyapp.ConversationActivity;
 import ie.ul.postgrad.socialanxietyapp.CraftingActivity;
 import ie.ul.postgrad.socialanxietyapp.InventoryActivity;
 import ie.ul.postgrad.socialanxietyapp.MainGame;
 import ie.ul.postgrad.socialanxietyapp.NavigationDrawerListAdapter;
+import ie.ul.postgrad.socialanxietyapp.NearbyLocationsActivity;
 import ie.ul.postgrad.socialanxietyapp.R;
 import ie.ul.postgrad.socialanxietyapp.ResourceResultActivity;
 import ie.ul.postgrad.socialanxietyapp.SettingsActivity;
@@ -137,8 +135,38 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
         markers = new ArrayList<>();
 
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
-        toolbar.setNavigationIcon(R.drawable.ic_menu);
+        toolbar.setTitle("");
         setSupportActionBar(toolbar);
+
+        findViewById(R.id.menu_button).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                mDrawerLayout.openDrawer(Gravity.START);
+            }
+        });
+
+        findViewById(R.id.marker_button).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(getApplicationContext(), NearbyLocationsActivity.class);
+                int[] markerIds = new int[9];
+                float[] markerDistances = new float[9];
+
+                if (markers.size() < 9) {
+                    markerIds = new int[markers.size()];
+                    markerDistances = new float[markers.size()];
+                }
+
+                for (int i = 0; i < markerIds.length; i++) {
+                    markerIds[i] = (int) markers.get(i).getTag();
+                    markerDistances[i] = getMarkerDistance(markers.get(i));
+                }
+                intent.putExtra(NearbyLocationsActivity.MARKER_IDS, markerIds);
+                intent.putExtra(NearbyLocationsActivity.MARKER_DISTANCES, markerDistances);
+
+                startActivity(intent);
+            }
+        });
 
         mDrawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
         mDrawerList = (ListView) findViewById(R.id.left_drawer);
@@ -153,7 +181,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
         super.onStart();
         updateDistanceText();
 
-        String[] menuTitles = new String[]{"Inventory", "Quests", "Crafting", "Achievements", "Settings"};
+        final String[] menuTitles = new String[]{"Inventory", "Quests", "Crafting", "Achievements", "Settings"};
         int[] menuIcons = new int[]{R.drawable.ic_backpack, R.drawable.ic_quest, R.drawable.ic_crafting, R.drawable.ic_achievements, R.drawable.ic_settings};
 
         mDrawerList.setAdapter(new NavigationDrawerListAdapter(this, menuTitles, menuIcons));
@@ -194,12 +222,10 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
             protected void onClickConfirmed(View v, Marker marker) {
                 // Here the marker id is passed to the result activity.
                 int markerId = (int) marker.getTag();
+                markers.remove(marker);
                 marker.remove();
 
-                Location location = new Location(marker.getId());
-                location.setLatitude(marker.getPosition().latitude);
-                location.setLongitude(marker.getPosition().longitude);
-                float distance = location.distanceTo(mCurrentLocation);
+                float distance = getMarkerDistance(marker);
 
                 if (distance < 500) {
 
@@ -241,7 +267,6 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
                 infoSnippet.setText(marker.getSnippet());
                 Context c = getApplicationContext();
                 infoImg.setImageDrawable(c.getResources().getDrawable(c.getResources().getIdentifier("marker_" + String.format("%04d", marker.getTag()), "drawable", c.getPackageName()), getTheme()));
-
                 infoButtonListener.setMarker(marker);
 
                 // We must call this to set the current marker and infoWindow references
@@ -318,6 +343,13 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
         }*/
     }
 
+    private float getMarkerDistance(Marker marker) {
+        Location location = new Location(marker.getId());
+        location.setLatitude(marker.getPosition().latitude);
+        location.setLongitude(marker.getPosition().longitude);
+        return location.distanceTo(mCurrentLocation);
+    }
+
     /**
      * Adds markers for places nearby the device and turns the My Location feature on or off,
      * provided location permission has been granted.
@@ -358,7 +390,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
 
                         if (!doesMarkerExist) {
 
-                            if (GameManager.getInstance().getActiveQuest() == null) {
+                            if (!mapContainsQuestMarker()) {
 
                                 Quest quest = QuestFactory.buildQuest(1, placeLikelihood.getPlace().getLatLng());
                                 quest.updateQuest();
@@ -393,6 +425,15 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
                     .snippet("Info snippet."));
         }
 
+    }
+
+    private boolean mapContainsQuestMarker() {
+        for (Marker m : markers) {
+            if ((int) m.getTag() == MarkerFactory.ID_QUEST) {
+                return true;
+            }
+        }
+        return false;
     }
 
 
@@ -579,25 +620,6 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
             mMap.setMyLocationEnabled(false);
             mMap.getUiSettings().setMyLocationButtonEnabled(false);
             mCurrentLocation = null;
-        }
-    }
-
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.menu_maps, menu);
-        return true;
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        // TODO Auto-generated method stub
-        switch (item.getItemId()) {
-            case android.R.id.home:
-                mDrawerLayout.openDrawer(Gravity.START);
-                return true;
-            default:
-                return super.onOptionsItemSelected(item);
         }
     }
 

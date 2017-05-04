@@ -5,6 +5,7 @@ import android.content.Context;
 import com.google.firebase.auth.FirebaseAuth;
 
 import java.util.ArrayList;
+import java.util.UUID;
 
 import ie.ul.postgrad.socialanxietyapp.Avatar;
 import ie.ul.postgrad.socialanxietyapp.DBHelper;
@@ -91,17 +92,17 @@ public class GameManager {
         }
     }
 
-    public void updateWeaponInDatabase(int itemId, int currHealth) {
+    public void updateWeaponInDatabase(String UUID, int itemId, int currHealth) {
 
-        if (databaseHelper.getWeaponsData(itemId).moveToFirst()) {
+        if (databaseHelper.getWeaponsData(UUID).moveToFirst()) {
             if (currHealth > 0) {
-                databaseHelper.updateWeapon(1, itemId, currHealth);
+                databaseHelper.updateWeapon(1, UUID, itemId, currHealth);
                 System.out.println("WEAPON UPDATED!");
             } else {
-                databaseHelper.deleteWeapon(itemId);
+                databaseHelper.deleteWeapon(UUID);
             }
         } else {
-            databaseHelper.insertWeapon(1, itemId, currHealth);
+            databaseHelper.insertWeapon(1, UUID, itemId, currHealth);
         }
     }
 
@@ -120,8 +121,9 @@ public class GameManager {
     public void givePlayer(Context context, int itemId, int quantity) {
         if (IDs.isWeapon(itemId)) {
             WeaponItem weaponItem = (WeaponItem) ItemFactory.buildItem(context, itemId);
+            weaponItem.setUUID(UUID.randomUUID().toString());
             getInventory().getWeapons().add(weaponItem);
-            updateWeaponInDatabase(weaponItem.getId(), weaponItem.getCurrHealth());
+            updateWeaponInDatabase(weaponItem.getUUID(), weaponItem.getId(), weaponItem.getCurrHealth());
         } else {
             getInventory().addItem(itemId, quantity);
             updateItemInDatabase(itemId);

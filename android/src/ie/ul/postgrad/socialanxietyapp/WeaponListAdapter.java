@@ -22,6 +22,7 @@ import ie.ul.postgrad.socialanxietyapp.game.item.WeaponItem;
 public class WeaponListAdapter extends BaseAdapter {
 
     private String[] names;
+    private String[] uuid;
     private Context context;
     private int[] damage;
     private int[] maxHealth;
@@ -34,6 +35,7 @@ public class WeaponListAdapter extends BaseAdapter {
         int count = weapons.size();
 
         names = new String[count];
+        uuid = new String[count];
         damage = new int[count];
         maxHealth = new int[count];
         currHealth = new int[count];
@@ -41,6 +43,7 @@ public class WeaponListAdapter extends BaseAdapter {
 
         for (int i = 0; i < count; i++) {
             names[i] = weapons.get(i).getName();
+            uuid[i] = weapons.get(i).getUUID();
             damage[i] = weapons.get(i).getDamage();
             maxHealth[i] = weapons.get(i).getMaxHealth();
             currHealth[i] = weapons.get(i).getCurrHealth();
@@ -73,6 +76,7 @@ public class WeaponListAdapter extends BaseAdapter {
         TextView tv;
         TextView tv2;
         TextView tv3;
+        TextView tvUUID;
         ProgressBar pb;
         ImageView img;
     }
@@ -87,8 +91,10 @@ public class WeaponListAdapter extends BaseAdapter {
         holder.pb = (ProgressBar) rowView.findViewById(R.id.weapon_health_bar);
         holder.tv2 = (TextView) rowView.findViewById(R.id.damage_field);
         holder.tv3 = (TextView) rowView.findViewById(R.id.health_field);
+        holder.tvUUID = (TextView) rowView.findViewById(R.id.uuid);
         holder.img = (ImageView) rowView.findViewById(R.id.item_image);
         holder.tv.setText(names[position]);
+        holder.tvUUID.setText(uuid[position]);
         holder.pb.setMax(maxHealth[position]);
         holder.pb.setProgress(currHealth[position]);
         holder.tv2.setText("DMG: " + damage[position]);

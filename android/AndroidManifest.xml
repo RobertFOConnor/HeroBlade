@@ -79,8 +79,11 @@
         <activity
             android:name=".ResourceResultActivity"
             android:theme="@style/Theme.Transparent" />
-        <activity android:name=".ConversationActivity"></activity>
-        <activity android:name=".AvatarCustomizationActivity"></activity>
+        <activity android:name=".ConversationActivity" />
+        <activity android:name=".AvatarCustomizationActivity" />
+        <activity
+            android:name=".NearbyLocationsActivity"
+            android:theme="@style/Theme.Transparent"></activity>
     </application>
 
 </manifest>

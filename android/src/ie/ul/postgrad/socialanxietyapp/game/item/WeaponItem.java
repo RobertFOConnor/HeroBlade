@@ -10,7 +10,7 @@ import android.util.SparseIntArray;
 
 public class WeaponItem extends Item {
 
-    private int databaseId;
+    private String UUID;
     private int damage; //How much damage the weapon can do.
     private int critDamage; //How much damage a critical hit can do.
     private int maxHealth; //How many hits the weapon can last.
@@ -50,11 +50,11 @@ public class WeaponItem extends Item {
         return ingredients;
     }
 
-    public int getDatabaseId() {
-        return databaseId;
+    public String getUUID() {
+        return UUID;
     }
 
-    public void setDatabaseId(int databaseId) {
-        this.databaseId = databaseId;
+    public void setUUID(String UUID) {
+        this.UUID = UUID;
     }
 }
