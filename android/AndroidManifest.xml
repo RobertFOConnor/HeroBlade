@@ -79,9 +79,8 @@
         <activity
             android:name=".ResourceResultActivity"
             android:theme="@style/Theme.Transparent" />
-        <activity android:name=".ConversationActivity">
-
-        </activity>
+        <activity android:name=".ConversationActivity"></activity>
+        <activity android:name=".AvatarCustomizationActivity"></activity>
     </application>
 
 </manifest>

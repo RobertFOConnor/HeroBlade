@@ -1,5 +1,6 @@
 package ie.ul.postgrad.socialanxietyapp;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.LinearLayout;
@@ -33,6 +34,15 @@ public class PlayerAvatarActivity extends AndroidApplication implements LibGdxIn
         MainGame game = new MainGame(this, MainGame.AVATAR_SCREEN);
         View v = initializeForView(game, config);
         ((LinearLayout) findViewById(R.id.avatar_view)).addView(v);
+
+        findViewById(R.id.avatar_edit).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(getApplicationContext(), AvatarCustomizationActivity.class);
+                startActivity(intent);
+                finish();
+            }
+        });
     }
 
     @Override

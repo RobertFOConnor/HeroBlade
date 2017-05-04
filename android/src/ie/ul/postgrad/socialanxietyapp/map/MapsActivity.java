@@ -49,6 +49,7 @@ import com.google.android.gms.maps.model.MarkerOptions;
 import java.util.ArrayList;
 
 import ie.ul.postgrad.socialanxietyapp.AndroidLauncher;
+import ie.ul.postgrad.socialanxietyapp.AvatarCustomizationActivity;
 import ie.ul.postgrad.socialanxietyapp.BattleActivity;
 import ie.ul.postgrad.socialanxietyapp.ConversationActivity;
 import ie.ul.postgrad.socialanxietyapp.CraftingActivity;
@@ -223,7 +224,6 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
                         startActivity(i);
                     }
                 }
-
             }
         };
         this.infoButton.setOnTouchListener(infoButtonListener);
@@ -273,6 +273,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
         }
 
         mMap.setPadding(0, actionBarHeight, 0, 0);
+        mMap.getUiSettings().setMapToolbarEnabled(false);
 
         // Turn on the My Location layer and the related control on the map.
         updateLocationUI();
@@ -284,10 +285,6 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
 
         // Add markers for nearby places.
         updateMarkers();
-
-        // Use a custom info window adapter to handle multiple lines of text in the
-        // info window contents.
-
 
         if (mCameraPosition != null) {
             mMap.moveCamera(CameraUpdateFactory.newCameraPosition(mCameraPosition));
@@ -617,7 +614,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
                     startActivity(i);
                     break;
                 case QUESTS:
-                    //i = new Intent(getApplicationContext(), ConversationActivity.class);
+                    //i = new Intent(getApplicationContext(), AvatarCustomizationActivity.class);
                     //startActivity(i);
                     break;
                 case CRAFTING:

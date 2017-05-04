@@ -10,6 +10,7 @@ import ie.ul.postgrad.socialanxietyapp.screen.AvatarScreen;
 import ie.ul.postgrad.socialanxietyapp.screen.BattleScreen;
 import ie.ul.postgrad.socialanxietyapp.screen.CollectingGameScreen;
 import ie.ul.postgrad.socialanxietyapp.screen.ConversationScreen;
+import ie.ul.postgrad.socialanxietyapp.screen.Screen;
 import ie.ul.postgrad.socialanxietyapp.screen.ScreenManager;
 
 /**
@@ -83,5 +84,9 @@ public class MainGame extends ApplicationAdapter {
         if (ScreenManager.getCurrentScreen() instanceof ConversationScreen) {
             ((ConversationScreen) (ScreenManager.getCurrentScreen())).updateConvo(charId);
         }
+    }
+
+    public Screen getScreen() {
+        return ScreenManager.getCurrentScreen();
     }
 }
