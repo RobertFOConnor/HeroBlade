@@ -11,7 +11,7 @@ import java.util.UUID;
 import ie.ul.postgrad.socialanxietyapp.Avatar;
 import ie.ul.postgrad.socialanxietyapp.DBHelper;
 import ie.ul.postgrad.socialanxietyapp.game.item.FoodItem;
-import ie.ul.postgrad.socialanxietyapp.game.item.IDs;
+import ie.ul.postgrad.socialanxietyapp.game.item.Item;
 import ie.ul.postgrad.socialanxietyapp.game.item.ItemFactory;
 import ie.ul.postgrad.socialanxietyapp.game.item.WeaponItem;
 import ie.ul.postgrad.socialanxietyapp.game.quest.Quest;
@@ -97,12 +97,7 @@ public class GameManager {
     public void updateWeaponInDatabase(String UUID, int itemId, int currHealth) {
 
         if (databaseHelper.getWeaponsData(UUID).moveToFirst()) {
-            if (currHealth > 0) {
-                databaseHelper.updateWeapon(1, UUID, itemId, currHealth);
-                System.out.println("WEAPON UPDATED!");
-            } else {
-                databaseHelper.deleteWeapon(UUID);
-            }
+            databaseHelper.updateWeapon(1, UUID, itemId, currHealth);
         } else {
             databaseHelper.insertWeapon(1, UUID, itemId, currHealth);
         }
@@ -121,8 +116,9 @@ public class GameManager {
     }
 
     public void givePlayer(Context context, int itemId, int quantity) {
-        if (IDs.isWeapon(itemId)) {
-            WeaponItem weaponItem = (WeaponItem) ItemFactory.buildItem(context, itemId);
+        Item item = ItemFactory.buildItem(context, itemId);
+        if (item instanceof WeaponItem) {
+            WeaponItem weaponItem = (WeaponItem) item;
             weaponItem.setUUID(UUID.randomUUID().toString());
             getInventory().getWeapons().add(weaponItem);
             updateWeaponInDatabase(weaponItem.getUUID(), weaponItem.getId(), weaponItem.getCurrHealth());
@@ -148,11 +144,23 @@ public class GameManager {
     }
 
     public void consumeFoodItem(Context context, int id) {
-        FoodItem food = ((FoodItem) ItemFactory.buildItem(context, id));
-        player.setCurrHealth(player.getCurrHealth() + food.getEnergy());
-        inventory.removeItem(id, 1);
-        updateItemInDatabase(id);
-        updatePlayerInDatabase();
-        Toast.makeText(context, player.getName() + " ate a " + food.getName() + " and restored +" + food.getEnergy() + " health.", Toast.LENGTH_SHORT).show();
+        if (player.getCurrHealth() < player.getMaxHealth()) {
+            FoodItem food = ((FoodItem) ItemFactory.buildItem(context, id));
+            player.setCurrHealth(player.getCurrHealth() + food.getEnergy());
+            inventory.removeItem(id, 1);
+            updateItemInDatabase(id);
+            updatePlayerInDatabase();
+            Toast.makeText(context, player.getName() + " ate a " + food.getName() + " and restored +" + food.getEnergy() + " health.", Toast.LENGTH_SHORT).show();
+        } else {
+            Toast.makeText(context, player.getName() + " already has full health.", Toast.LENGTH_SHORT).show();
+        }
+    }
+
+    public void removeWeapon(String UUID) {
+        System.out.println("ITEMS IN WEAPON TABLE: " + databaseHelper.getWeapons().size());
+        WeaponItem weaponItem = inventory.getWeapon(UUID);
+        inventory.getWeapons().remove(weaponItem);
+        databaseHelper.deleteWeapon(UUID);
+        System.out.println("ITEMS IN WEAPON TABLE: " + databaseHelper.getWeapons().size());
     }
 }

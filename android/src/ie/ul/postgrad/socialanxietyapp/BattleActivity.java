@@ -12,6 +12,8 @@ import android.widget.TextView;
 import com.badlogic.gdx.backends.android.AndroidApplication;
 import com.badlogic.gdx.backends.android.AndroidApplicationConfiguration;
 
+import java.util.ArrayList;
+
 import ie.ul.postgrad.socialanxietyapp.game.Enemy;
 import ie.ul.postgrad.socialanxietyapp.game.EnemyFactory;
 import ie.ul.postgrad.socialanxietyapp.game.GameManager;
@@ -24,7 +26,7 @@ public class BattleActivity extends AndroidApplication implements LibGdxInterfac
 
     private Player player;
     private Enemy enemy;
-    private int weaponIndex;
+    private String weaponUUID;
 
     private LinearLayout textDisplay;
     private GridLayout battleMenu;
@@ -53,7 +55,12 @@ public class BattleActivity extends AndroidApplication implements LibGdxInterfac
 
         player = GameManager.getInstance().getPlayer();
 
-        weaponIndex = 0;
+        ArrayList<WeaponItem> weapons = GameManager.getInstance().getInventory().getWeapons();
+        if (weapons.size() > 0) {
+            weaponUUID = weapons.get(0).getUUID();
+        } else {
+            finish(); //TEMP /LEAVE BATTLE IF PLAYER HAS NO WEAPONS
+        }
 
         myHealth = (ProgressBar) findViewById(R.id.user_health);
         myHealth.setScaleY(3f);
@@ -86,24 +93,32 @@ public class BattleActivity extends AndroidApplication implements LibGdxInterfac
 
     @Override
     public void onClick(View v) {
+        WeaponItem weaponItem = GameManager.getInstance().getInventory().getWeapon(weaponUUID);
         switch (v.getId()) {
-
             case R.id.attack_button:
-                WeaponItem weaponItem = GameManager.getInstance().getInventory().getWeapons().get(weaponIndex);
+                if (weaponItem != null) {
+                    enemy.setCurrHealth(enemy.getCurrHealth() - weaponItem.getDamage());
+                    enemyHealth.setProgress(enemy.getCurrHealth());
+                    weaponItem.setCurrHealth(weaponItem.getCurrHealth() - 1);
 
-                enemy.setCurrHealth(enemy.getCurrHealth() - weaponItem.getDamage());
-                enemyHealth.setProgress(enemy.getCurrHealth());
-                showText();
-                dialogueText.setText(player.getName() + "'s " + weaponItem.getName() + " did " + weaponItem.getDamage() + " damage!");
-                weaponItem.setCurrHealth(weaponItem.getCurrHealth() - 1);
-                GameManager.getInstance().getInventory().getWeapons().set(weaponIndex, weaponItem);
-                GameManager.getInstance().updateWeaponInDatabase(weaponItem.getUUID(), weaponItem.getId(), weaponItem.getCurrHealth());
+                    String attackMessage = player.getName() + "'s " + weaponItem.getName() + " did " + weaponItem.getDamage() + " damage!";
 
+                    if (weaponItem.getCurrHealth() <= 0) {
+                        GameManager.getInstance().removeWeapon(weaponItem.getUUID());
+                        attackMessage += " " + player.getName() + "'s " + weaponItem.getName() + " is broken!";
+                        weaponUUID = null;
+                        v.setEnabled(false);
+                    } else {
+                        GameManager.getInstance().updateWeaponInDatabase(weaponItem.getUUID(), weaponItem.getId(), weaponItem.getCurrHealth());
+                    }
 
-                System.out.println("CURR: " + GameManager.getInstance().getInventory().getWeapons().get(0).getCurrHealth());
+                    showText();
+                    dialogueText.setText(attackMessage);
+                }
                 break;
             case R.id.change_weapon_button:
                 Intent intent = new Intent(this, WeaponSelectionActivity.class);
+                intent.putExtra(WeaponSelectionActivity.CURR_WEAPON, weaponUUID);
                 startActivityForResult(intent, WEAPON_REQUEST);
                 break;
             case R.id.run_button:
@@ -120,9 +135,10 @@ public class BattleActivity extends AndroidApplication implements LibGdxInterfac
             // Make sure the request was successful
             if (resultCode == RESULT_OK) {
                 // The user picked a weapon.
-                weaponIndex = data.getIntExtra("result", 0);
+                weaponUUID = data.getStringExtra("result");
                 showText();
-                dialogueText.setText(player.getName() + " changed weapon to " + GameManager.getInstance().getInventory().getWeapons().get(weaponIndex).getName() + ".");
+                dialogueText.setText(player.getName() + " changed weapon to " + GameManager.getInstance().getInventory().getWeapon(weaponUUID).getName() + ".");
+                ((Button) findViewById(R.id.attack_button)).setEnabled(true);
             }
         }
     }

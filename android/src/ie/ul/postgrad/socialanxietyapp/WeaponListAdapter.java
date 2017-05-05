@@ -1,11 +1,13 @@
 package ie.ul.postgrad.socialanxietyapp;
 
 import android.content.Context;
+import android.graphics.Color;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.BaseAdapter;
+import android.widget.ArrayAdapter;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
@@ -19,87 +21,64 @@ import ie.ul.postgrad.socialanxietyapp.game.item.WeaponItem;
  * List adapter for displaying weapon items.
  */
 
-public class WeaponListAdapter extends BaseAdapter {
+public class WeaponListAdapter extends ArrayAdapter<WeaponItem> {
 
-    private String[] names;
-    private String[] uuid;
+    private ArrayList<WeaponItem> weaponItems;
     private Context context;
-    private int[] damage;
-    private int[] maxHealth;
-    private int[] currHealth;
-    private int[] imageId;
-    private static LayoutInflater inflater = null;
+    private String currWeaponUUID;
 
-    public WeaponListAdapter(Context context, ArrayList<WeaponItem> weapons) {
-
-        int count = weapons.size();
-
-        names = new String[count];
-        uuid = new String[count];
-        damage = new int[count];
-        maxHealth = new int[count];
-        currHealth = new int[count];
-        imageId = new int[count];
-
-        for (int i = 0; i < count; i++) {
-            names[i] = weapons.get(i).getName();
-            uuid[i] = weapons.get(i).getUUID();
-            damage[i] = weapons.get(i).getDamage();
-            maxHealth[i] = weapons.get(i).getMaxHealth();
-            currHealth[i] = weapons.get(i).getCurrHealth();
-            imageId[i] = weapons.get(i).getImageID();
-        }
-
-        this.context = context;
-        inflater = (LayoutInflater) context.
-                getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+    public WeaponListAdapter(Context context, ArrayList<WeaponItem> weapons, String selectedWeaponUUID) {
+        super(context, R.layout.fragment_weapon_item, weapons);
+        weaponItems = weapons;
+        this.currWeaponUUID = selectedWeaponUUID;
     }
 
-    @Override
-    public int getCount() {
-        // TODO Auto-generated method stub
-        return names.length;
-    }
-
-    @Override
-    public Object getItem(int position) {
-        return position;
-    }
-
-    @Override
-    public long getItemId(int position) {
-        // TODO Auto-generated method stub
-        return position;
-    }
-
-    public class Holder {
-        TextView tv;
-        TextView tv2;
-        TextView tv3;
-        TextView tvUUID;
-        ProgressBar pb;
-        ImageView img;
-    }
 
     @Override
     public View getView(final int position, View convertView, ViewGroup parent) {
-        // TODO Auto-generated method stub
-        Holder holder = new Holder();
-        View rowView;
-        rowView = inflater.inflate(R.layout.fragment_weapon_item, null);
-        holder.tv = (TextView) rowView.findViewById(R.id.item_title);
-        holder.pb = (ProgressBar) rowView.findViewById(R.id.weapon_health_bar);
-        holder.tv2 = (TextView) rowView.findViewById(R.id.damage_field);
-        holder.tv3 = (TextView) rowView.findViewById(R.id.health_field);
-        holder.tvUUID = (TextView) rowView.findViewById(R.id.uuid);
-        holder.img = (ImageView) rowView.findViewById(R.id.item_image);
-        holder.tv.setText(names[position]);
-        holder.tvUUID.setText(uuid[position]);
-        holder.pb.setMax(maxHealth[position]);
-        holder.pb.setProgress(currHealth[position]);
-        holder.tv2.setText("DMG: " + damage[position]);
-        holder.tv3.setText("DU: " + currHealth[position] + "/" + maxHealth[position]);
-        holder.img.setImageResource(imageId[position]);
-        return rowView;
+        WeaponItem weaponItem = getItem(position);
+        ViewHolder viewHolder;
+
+        if (convertView == null) {
+            viewHolder = new ViewHolder();
+            LayoutInflater inflater = LayoutInflater.from(getContext());
+            convertView = inflater.inflate(R.layout.fragment_weapon_item, parent, false);
+            viewHolder.nameText = (TextView) convertView.findViewById(R.id.item_title);
+            viewHolder.healthBar = (ProgressBar) convertView.findViewById(R.id.weapon_health_bar);
+            viewHolder.damageText = (TextView) convertView.findViewById(R.id.damage_field);
+            viewHolder.durabilityText = (TextView) convertView.findViewById(R.id.health_field);
+            viewHolder.UUIDText = (TextView) convertView.findViewById(R.id.uuid);
+            viewHolder.img = (ImageView) convertView.findViewById(R.id.item_image);
+            viewHolder.bg = (LinearLayout) convertView.findViewById(R.id.item_bg);
+
+            convertView.setTag(viewHolder);
+
+        } else {
+            viewHolder = (ViewHolder) convertView.getTag();
+        }
+
+        viewHolder.nameText.setText(weaponItem.getName());
+        viewHolder.UUIDText.setText(weaponItem.getUUID());
+        viewHolder.healthBar.setMax(weaponItem.getMaxHealth());
+        viewHolder.healthBar.setProgress(weaponItem.getCurrHealth());
+        viewHolder.damageText.setText("DMG: " + weaponItem.getDamage());
+        viewHolder.durabilityText.setText("DU: " + weaponItem.getCurrHealth() + "/" + weaponItem.getMaxHealth());
+        viewHolder.img.setImageResource(weaponItem.getImageID());
+
+        if (weaponItem.getUUID().equals(currWeaponUUID)) {
+            viewHolder.bg.setBackgroundColor(Color.BLUE);
+        }
+
+        return convertView;
+    }
+
+    private static class ViewHolder {
+        TextView nameText;
+        TextView damageText;
+        TextView durabilityText;
+        TextView UUIDText;
+        ProgressBar healthBar;
+        ImageView img;
+        LinearLayout bg;
     }
 }

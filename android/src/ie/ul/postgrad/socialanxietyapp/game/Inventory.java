@@ -4,7 +4,7 @@ import android.content.Context;
 
 import java.util.ArrayList;
 
-import ie.ul.postgrad.socialanxietyapp.game.item.IDs;
+import ie.ul.postgrad.socialanxietyapp.game.item.Item;
 import ie.ul.postgrad.socialanxietyapp.game.item.ItemFactory;
 import ie.ul.postgrad.socialanxietyapp.game.item.WeaponItem;
 
@@ -32,18 +32,16 @@ public class Inventory {
     }
 
     public void addItem(int itemID, int amount) {
-        if (IDs.isWeapon(itemID)) {
-            weapons.add((WeaponItem) ItemFactory.buildItem(context, itemID));
+        Item item = ItemFactory.buildItem(context, itemID);
+        if (item instanceof WeaponItem) {
+            weapons.add((WeaponItem) item);
         } else {
             items.put(itemID, items.get(itemID) + amount);
         }
     }
 
     public void removeItem(int itemID, int amount) {
-        if (IDs.isWeapon(itemID)) {
-
-        } else {
-
+        if (!(ItemFactory.buildItem(context, itemID) instanceof WeaponItem)) {
             if ((items.get(itemID) - amount) <= 0) {
                 items.delete(itemID);
             } else {
@@ -58,5 +56,14 @@ public class Inventory {
 
     public ArrayList<WeaponItem> getWeapons() {
         return weapons;
+    }
+
+    public WeaponItem getWeapon(String UUID) {
+        for (WeaponItem w : weapons) {
+            if (w.getUUID().equals(UUID)) {
+                return w;
+            }
+        }
+        return null;
     }
 }

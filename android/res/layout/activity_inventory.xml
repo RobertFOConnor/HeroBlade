@@ -22,14 +22,14 @@
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight=".5"
-                android:text="ITEMS" />
+                android:text="@string/items" />
 
             <Button
                 android:id="@+id/weapon_button"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight=".5"
-                android:text="TOOLS" />
+                android:text="@string/tools" />
 
         </LinearLayout>
 
@@ -50,7 +50,7 @@
             android:layout_height="wrap_content"
             android:layout_centerHorizontal="true"
             android:layout_centerVertical="true"
-            android:text="Your inventory is empty."
+            android:text="@string/empty_inventory"
             android:visibility="invisible" />
     </RelativeLayout>
 </FrameLayout>
