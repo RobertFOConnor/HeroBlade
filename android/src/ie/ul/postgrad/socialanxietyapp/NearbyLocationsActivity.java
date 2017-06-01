@@ -2,6 +2,7 @@ package ie.ul.postgrad.socialanxietyapp;
 
 import android.content.Context;
 import android.os.Bundle;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -41,7 +42,7 @@ public class NearbyLocationsActivity extends AppCompatActivity {
 
         for (int i = 0; i < markerIds.length; i++) {
             markerView = (LinearLayout) inflater.inflate(R.layout.nearby_marker_display, null);
-            ((ImageView) markerView.findViewById(R.id.marker_image)).setImageDrawable(c.getResources().getDrawable(c.getResources().getIdentifier("marker_" + String.format("%04d", markerIds[i]), "drawable", c.getPackageName()), getTheme()));
+            ((ImageView) markerView.findViewById(R.id.marker_image)).setImageDrawable(ContextCompat.getDrawable(getApplicationContext(), (c.getResources().getIdentifier("marker_" + String.format("%04d", markerIds[i]), "drawable", c.getPackageName()))));
             ((TextView) markerView.findViewById(R.id.marker_text)).setText((int) markerDistances[i] + "m");
 
             markerGrid.addView(markerView);

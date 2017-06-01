@@ -6,6 +6,7 @@ import android.content.pm.PackageManager;
 import android.content.res.Resources;
 import android.location.Location;
 import android.os.Bundle;
+import android.os.Vibrator;
 import android.support.annotation.NonNull;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
@@ -42,7 +43,6 @@ import com.google.android.gms.maps.model.CameraPosition;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MapStyleOptions;
 import com.google.android.gms.maps.model.Marker;
-import com.google.android.gms.maps.model.MarkerOptions;
 
 import java.util.ArrayList;
 
@@ -171,7 +171,9 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
         mDrawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
         mDrawerList = (ListView) findViewById(R.id.left_drawer);
 
-        userName = (String) getIntent().getExtras().get(USERNAME_KEY);
+        userName = getIntent().getExtras().getString(USERNAME_KEY);
+
+
 
         GameManager.getInstance().startGame(this, userName);
     }
@@ -216,8 +218,8 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
         // Setting custom OnTouchListener which deals with the pressed state
         // so it shows up
         this.infoButtonListener = new OnInfoWindowElemTouchListener(infoButton,
-                getResources().getDrawable(R.drawable.info_button_default, getTheme()),
-                getResources().getDrawable(R.drawable.info_button_pressed, getTheme())) {
+                ContextCompat.getDrawable(getApplicationContext(), R.drawable.info_button_default),
+                ContextCompat.getDrawable(getApplicationContext(), R.drawable.info_button_pressed)) {
             @Override
             protected void onClickConfirmed(View v, Marker marker) {
                 // Here the marker id is passed to the result activity.
@@ -266,7 +268,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
                 infoTitle.setText(marker.getTitle());
                 infoSnippet.setText(marker.getSnippet());
                 Context c = getApplicationContext();
-                infoImg.setImageDrawable(c.getResources().getDrawable(c.getResources().getIdentifier("marker_" + String.format("%04d", marker.getTag()), "drawable", c.getPackageName()), getTheme()));
+                infoImg.setImageDrawable(ContextCompat.getDrawable(getApplicationContext(), c.getResources().getIdentifier("marker_" + String.format("%04d", marker.getTag()), "drawable", c.getPackageName())));
                 infoButtonListener.setMarker(marker);
 
                 // We must call this to set the current marker and infoWindow references
@@ -276,19 +278,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
             }
         });
 
-        try {
-            // Customise the styling of the base map using a JSON object defined
-            // in a raw resource file.
-            boolean success = mMap.setMapStyle(
-                    MapStyleOptions.loadRawResourceStyle(
-                            this, R.raw.style_json));
-
-            if (!success) {
-                Log.e(TAG, "Style parsing failed.");
-            }
-        } catch (Resources.NotFoundException e) {
-            Log.e(TAG, "Can't find style. Error: ", e);
-        }
+        applyStyleToMap();
 
         // Calculate ActionBar height
         int actionBarHeight = 0;
@@ -341,6 +331,20 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
         } catch (SecurityException e) {
             e.printStackTrace();
         }*/
+    }
+
+    // Customise the styling of the base map using a JSON object defined
+    // in a raw resource file.
+    private void applyStyleToMap() {
+        try {
+            boolean success = mMap.setMapStyle(MapStyleOptions.loadRawResourceStyle(this, R.raw.style_json));
+
+            if (!success) {
+                Log.e(TAG, "Style parsing failed.");
+            }
+        } catch (Resources.NotFoundException e) {
+            Log.e(TAG, "Can't find style. Error: ", e);
+        }
     }
 
     private float getMarkerDistance(Marker marker) {
@@ -411,20 +415,33 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
                                     id = 3;
                                 }
 
-                                markers.add(MarkerFactory.buildMarker(getApplicationContext(), mMap, placeLikelihood.getPlace().getLatLng(), id));
+                                Marker marker = MarkerFactory.buildMarker(getApplicationContext(), mMap, placeLikelihood.getPlace().getLatLng(), id);
+                                marker.setVisible(false);
+                                int markerPos;
+
+                                for (markerPos = 0; markerPos < markers.size(); markerPos++) {
+                                    if (getMarkerDistance(marker) < getMarkerDistance(markers.get(markerPos))) {
+                                        break;
+                                    }
+                                }
+                                markers.add(markerPos, marker);
                             }
                         }
                     }
                     likelyPlaces.release(); // Release the place likelihood buffer.
                 }
             });
-        } else {
-            mMap.addMarker(new MarkerOptions()
-                    .position(mDefaultLocation)
-                    .title("Title")
-                    .snippet("Info snippet."));
         }
 
+        //Cycle markers and check for nearby markers. Reveal if player is close.
+        for (Marker m : markers) {
+            if (getMarkerDistance(m) < 30 && !m.isVisible()) {
+                m.setVisible(true);
+
+                Vibrator v = (Vibrator) getApplicationContext().getSystemService(Context.VIBRATOR_SERVICE);
+                v.vibrate(500);
+            }
+        }
     }
 
     private boolean mapContainsQuestMarker() {
@@ -636,7 +653,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
                     startActivity(i);
                     break;
                 case QUESTS:
-                    //i = new Intent(getApplicationContext(), AvatarCustomizationActivity.class);
+                    //i = new Intent(getApplicationContext(), ConversationActivity.class);
                     //startActivity(i);
                     break;
                 case CRAFTING:

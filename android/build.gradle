@@ -19,9 +19,13 @@ android {
     }
     defaultConfig {
         applicationId "ie.ul.postgrad.socialanxietyapp"
-        minSdkVersion 23
+        minSdkVersion 19
         targetSdkVersion 25
         multiDexEnabled true
+    }
+
+    dexOptions {
+        javaMaxHeapSize "4g"
     }
 }
 // called every time gradle gets executed, takes the native dependencies of
@@ -125,10 +129,7 @@ idea {
 }
 
 dependencies {
-    compile 'com.google.android.gms:play-services:10.2.0'
-    compile 'com.google.firebase:firebase-database:10.2.0'
-    compile 'com.google.firebase:firebase-auth:10.2.0'
+    compile 'com.google.android.gms:play-services:10.2.4'
     compile 'com.jjoe64:graphview:4.2.1'
-    compile 'com.android.support.constraint:constraint-layout:1.0.0-beta4'
 }
 apply plugin: 'com.google.gms.google-services'

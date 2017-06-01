@@ -3,8 +3,6 @@ package ie.ul.postgrad.socialanxietyapp.game;
 import android.content.Context;
 import android.widget.Toast;
 
-import com.google.firebase.auth.FirebaseAuth;
-
 import java.util.ArrayList;
 import java.util.UUID;
 
@@ -32,8 +30,6 @@ public class GameManager {
 
     //SQLLite objects
     private static DBHelper databaseHelper;
-    // Firebase objects for login.
-    private FirebaseAuth mAuth = FirebaseAuth.getInstance();
 
     private Quest activeQuest;
 
@@ -55,8 +51,18 @@ public class GameManager {
 
         //Add new player to database
         if (databaseHelper.numberOfPlayers() == 0) {
-            databaseHelper.insertPlayer(userName, mAuth.getCurrentUser().getEmail(), 0, 1, 0, 20);
+            databaseHelper.insertPlayer(userName, "", 0, 1, 0, 20);
             databaseHelper.insertAvatar(new Avatar(0, 0));
+
+            System.out.println("PLAYER INSERTED ");
+        } else {
+            if(!databaseHelper.getPlayer(1).getName().equals(userName)) {
+                databaseHelper.deletePlayer(1);
+                databaseHelper.deleteAvatar(1);
+
+                databaseHelper.insertPlayer(userName, "", 0, 1, 0, 20);
+                databaseHelper.insertAvatar(new Avatar(0, 0));
+            }
         }
 
         setPlayer(databaseHelper.getPlayer(1));

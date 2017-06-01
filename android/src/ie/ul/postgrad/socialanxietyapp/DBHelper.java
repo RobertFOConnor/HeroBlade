@@ -23,46 +23,45 @@ import ie.ul.postgrad.socialanxietyapp.game.item.WeaponItem;
 
 public class DBHelper extends SQLiteOpenHelper {
 
-    public static final int DATABASE_VERSION = 10;
+    private static final int DATABASE_VERSION = 10;
 
-    public static final String DATABASE_NAME = "AnxietyApp.db";
-    public static final String PLAYERS_TABLE_NAME = "players";
-    public static final String PLAYERS_COLUMN_ID = "id";
-    public static final String PLAYERS_COLUMN_NAME = "name";
-    public static final String PLAYERS_COLUMN_EMAIL = "email";
-    public static final String PLAYERS_COLUMN_LEVEL = "level";
-    public static final String PLAYERS_COLUMN_XP = "xp";
-    public static final String PLAYERS_COLUMN_MONEY = "money";
-    public static final String PLAYERS_COLUMN_MAX_HEALTH = "max_health";
-    public static final String PLAYERS_COLUMN_CURR_HEALTH = "curr_health";
-    public static final String PLAYERS_COLUMN_QUESTS = "quests";
+    private static final String DATABASE_NAME = "AnxietyApp.db";
+    private static final String PLAYERS_TABLE_NAME = "players";
+    private static final String PLAYERS_COLUMN_ID = "id";
+    private static final String PLAYERS_COLUMN_NAME = "name";
+    private static final String PLAYERS_COLUMN_EMAIL = "email";
+    private static final String PLAYERS_COLUMN_LEVEL = "level";
+    private static final String PLAYERS_COLUMN_XP = "xp";
+    private static final String PLAYERS_COLUMN_MONEY = "money";
+    private static final String PLAYERS_COLUMN_MAX_HEALTH = "max_health";
+    private static final String PLAYERS_COLUMN_CURR_HEALTH = "curr_health";
+    private static final String PLAYERS_COLUMN_QUESTS = "quests";
 
-    public static final String INVENTORY_TABLE_NAME = "inventory";
-    public static final String INVENTORY_COLUMN_PLAYER_ID = "player_id";
-    public static final String INVENTORY_COLUMN_ID = "item_id";
-    public static final String INVENTORY_COLUMN_QUANTITY = "quantity";
+    private static final String INVENTORY_TABLE_NAME = "inventory";
+    private static final String INVENTORY_COLUMN_PLAYER_ID = "player_id";
+    private static final String INVENTORY_COLUMN_ID = "item_id";
+    private static final String INVENTORY_COLUMN_QUANTITY = "quantity";
 
-    public static final String WEAPON_TABLE_NAME = "weapon_inventory";
-    public static final String WEAPON_COLUMN_PLAYER_ID = "player_id";
-    public static final String WEAPON_COLUMN_UUID = "weapon_uuid";
-    public static final String WEAPON_COLUMN_ID = "weapon_id";
-    public static final String WEAPON_COLUMN_CURR_HEALTH = "curr_health";
+    private static final String WEAPON_TABLE_NAME = "weapon_inventory";
+    private static final String WEAPON_COLUMN_PLAYER_ID = "player_id";
+    private static final String WEAPON_COLUMN_UUID = "weapon_uuid";
+    private static final String WEAPON_COLUMN_ID = "weapon_id";
+    private static final String WEAPON_COLUMN_CURR_HEALTH = "curr_health";
 
-    public static final String TRAVEL_TABLE_NAME = "statistics";
-    public static final String TRAVEL_COLUMN_PLAYER_ID = "player_id";
-    public static final String TRAVEL_COLUMN_CREATION_DATE = "creation_date";
-    public static final String TRAVEL_COLUMN_STEPS_COUNT = "step_count";
-    public static final String TRAVEL_COLUMN_DISTANCE = "distance";
-    public static final String TRAVEL_COLUMN_TIME_PLAYED = "time_played";
+    private static final String TRAVEL_TABLE_NAME = "statistics";
+    private static final String TRAVEL_COLUMN_PLAYER_ID = "player_id";
+    private static final String TRAVEL_COLUMN_CREATION_DATE = "creation_date";
+    private static final String TRAVEL_COLUMN_STEPS_COUNT = "step_count";
+    private static final String TRAVEL_COLUMN_DISTANCE = "distance";
+    private static final String TRAVEL_COLUMN_TIME_PLAYED = "time_played";
 
-    public static final String AVATAR_TABLE_NAME = "avatar";
-    public static final String AVATAR_COLUMN_PLAYER_ID = "player_id";
-    public static final String AVATAR_COLUMN_SKIN_COLOR = "skin_color";
-    public static final String AVATAR_COLUMN_HAIR_TYPE = "hair_type";
-    public static final String AVATAR_COLUMN_HAIR_COLOR = "hair_color";
-    public static final String AVATAR_COLUMN_SHIRT_COLOR = "shirt";
-
-
+    private static final String AVATAR_TABLE_NAME = "avatar";
+    private static final String AVATAR_COLUMN_PLAYER_ID = "player_id";
+    private static final String AVATAR_COLUMN_SKIN_COLOR = "skin_color";
+    private static final String AVATAR_COLUMN_HAIR_TYPE = "hair_type";
+    private static final String AVATAR_COLUMN_HAIR_COLOR = "hair_color";
+    private static final String AVATAR_COLUMN_SHIRT_COLOR = "shirt";
+    //http://stackoverflow.com/questions/16545378/how-can-i-fetch-data-from-a-web-server-in-an-android-application
     private Context context;
 
     public DBHelper(Context context) {
@@ -168,13 +167,13 @@ public class DBHelper extends SQLiteOpenHelper {
 
         if (cursor != null) {
             cursor.moveToFirst();
+            Player player = new Player(cursor.getString(1), cursor.getString(2), Integer.parseInt(cursor.getString(3)), Integer.parseInt(cursor.getString(4)), Integer.parseInt(cursor.getString(5)), Integer.parseInt(cursor.getString(6)), Integer.parseInt(cursor.getString(7)));
+            cursor.close();
+            db.close();
+            return player;
+        } else {
+            return null;
         }
-
-        Player player = new Player(cursor.getString(1), cursor.getString(2), Integer.parseInt(cursor.getString(3)), Integer.parseInt(cursor.getString(4)), Integer.parseInt(cursor.getString(5)), Integer.parseInt(cursor.getString(6)), Integer.parseInt(cursor.getString(7)));
-
-        cursor.close();
-        db.close();
-        return player;
     }
 
     public Cursor getInventoryData(int id) {
@@ -239,6 +238,20 @@ public class DBHelper extends SQLiteOpenHelper {
         return db.delete(WEAPON_TABLE_NAME,
                 WEAPON_COLUMN_UUID + " = ? ",
                 new String[]{UUID});
+    }
+
+    public Integer deletePlayer(int id) {
+        SQLiteDatabase db = this.getWritableDatabase();
+        return db.delete(PLAYERS_TABLE_NAME,
+                PLAYERS_COLUMN_ID + " = ? ",
+                new String[]{Integer.toString(id)});
+    }
+
+    public Integer deleteAvatar(int id) {
+        SQLiteDatabase db = this.getWritableDatabase();
+        return db.delete(AVATAR_TABLE_NAME,
+                AVATAR_COLUMN_PLAYER_ID + " = ? ",
+                new String[]{Integer.toString(id)});
     }
 
     public InventoryItemArray getInventory() {

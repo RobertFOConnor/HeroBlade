@@ -3,24 +3,16 @@ package ie.ul.postgrad.socialanxietyapp.account;
 import android.content.Intent;
 import android.graphics.Typeface;
 import android.os.Bundle;
-import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.Toast;
 
-import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.Task;
-import com.google.firebase.auth.AuthResult;
-import com.google.firebase.auth.FirebaseAuth;
-
 import ie.ul.postgrad.socialanxietyapp.FontManager;
 import ie.ul.postgrad.socialanxietyapp.R;
-import ie.ul.postgrad.socialanxietyapp.map.MapsActivity;
 
 public class LogInActivity extends AppCompatActivity implements View.OnClickListener {
 
-    private FirebaseAuth auth;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -31,8 +23,6 @@ public class LogInActivity extends AppCompatActivity implements View.OnClickList
         Typeface iconFont = FontManager.getTypeface(getApplicationContext(), FontManager.FONTAWESOME);
         FontManager.markAsIconContainer(findViewById(R.id.icons_container), iconFont);
 
-        //Get Firebase auth instance
-        auth = FirebaseAuth.getInstance();
 
         findViewById(R.id.forgot_password_button).setOnClickListener(this);
         findViewById(R.id.continue_button).setOnClickListener(this);
@@ -43,27 +33,6 @@ public class LogInActivity extends AppCompatActivity implements View.OnClickList
         String password = ((EditText) findViewById(R.id.password_field)).getText().toString();
 
         if (!email.isEmpty() && !password.isEmpty()) {
-
-            //authenticate user
-            auth.signInWithEmailAndPassword(email, password)
-                    .addOnCompleteListener(LogInActivity.this, new OnCompleteListener<AuthResult>() {
-                        @Override
-                        public void onComplete(@NonNull Task<AuthResult> task) {
-                            // If sign in fails, display a message to the user. If sign in succeeds
-                            // the auth state listener will be notified and logic to handle the
-                            // signed in user can be handled in the listener.
-                            if (!task.isSuccessful()) {
-                                Toast.makeText(LogInActivity.this, getString(R.string.authentication_failed) + task.getException(),
-                                        Toast.LENGTH_SHORT).show();
-                            } else {
-                                Intent intent = new Intent(getApplicationContext(), MapsActivity.class);
-                                intent.putExtra(MapsActivity.USERNAME_KEY, "");
-                                startActivity(intent);
-                                Toast.makeText(LogInActivity.this, getString(R.string.login_success), Toast.LENGTH_SHORT).show();
-                                finish();
-                            }
-                        }
-                    });
 
         } else {
             Toast.makeText(LogInActivity.this, getString(R.string.error_empty), Toast.LENGTH_SHORT).show();

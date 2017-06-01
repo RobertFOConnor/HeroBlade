@@ -8,7 +8,9 @@ import android.widget.TextView;
 
 import com.badlogic.gdx.backends.android.AndroidApplication;
 import com.badlogic.gdx.backends.android.AndroidApplicationConfiguration;
+import com.google.firebase.auth.FirebaseAuth;
 
+import ie.ul.postgrad.socialanxietyapp.account.WelcomeActivity;
 import ie.ul.postgrad.socialanxietyapp.game.GameManager;
 import ie.ul.postgrad.socialanxietyapp.game.Player;
 
@@ -39,6 +41,17 @@ public class PlayerAvatarActivity extends AndroidApplication implements LibGdxIn
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent(getApplicationContext(), AvatarCustomizationActivity.class);
+                startActivity(intent);
+                finish();
+            }
+        });
+
+        findViewById(R.id.log_out).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                FirebaseAuth.getInstance().signOut();
+                Intent intent = new Intent(getApplicationContext(), WelcomeActivity.class);
+                intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
                 startActivity(intent);
                 finish();
             }
