@@ -18,7 +18,7 @@ import ie.ul.postgrad.socialanxietyapp.game.item.WeaponItem;
 /**
  * Created by Robert on 14-Mar-17.
  * <p>
- * SQL databse helper class for interaction with the database.
+ * SQL database helper class for interaction with the database.
  */
 
 public class DBHelper extends SQLiteOpenHelper {
@@ -26,6 +26,13 @@ public class DBHelper extends SQLiteOpenHelper {
     private static final int DATABASE_VERSION = 10;
 
     private static final String DATABASE_NAME = "AnxietyApp.db";
+
+    private static final String USER_TABLE_NAME = "user";
+    private static final String USER_COLUMN_ID = "id";
+    private static final String USER_COLUMN_NAME = "name";
+    private static final String USER_COLUMN_EMAIL = "email";
+    private static final String USER_COLUMN_PASSWORD = "password";
+
     private static final String PLAYERS_TABLE_NAME = "players";
     private static final String PLAYERS_COLUMN_ID = "id";
     private static final String PLAYERS_COLUMN_NAME = "name";
@@ -61,7 +68,6 @@ public class DBHelper extends SQLiteOpenHelper {
     private static final String AVATAR_COLUMN_HAIR_TYPE = "hair_type";
     private static final String AVATAR_COLUMN_HAIR_COLOR = "hair_color";
     private static final String AVATAR_COLUMN_SHIRT_COLOR = "shirt";
-    //http://stackoverflow.com/questions/16545378/how-can-i-fetch-data-from-a-web-server-in-an-android-application
     private Context context;
 
     public DBHelper(Context context) {
@@ -70,6 +76,7 @@ public class DBHelper extends SQLiteOpenHelper {
     }
 
     public void onCreate(SQLiteDatabase db) {
+        db.execSQL("CREATE TABLE " + USER_TABLE_NAME + " (id integer primary key, name text, email text, password text)");
         db.execSQL("CREATE TABLE " + PLAYERS_TABLE_NAME + " (id integer primary key, name text, email text, xp integer, level integer, money integer, max_health integer, curr_health integer)");
         db.execSQL("CREATE TABLE " + INVENTORY_TABLE_NAME + " (player_id integer key, item_id integer, quantity integer)");
         db.execSQL("CREATE TABLE " + WEAPON_TABLE_NAME + " (player_id integer key, weapon_uuid text, weapon_id integer, curr_health integer)");
@@ -78,6 +85,7 @@ public class DBHelper extends SQLiteOpenHelper {
     }
 
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
+        db.execSQL("DROP TABLE IF EXISTS " + USER_TABLE_NAME);
         db.execSQL("DROP TABLE IF EXISTS " + PLAYERS_TABLE_NAME);
         db.execSQL("DROP TABLE IF EXISTS " + INVENTORY_TABLE_NAME);
         db.execSQL("DROP TABLE IF EXISTS " + TRAVEL_TABLE_NAME);
@@ -87,6 +95,17 @@ public class DBHelper extends SQLiteOpenHelper {
 
     public void onDowngrade(SQLiteDatabase db, int oldVersion, int newVersion) {
         onUpgrade(db, oldVersion, newVersion);
+    }
+
+    public boolean insertUser(String id, String name, String email, String password) {
+        SQLiteDatabase db = this.getWritableDatabase();
+        ContentValues contentValues = new ContentValues();
+        contentValues.put(USER_COLUMN_ID, id);
+        contentValues.put(USER_COLUMN_NAME, name);
+        contentValues.put(USER_COLUMN_EMAIL, email);
+        contentValues.put(USER_COLUMN_PASSWORD, password);
+        db.insert(USER_TABLE_NAME, null, contentValues);
+        return true;
     }
 
     public boolean insertAvatar(Avatar avatar) {

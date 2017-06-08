@@ -1,9 +1,18 @@
 package ie.ul.postgrad.socialanxietyapp.game;
 
 import android.content.Context;
+import android.os.AsyncTask;
 import android.widget.Toast;
 
+import org.apache.http.NameValuePair;
+import org.apache.http.client.HttpClient;
+import org.apache.http.client.entity.UrlEncodedFormEntity;
+import org.apache.http.client.methods.HttpPost;
+import org.apache.http.impl.client.DefaultHttpClient;
+import org.apache.http.message.BasicNameValuePair;
+
 import java.util.ArrayList;
+import java.util.List;
 import java.util.UUID;
 
 import ie.ul.postgrad.socialanxietyapp.Avatar;
@@ -56,7 +65,7 @@ public class GameManager {
 
             System.out.println("PLAYER INSERTED ");
         } else {
-            if(!databaseHelper.getPlayer(1).getName().equals(userName)) {
+            if (!databaseHelper.getPlayer(1).getName().equals(userName)) {
                 databaseHelper.deletePlayer(1);
                 databaseHelper.deleteAvatar(1);
 
@@ -150,6 +159,7 @@ public class GameManager {
     }
 
     public void consumeFoodItem(Context context, int id) {
+
         if (player.getCurrHealth() < player.getMaxHealth()) {
             FoodItem food = ((FoodItem) ItemFactory.buildItem(context, id));
             player.setCurrHealth(player.getCurrHealth() + food.getEnergy());

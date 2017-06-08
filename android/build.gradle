@@ -131,5 +131,6 @@ idea {
 dependencies {
     compile 'com.google.android.gms:play-services:10.2.4'
     compile 'com.jjoe64:graphview:4.2.1'
+    compile 'org.jbundle.util.osgi.wrapped:org.jbundle.util.osgi.wrapped.org.apache.http.client:4.1.2'
 }
 apply plugin: 'com.google.gms.google-services'

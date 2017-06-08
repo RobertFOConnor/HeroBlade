@@ -172,9 +172,6 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
         mDrawerList = (ListView) findViewById(R.id.left_drawer);
 
         userName = getIntent().getExtras().getString(USERNAME_KEY);
-
-
-
         GameManager.getInstance().startGame(this, userName);
     }
 
@@ -416,7 +413,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
                                 }
 
                                 Marker marker = MarkerFactory.buildMarker(getApplicationContext(), mMap, placeLikelihood.getPlace().getLatLng(), id);
-                                marker.setVisible(false);
+                                //marker.setVisible(false);
                                 int markerPos;
 
                                 for (markerPos = 0; markerPos < markers.size(); markerPos++) {
