@@ -1,4 +1,4 @@
-package ie.ul.postgrad.socialanxietyapp;
+package ie.ul.postgrad.socialanxietyapp.database;
 
 import android.content.ContentValues;
 import android.content.Context;
@@ -10,6 +10,7 @@ import android.database.sqlite.SQLiteOpenHelper;
 import java.util.ArrayList;
 import java.util.Calendar;
 
+import ie.ul.postgrad.socialanxietyapp.Avatar;
 import ie.ul.postgrad.socialanxietyapp.game.InventoryItemArray;
 import ie.ul.postgrad.socialanxietyapp.game.Player;
 import ie.ul.postgrad.socialanxietyapp.game.item.ItemFactory;
@@ -177,7 +178,7 @@ public class DBHelper extends SQLiteOpenHelper {
         return true;
     }
 
-    public Player getPlayer(int id) {
+    /*public Player getPlayer(int id) {
         SQLiteDatabase db = this.getReadableDatabase();
 
         Cursor cursor = db.query(PLAYERS_TABLE_NAME, new String[]{PLAYERS_COLUMN_ID,
@@ -193,7 +194,7 @@ public class DBHelper extends SQLiteOpenHelper {
         } else {
             return null;
         }
-    }
+    }*/
 
     public Cursor getInventoryData(int id) {
         SQLiteDatabase db = this.getReadableDatabase();

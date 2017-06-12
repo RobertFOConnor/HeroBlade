@@ -4,6 +4,7 @@ import android.content.Context;
 import android.os.AsyncTask;
 import android.widget.Toast;
 
+import org.apache.http.HttpResponse;
 import org.apache.http.NameValuePair;
 import org.apache.http.client.HttpClient;
 import org.apache.http.client.entity.UrlEncodedFormEntity;
@@ -16,7 +17,8 @@ import java.util.List;
 import java.util.UUID;
 
 import ie.ul.postgrad.socialanxietyapp.Avatar;
-import ie.ul.postgrad.socialanxietyapp.DBHelper;
+import ie.ul.postgrad.socialanxietyapp.database.DBHelper;
+import ie.ul.postgrad.socialanxietyapp.database.WebDBHelper;
 import ie.ul.postgrad.socialanxietyapp.game.item.FoodItem;
 import ie.ul.postgrad.socialanxietyapp.game.item.Item;
 import ie.ul.postgrad.socialanxietyapp.game.item.ItemFactory;
@@ -54,16 +56,14 @@ public class GameManager {
         visitedLocations = new ArrayList<>();
     }
 
-    public void startGame(Context context, String userName) {
+    public void startGame(Context context) {
         //Initialize database helper
         databaseHelper = new DBHelper(context);
 
-        //Add new player to database
+        /*//Add new player to database
         if (databaseHelper.numberOfPlayers() == 0) {
-            databaseHelper.insertPlayer(userName, "", 0, 1, 0, 20);
+            databaseHelper.insertUser(userName, "", 0, 1, 0, 20);
             databaseHelper.insertAvatar(new Avatar(0, 0));
-
-            System.out.println("PLAYER INSERTED ");
         } else {
             if (!databaseHelper.getPlayer(1).getName().equals(userName)) {
                 databaseHelper.deletePlayer(1);
@@ -74,16 +74,20 @@ public class GameManager {
             }
         }
 
-        setPlayer(databaseHelper.getPlayer(1));
+        player = databaseHelper.getPlayer(1);
+        setInventory(new Inventory(databaseHelper.getInventory(), databaseHelper.getWeapons(), context));*/
+    }
+
+    public void initUser(String id, String name, String email, String password, Context context) {
+        databaseHelper.insertUser(id, name, email, password);
+        databaseHelper.insertAvatar(new Avatar(0, 0));
+
+        player = new Player(id, name, email, 0, 0, 0, 10, 10);
         setInventory(new Inventory(databaseHelper.getInventory(), databaseHelper.getWeapons(), context));
     }
 
     public Player getPlayer() {
         return player;
-    }
-
-    private void setPlayer(Player player) {
-        this.player = player;
     }
 
     public Inventory getInventory() {
@@ -140,6 +144,7 @@ public class GameManager {
         } else {
             getInventory().addItem(itemId, quantity);
             updateItemInDatabase(itemId);
+            new addItemTask().execute(player.getId(), Integer.toString(itemId), Integer.toString(getInventory().getItems().get(itemId)));
         }
 
         //Toast.makeText(context, "You received " + quantity + " " + ItemFactory.buildItem(context, itemId).getName(), Toast.LENGTH_SHORT).show();
@@ -179,4 +184,40 @@ public class GameManager {
         databaseHelper.deleteWeapon(UUID);
         System.out.println("ITEMS IN WEAPON TABLE: " + databaseHelper.getWeapons().size());
     }
+
+    private class addItemTask extends AsyncTask<String, Integer, String> {
+
+        @Override
+        protected String doInBackground(String... params) {
+
+            return PostData(params);
+        }
+
+        @Override
+        protected void onPostExecute(String result) {
+
+        }
+    }
+
+
+    private String PostData(String[] valuse) {
+        String response = "";
+        try {
+            HttpClient httpClient = new DefaultHttpClient();
+            HttpPost httpPost = new HttpPost(WebDBHelper.URL + "AddItem");
+            List<NameValuePair> list = new ArrayList<>();
+            list.add(new BasicNameValuePair("player_id", valuse[0]));
+            list.add(new BasicNameValuePair("item_id", valuse[1]));
+            list.add(new BasicNameValuePair("quantity", valuse[2]));
+            httpPost.setEntity(new UrlEncodedFormEntity(list));
+            HttpResponse httpResponse = httpClient.execute(httpPost);
+
+            httpResponse.getEntity();
+            response = WebDBHelper.readResponse(httpResponse);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return response;
+    }
+
 }

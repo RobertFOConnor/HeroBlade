@@ -18,23 +18,23 @@ import org.apache.http.client.methods.HttpPost;
 import org.apache.http.impl.client.DefaultHttpClient;
 import org.apache.http.message.BasicNameValuePair;
 
-import java.io.BufferedReader;
-import java.io.InputStream;
-import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
 import ie.ul.postgrad.socialanxietyapp.FontManager;
 import ie.ul.postgrad.socialanxietyapp.R;
+import ie.ul.postgrad.socialanxietyapp.database.WebDBHelper;
+import ie.ul.postgrad.socialanxietyapp.game.GameManager;
 import ie.ul.postgrad.socialanxietyapp.map.MapsActivity;
-
-import static ie.ul.postgrad.socialanxietyapp.map.MapsActivity.USERNAME_KEY;
 
 public class CreateAccountActivity extends AppCompatActivity {
 
     private ProgressBar progressBar;
+    private String id;
     private String name;
+    private String email;
+    private String password;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -50,13 +50,14 @@ public class CreateAccountActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 name = ((EditText) findViewById(R.id.name_field)).getText().toString();
-                String email = ((EditText) findViewById(R.id.email_field)).getText().toString();
-                String password = ((EditText) findViewById(R.id.password_field)).getText().toString();
+                email = ((EditText) findViewById(R.id.email_field)).getText().toString();
+                password = ((EditText) findViewById(R.id.password_field)).getText().toString();
 
                 if (!name.isEmpty() && !email.isEmpty() && !password.isEmpty()) {
 
                     progressBar.setVisibility(View.VISIBLE);
-                    new RegisterUserTask().execute(UUID.randomUUID().toString(), name, email, password);
+                    id = UUID.randomUUID().toString();
+                    new RegisterUserTask().execute(id, name, email, password);
 
                 } else {
                     Toast.makeText(CreateAccountActivity.this, getString(R.string.error_empty), Toast.LENGTH_SHORT).show();
@@ -76,8 +77,10 @@ public class CreateAccountActivity extends AppCompatActivity {
         @Override
         protected void onPostExecute(String result) {
             if (result.contains("success")) {
+                GameManager.getInstance().startGame(getApplicationContext());
+                GameManager.getInstance().initUser(id, name, email, password, getApplicationContext());
+
                 Intent intent = new Intent(getApplicationContext(), MapsActivity.class);
-                intent.putExtra(USERNAME_KEY, name);
                 startActivity(intent);
                 finish();
             }
@@ -91,7 +94,7 @@ public class CreateAccountActivity extends AppCompatActivity {
         String response = "";
         try {
             HttpClient httpClient = new DefaultHttpClient();
-            HttpPost httpPost = new HttpPost("http://10.52.226.215:8080/AnxietyWebApp/servlet/RegisterUser");
+            HttpPost httpPost = new HttpPost(WebDBHelper.URL + "RegisterUser");
             List<NameValuePair> list = new ArrayList<>();
             list.add(new BasicNameValuePair("id", valuse[0]));
             list.add(new BasicNameValuePair("name", valuse[1]));
@@ -101,28 +104,10 @@ public class CreateAccountActivity extends AppCompatActivity {
             HttpResponse httpResponse = httpClient.execute(httpPost);
 
             httpResponse.getEntity();
-            response = readResponse(httpResponse);
+            response = WebDBHelper.readResponse(httpResponse);
         } catch (Exception e) {
             e.printStackTrace();
         }
         return response;
-    }
-
-    public String readResponse(HttpResponse res) {
-        InputStream is;
-        String return_text = "";
-        try {
-            is = res.getEntity().getContent();
-            BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(is));
-            String line;
-            StringBuffer sb = new StringBuffer();
-            while ((line = bufferedReader.readLine()) != null) {
-                sb.append(line);
-            }
-            return_text = sb.toString();
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-        return return_text;
     }
 }

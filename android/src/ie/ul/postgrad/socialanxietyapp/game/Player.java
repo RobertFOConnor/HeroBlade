@@ -8,6 +8,7 @@ package ie.ul.postgrad.socialanxietyapp.game;
 
 public class Player {
 
+    private String id;
     private String name;
     private String email;
     private int xp;
@@ -18,7 +19,8 @@ public class Player {
     private int maxHealth;
     private int currHealth;
 
-    public Player(String name, String email, int xp, int level, int money, int maxHealth, int currHealth) {
+    public Player(String id, String name, String email, int xp, int level, int money, int maxHealth, int currHealth) {
+        this.id = id;
         this.name = name;
         this.email = email;
         this.xp = xp;
@@ -31,6 +33,7 @@ public class Player {
     }
 
     public Player() {
+        id = "";
         name = "";
         xp = 0;
         level = 1;
@@ -38,6 +41,14 @@ public class Player {
         weapon_id = -1;
         maxHealth = 10;
         currHealth = maxHealth;
+    }
+
+    public String getId() {
+        return id;
+    }
+
+    public void setId(String id) {
+        this.id = id;
     }
 
     public int getWeapon() {

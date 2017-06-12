@@ -17,22 +17,24 @@ import org.apache.http.client.entity.UrlEncodedFormEntity;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.impl.client.DefaultHttpClient;
 import org.apache.http.message.BasicNameValuePair;
+import org.json.JSONException;
+import org.json.JSONObject;
 
-import java.io.BufferedReader;
-import java.io.InputStream;
-import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.List;
 
 import ie.ul.postgrad.socialanxietyapp.FontManager;
 import ie.ul.postgrad.socialanxietyapp.R;
+import ie.ul.postgrad.socialanxietyapp.database.WebDBHelper;
+import ie.ul.postgrad.socialanxietyapp.game.GameManager;
 import ie.ul.postgrad.socialanxietyapp.map.MapsActivity;
 
-import static ie.ul.postgrad.socialanxietyapp.map.MapsActivity.USERNAME_KEY;
 
 public class LogInActivity extends AppCompatActivity implements View.OnClickListener {
 
     private ProgressBar progressBar;
+    private String email;
+    private String password;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -50,8 +52,8 @@ public class LogInActivity extends AppCompatActivity implements View.OnClickList
     }
 
     private void attemptLogin() {
-        String email = ((EditText) findViewById(R.id.email_field)).getText().toString();
-        String password = ((EditText) findViewById(R.id.password_field)).getText().toString();
+        email = ((EditText) findViewById(R.id.email_field)).getText().toString();
+        password = ((EditText) findViewById(R.id.password_field)).getText().toString();
 
         if (!email.isEmpty() && !password.isEmpty()) {
             new LoginUserTask().execute(email, password);
@@ -84,11 +86,24 @@ public class LogInActivity extends AppCompatActivity implements View.OnClickList
 
         @Override
         protected void onPostExecute(String result) {
-            if (result.contains("success")) {
+            if (result != null) {
+                GameManager.getInstance().startGame(getApplicationContext());
+
+                try {
+                    JSONObject obj = new JSONObject(result);
+                    String id = obj.getString("id");
+                    String name = obj.getString("name");
+                    GameManager.getInstance().initUser(id, name, email, password, getApplicationContext());
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                    GameManager.getInstance().initUser("getidfromwebservice", "GetNameFromWebService", email, password, getApplicationContext());
+                }
+
                 Intent intent = new Intent(getApplicationContext(), MapsActivity.class);
-                intent.putExtra(USERNAME_KEY, "");
                 startActivity(intent);
                 finish();
+            } else {
+                Toast.makeText(getApplicationContext(), "Login failed. Please make sure you are connected to the internet and that all your information is correct.", Toast.LENGTH_SHORT).show();
             }
             progressBar.setVisibility(View.INVISIBLE);
             Toast.makeText(getApplicationContext(), result, Toast.LENGTH_SHORT).show();
@@ -100,7 +115,7 @@ public class LogInActivity extends AppCompatActivity implements View.OnClickList
         String response = "";
         try {
             HttpClient httpClient = new DefaultHttpClient();
-            HttpPost httpPost = new HttpPost("http://10.52.226.215:8080/AnxietyWebApp/servlet/LoginUser");
+            HttpPost httpPost = new HttpPost(WebDBHelper.URL + "LoginUser");
             List<NameValuePair> list = new ArrayList<NameValuePair>();
             list.add(new BasicNameValuePair("email", valuse[0]));
             list.add(new BasicNameValuePair("password", valuse[1]));
@@ -108,28 +123,10 @@ public class LogInActivity extends AppCompatActivity implements View.OnClickList
             HttpResponse httpResponse = httpClient.execute(httpPost);
 
             httpResponse.getEntity();
-            response = readResponse(httpResponse);
+            response = WebDBHelper.readResponse(httpResponse);
         } catch (Exception e) {
             e.printStackTrace();
         }
         return response;
-    }
-
-    public String readResponse(HttpResponse res) {
-        InputStream is;
-        String return_text = "";
-        try {
-            is = res.getEntity().getContent();
-            BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(is));
-            String line;
-            StringBuffer sb = new StringBuffer();
-            while ((line = bufferedReader.readLine()) != null) {
-                sb.append(line);
-            }
-            return_text = sb.toString();
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-        return return_text;
     }
 }

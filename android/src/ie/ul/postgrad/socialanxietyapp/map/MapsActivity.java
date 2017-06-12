@@ -105,9 +105,6 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
     private Button infoButton;
     private OnInfoWindowElemTouchListener infoButtonListener;
 
-    public static final String USERNAME_KEY = "user";
-    private String userName = "";
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -170,9 +167,6 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
 
         mDrawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
         mDrawerList = (ListView) findViewById(R.id.left_drawer);
-
-        userName = getIntent().getExtras().getString(USERNAME_KEY);
-        GameManager.getInstance().startGame(this, userName);
     }
 
     @Override
