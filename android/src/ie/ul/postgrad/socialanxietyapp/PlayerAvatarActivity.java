@@ -2,30 +2,21 @@ package ie.ul.postgrad.socialanxietyapp;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.v7.app.AppCompatActivity;
 import android.view.View;
-import android.widget.Button;
-import android.widget.ImageView;
-import android.widget.ProgressBar;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import com.badlogic.gdx.backends.android.AndroidApplication;
+import com.badlogic.gdx.backends.android.AndroidApplicationConfiguration;
 import com.google.firebase.auth.FirebaseAuth;
 
+import ie.ul.postgrad.socialanxietyapp.account.WelcomeActivity;
 import ie.ul.postgrad.socialanxietyapp.game.GameManager;
 import ie.ul.postgrad.socialanxietyapp.game.Player;
-import ie.ul.postgrad.socialanxietyapp.game.XPLevels;
-import ie.ul.postgrad.socialanxietyapp.game.item.ItemFactory;
-import ie.ul.postgrad.socialanxietyapp.game.item.WeaponItem;
 
-public class PlayerAvatarActivity extends AppCompatActivity implements View.OnClickListener {
+public class PlayerAvatarActivity extends AndroidApplication implements LibGdxInterface {
 
-    static final int WEAPON_REQUEST = 1;
-    private Button weaponButton, chestButton;
     private Player player;
-    private ImageView wepaonView;
-
-    private ProgressBar xpBar;
-    private TextView xpText;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -33,89 +24,63 @@ public class PlayerAvatarActivity extends AppCompatActivity implements View.OnCl
 
         setContentView(R.layout.activity_player_avatar);
         player = GameManager.getInstance().getPlayer();
-        GameManager.getInstance().updatePlayerInDatabase();
-
-        String nameField = "Name: " + player.getName();
-        ((TextView) findViewById(R.id.name_field)).setText(nameField);
-
-        String goldField = "Gold: $" + player.getMoney();
-        ((TextView) findViewById(R.id.gold_field)).setText(goldField);
-
-        String levelField = "LVL: " + player.getLevel();
-        ((TextView) findViewById(R.id.level_text)).setText(levelField);
 
 
-        xpBar = (ProgressBar) findViewById(R.id.xp_bar);
-        int maxXP = XPLevels.XP_LEVELS[player.getLevel()];
-        int currXP = player.getXp() - (player.getXPNeeded()-XPLevels.XP_LEVELS[player.getLevel()]);
+        ((TextView) findViewById(R.id.name_field)).setText(player.getName());
+        ((TextView) findViewById(R.id.level_num)).setText(player.getLevel() + "");
+        ((TextView) findViewById(R.id.xp_text)).setText("XP: " + player.getXp() + "/" + player.getXPNeeded());
+        ((TextView) findViewById(R.id.health_field)).setText(player.getCurrHealth() + "/" + player.getMaxHealth());
+        ((TextView) findViewById(R.id.gold_field)).setText(player.getMoney() + "");
 
-        xpBar.setMax(maxXP);
-        xpBar.setProgress(currXP);
+        AndroidApplicationConfiguration config = new AndroidApplicationConfiguration();
+        MainGame game = new MainGame(this, MainGame.AVATAR_SCREEN);
+        View v = initializeForView(game, config);
+        ((LinearLayout) findViewById(R.id.avatar_view)).addView(v);
 
-        xpText = (TextView) findViewById(R.id.xp_text);
-        xpText.setText("XP: " + currXP + "/" + maxXP);
+        findViewById(R.id.avatar_edit).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(getApplicationContext(), AvatarCustomizationActivity.class);
+                startActivity(intent);
+                finish();
+            }
+        });
 
-        wepaonView = (ImageView) findViewById(R.id.weapon_view);
-
-        weaponButton = (Button) findViewById(R.id.weapon_button);
-        weaponButton.setOnClickListener(this);
-
-        chestButton = (Button) findViewById(R.id.chest_button);
-        chestButton.setOnClickListener(this);
-
-        updateWeaponButton();
-
-        Button logOutButton = (Button) findViewById(R.id.log_out_button);
-        logOutButton.setOnClickListener(new View.OnClickListener() {
+        findViewById(R.id.log_out).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 FirebaseAuth.getInstance().signOut();
+                Intent intent = new Intent(getApplicationContext(), WelcomeActivity.class);
+                intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                startActivity(intent);
+                finish();
             }
         });
     }
 
     @Override
-    public void onClick(View v) {
-        switch (v.getId()) {
+    public void saveAvatar(Avatar avatar) {
 
-            case R.id.weapon_button:
-                showWeapons();
-                break;
-            case R.id.chest_button:
-                showChest();
-                break;
-        }
     }
 
-    private void showWeapons() {
-        Intent i = new Intent(this, WeaponSelectionActivity.class);
-        startActivityForResult(i, WEAPON_REQUEST);
-        updateWeaponButton();
-    }
 
-    private void showChest() {
-        startActivity(new Intent(this, StepCounterActivity.class));
-    }
+    @Override
+    public void collectResource() {
 
-    private void updateWeaponButton() {
-        if (player.getWeapon() != -1) {
-            WeaponItem weaponItem = (WeaponItem) ItemFactory.buildItem(this, player.getWeapon());
-            weaponButton.setText("Player Weapon (" + weaponItem.getName() + ")");
-            wepaonView.setImageDrawable(getDrawable(weaponItem.getImageID()));
-        }
     }
 
     @Override
-    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        // Check which request we're responding to
-        if (requestCode == WEAPON_REQUEST) {
-            // Make sure the request was successful
-            if (resultCode == RESULT_OK) {
-                // The user picked a weapon.
-                int result = data.getIntExtra("result", 0);
-                player.setWeapon(result);
-                updateWeaponButton();
-            }
-        }
+    public Avatar getAvatar() {
+        return GameManager.getDatabaseHelper().getAvatar(1);
+    }
+
+    @Override
+    public int getNPCId() {
+        return 0;
+    }
+
+    @Override
+    public void finishGame() {
+        finish();
     }
 }

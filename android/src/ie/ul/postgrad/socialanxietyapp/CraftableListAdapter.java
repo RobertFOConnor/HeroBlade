@@ -31,6 +31,7 @@ public class CraftableListAdapter extends BaseAdapter {
     private ArrayList<Item> items;
 
     public CraftableListAdapter(Context context, ArrayList<Item> items) {
+        this.context = context;
         this.items = items;
         result = new String[items.size()];
         ingredients = new String[items.size()];
@@ -111,8 +112,7 @@ public class CraftableListAdapter extends BaseAdapter {
                         GameManager.getInstance().updateItemInDatabase(itemId);
 
                     }
-                    GameManager.getInstance().getInventory().addItem(selectedItem.getId(), 1);
-                    GameManager.getInstance().updateItemInDatabase(selectedItem.getId());
+                    GameManager.getInstance().givePlayer(context, selectedItem.getId(), 1);
 
                     Toast.makeText(context, "You crafted a new " + selectedItem.getName(), Toast.LENGTH_SHORT).show();
                 } else {

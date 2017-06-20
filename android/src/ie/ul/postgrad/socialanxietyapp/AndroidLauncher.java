@@ -10,13 +10,14 @@ import ie.ul.postgrad.socialanxietyapp.game.GameManager;
 public class AndroidLauncher extends AndroidApplication implements LibGdxInterface {
 
     public static final String screenString = "screen";
+    private String screen;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         AndroidApplicationConfiguration config = new AndroidApplicationConfiguration();
         Bundle bundle = getIntent().getExtras();
-        String screen = (String) bundle.get(screenString);
+        screen = (String) bundle.get(screenString);
 
         initialize(new MainGame(this, screen), config);
     }
@@ -35,5 +36,20 @@ public class AndroidLauncher extends AndroidApplication implements LibGdxInterfa
     @Override
     public int getNPCId() {
         return 0;
+    }
+
+    @Override
+    public void collectResource() {
+        if (screen.equals(MainGame.TREE_GAME_SCREEN)) {
+            GameManager.getInstance().givePlayer(this, 23, 1);
+        } else if (screen.equals(MainGame.ROCK_GAME_SCREEN)) {
+            GameManager.getInstance().givePlayer(this, 27, 1);
+        }
+    }
+
+    @Override
+    public void finishGame() {
+        GameManager.getInstance().awardXP(100);
+        finish();
     }
 }

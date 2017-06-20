@@ -35,6 +35,7 @@ public class ItemFactory {
         String description = itemValues.getString(DESCRIPTION);
         int imageId = context.getResources().getIdentifier("item_" + String.format("%04d", id), "drawable", context.getPackageName());
         int damage = Integer.parseInt(itemValues.getString(DAMAGE));
+        int energy = Integer.parseInt(itemValues.getString(ENERGY));
 
         SparseIntArray ingredients = new SparseIntArray();
 
@@ -53,11 +54,12 @@ public class ItemFactory {
         itemValues.recycle();
 
 
-        if(damage > -1) {
-            return new WeaponItem(id, name, description, imageId, 0, 0, ingredients);
+        if(damage > 0) {
+            return new WeaponItem(id, name, description, imageId, damage, damage+2, 10, 10, ingredients);
+        } else if(energy > 0) {
+            return new FoodItem(id, name, description, imageId, ingredients, energy);
         } else {
             return new Item(id, name, description, imageId, ingredients);
         }
-
     }
 }

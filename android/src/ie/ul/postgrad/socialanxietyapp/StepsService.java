@@ -15,6 +15,7 @@ import android.os.IBinder;
 import android.support.annotation.Nullable;
 import android.support.v4.app.NotificationCompat;
 
+import ie.ul.postgrad.socialanxietyapp.database.DBHelper;
 import ie.ul.postgrad.socialanxietyapp.map.MapsActivity;
 
 /**
@@ -62,7 +63,7 @@ public class StepsService extends Service implements SensorEventListener {
         dbHelper.insertStepsEntry(totalDistance);
 
         if (dbHelper.getSteps() % 300 == 0) { // send notification every 100 steps //TEMP//
-            notifyOpenedChest();
+            //notifyOpenedChest();
         }
     }
 

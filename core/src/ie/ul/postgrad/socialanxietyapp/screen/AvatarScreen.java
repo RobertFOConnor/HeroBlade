@@ -27,6 +27,11 @@ import ie.ul.postgrad.socialanxietyapp.spriter.LibGdxLoader;
 
 public class AvatarScreen implements Screen {
 
+    private static final int HAIR_STYLE = 0;
+    private static final int HAIR_COLOR = 1;
+    private static final int SKIN_COLOR = 2;
+    private static final int SHIRT_COLOR = 3;
+
     private static final float[] BLOND = {255f / 255f, 231f / 255f, 70f / 255f};
     private static final float[] BLACK = {0.2f, 0.2f, 0.2f};
     private static final float[] BROWN = {115 / 255f, 85 / 255f, 59 / 255f};
@@ -61,9 +66,9 @@ public class AvatarScreen implements Screen {
         Data data = reader.getData();
 
         player = new Player(data.getEntity(0));
-        player.setScale((MainGame.HEIGHT / 1920f) * 2f);
+        player.setScale((MainGame.HEIGHT / 1920f) * 4.5f);
         player.setAnimation("idle");
-        player.setPosition(MainGame.WIDTH / 2, MainGame.HEIGHT / 2 - 150);
+        player.setPosition(MainGame.WIDTH / 2, 0);
 
         Player.PlayerListener myListener = new LibGdxAnimationListener() {
             @Override
@@ -91,7 +96,7 @@ public class AvatarScreen implements Screen {
         if (Gdx.input.justTouched()) {
             player.setAnimation("scratch");
 
-            if (Gdx.input.getX() < MainGame.WIDTH / 2) {
+            /*if (Gdx.input.getX() < MainGame.WIDTH / 2) {
 
                 hairIndex++;
                 if (hairIndex >= 9) { //No. of hairstyles
@@ -106,7 +111,7 @@ public class AvatarScreen implements Screen {
             }
             avatar.setHairtype(hairIndex);
             avatar.setHairColor(hairColorIndex);
-            libGdxInterface.saveAvatar(avatar);
+            libGdxInterface.saveAvatar(avatar);*/
         }
         player.setObject("hair", 1f, 1, hairIndex);
     }
@@ -125,5 +130,25 @@ public class AvatarScreen implements Screen {
     @Override
     public void dispose() {
 
+    }
+
+    public void changeHairStyle() {
+        hairIndex++;
+        if (hairIndex >= 9) { //No. of hairstyles
+            hairIndex = 0;
+        }
+        avatar.setHairtype(hairIndex);
+    }
+
+    public void changeHairColor() {
+        hairColorIndex++;
+        if (hairColorIndex >= hairColorArray.length) {
+            hairColorIndex = 0;
+        }
+        avatar.setHairColor(hairColorIndex);
+    }
+
+    public Avatar getAvatar() {
+        return avatar;
     }
 }

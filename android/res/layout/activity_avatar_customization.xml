@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="#00A1A9"
+    android:orientation="vertical"
+    android:padding="10dp"
+    tools:context="ie.ul.postgrad.socialanxietyapp.AvatarCustomizationActivity">
+
+    <LinearLayout
+        android:id="@+id/style_menu"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="30dp"
+        android:orientation="horizontal">
+
+        <Button
+            android:id="@+id/hair_style_button"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="0.25"
+            android:text="Hair Style" />
+
+        <Button
+            android:id="@+id/hair_color_button"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="0.25"
+            android:text="Hair Color" />
+
+        <Button
+            android:id="@+id/skin_color_button"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="0.25"
+            android:enabled="false"
+            android:text="Skin Color" />
+
+        <Button
+            android:id="@+id/shirt_color_button"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="0.25"
+            android:enabled="false"
+            android:text="Shirt Color" />
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/avatar_view"
+        android:layout_width="200dp"
+        android:layout_height="300dp"
+        android:layout_below="@+id/style_menu"
+        android:layout_centerHorizontal="true"
+        android:layout_gravity="center"
+        android:orientation="vertical">
+
+    </LinearLayout>
+
+    <GridLayout
+        android:id="@+id/options_menu"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/avatar_view"
+        android:layout_marginTop="20dp"></GridLayout>
+
+    <Button
+        android:id="@+id/continue_button"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentStart="true"
+        android:text="Continue" />
+
+</RelativeLayout>

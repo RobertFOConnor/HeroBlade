@@ -1,15 +1,28 @@
 package ie.ul.postgrad.socialanxietyapp.game;
 
 import android.content.Context;
+import android.os.AsyncTask;
 import android.widget.Toast;
 
-import com.google.firebase.auth.FirebaseAuth;
+import org.apache.http.HttpResponse;
+import org.apache.http.NameValuePair;
+import org.apache.http.client.HttpClient;
+import org.apache.http.client.entity.UrlEncodedFormEntity;
+import org.apache.http.client.methods.HttpPost;
+import org.apache.http.impl.client.DefaultHttpClient;
+import org.apache.http.message.BasicNameValuePair;
 
 import java.util.ArrayList;
+import java.util.List;
+import java.util.UUID;
 
 import ie.ul.postgrad.socialanxietyapp.Avatar;
-import ie.ul.postgrad.socialanxietyapp.DBHelper;
+import ie.ul.postgrad.socialanxietyapp.database.DBHelper;
+import ie.ul.postgrad.socialanxietyapp.database.WebDBHelper;
+import ie.ul.postgrad.socialanxietyapp.game.item.FoodItem;
+import ie.ul.postgrad.socialanxietyapp.game.item.Item;
 import ie.ul.postgrad.socialanxietyapp.game.item.ItemFactory;
+import ie.ul.postgrad.socialanxietyapp.game.item.WeaponItem;
 import ie.ul.postgrad.socialanxietyapp.game.quest.Quest;
 
 /**
@@ -24,12 +37,10 @@ public class GameManager {
     //Game objects
     private Player player;
     private Inventory inventory;
-    private ArrayList<ConsumedLocation> visitedLoactions;
+    private ArrayList<ConsumedLocation> visitedLocations;
 
     //SQLLite objects
     private static DBHelper databaseHelper;
-    // Firebase objects for login.
-    private FirebaseAuth mAuth = FirebaseAuth.getInstance();
 
     private Quest activeQuest;
 
@@ -42,29 +53,41 @@ public class GameManager {
     private GameManager() {
         player = new Player();
         inventory = new Inventory();
-        visitedLoactions = new ArrayList<>();
+        visitedLocations = new ArrayList<>();
     }
 
     public void startGame(Context context) {
         //Initialize database helper
         databaseHelper = new DBHelper(context);
 
-        //Add new player to database
+        /*//Add new player to database
         if (databaseHelper.numberOfPlayers() == 0) {
-            databaseHelper.insertPlayer(mAuth.getCurrentUser().getEmail(), mAuth.getCurrentUser().getEmail(), 0, 1, 0);
+            databaseHelper.insertUser(userName, "", 0, 1, 0, 20);
             databaseHelper.insertAvatar(new Avatar(0, 0));
+        } else {
+            if (!databaseHelper.getPlayer(1).getName().equals(userName)) {
+                databaseHelper.deletePlayer(1);
+                databaseHelper.deleteAvatar(1);
+
+                databaseHelper.insertPlayer(userName, "", 0, 1, 0, 20);
+                databaseHelper.insertAvatar(new Avatar(0, 0));
+            }
         }
 
-        setPlayer(databaseHelper.getPlayer(1));
-        setInventory(new Inventory(databaseHelper.getInventory()));
+        player = databaseHelper.getPlayer(1);
+        setInventory(new Inventory(databaseHelper.getInventory(), databaseHelper.getWeapons(), context));*/
+    }
+
+    public void initUser(String id, String name, String email, String password, Context context) {
+        databaseHelper.insertUser(id, name, email, password);
+        databaseHelper.insertAvatar(new Avatar(0, 0));
+
+        player = new Player(id, name, email, 0, 0, 0, 10, 10);
+        setInventory(new Inventory(databaseHelper.getInventory(), databaseHelper.getWeapons(), context));
     }
 
     public Player getPlayer() {
         return player;
-    }
-
-    private void setPlayer(Player player) {
-        this.player = player;
     }
 
     public Inventory getInventory() {
@@ -90,6 +113,15 @@ public class GameManager {
         }
     }
 
+    public void updateWeaponInDatabase(String UUID, int itemId, int currHealth) {
+
+        if (databaseHelper.getWeaponsData(UUID).moveToFirst()) {
+            databaseHelper.updateWeapon(1, UUID, itemId, currHealth);
+        } else {
+            databaseHelper.insertWeapon(1, UUID, itemId, currHealth);
+        }
+    }
+
     public void updatePlayerInDatabase() {
         databaseHelper.updatePlayer(player);
     }
@@ -103,10 +135,19 @@ public class GameManager {
     }
 
     public void givePlayer(Context context, int itemId, int quantity) {
-        GameManager.getInstance().getInventory().addItem(itemId, quantity);
-        GameManager.getInstance().updateItemInDatabase(itemId);
+        Item item = ItemFactory.buildItem(context, itemId);
+        if (item instanceof WeaponItem) {
+            WeaponItem weaponItem = (WeaponItem) item;
+            weaponItem.setUUID(UUID.randomUUID().toString());
+            getInventory().getWeapons().add(weaponItem);
+            updateWeaponInDatabase(weaponItem.getUUID(), weaponItem.getId(), weaponItem.getCurrHealth());
+        } else {
+            getInventory().addItem(itemId, quantity);
+            updateItemInDatabase(itemId);
+            new addItemTask().execute(player.getId(), Integer.toString(itemId), Integer.toString(getInventory().getItems().get(itemId)));
+        }
 
-        Toast.makeText(context, "You recieved " + quantity + " " + ItemFactory.buildItem(context, itemId).getName(), Toast.LENGTH_SHORT).show();
+        //Toast.makeText(context, "You received " + quantity + " " + ItemFactory.buildItem(context, itemId).getName(), Toast.LENGTH_SHORT).show();
     }
 
     public Quest getActiveQuest() {
@@ -116,4 +157,67 @@ public class GameManager {
     public void setActiveQuest(Quest activeQuest) {
         this.activeQuest = activeQuest;
     }
+
+    public void awardXP(int xp) {
+        player.setXp(player.getXp() + xp);
+        updatePlayerInDatabase();
+    }
+
+    public void consumeFoodItem(Context context, int id) {
+
+        if (player.getCurrHealth() < player.getMaxHealth()) {
+            FoodItem food = ((FoodItem) ItemFactory.buildItem(context, id));
+            player.setCurrHealth(player.getCurrHealth() + food.getEnergy());
+            inventory.removeItem(id, 1);
+            updateItemInDatabase(id);
+            updatePlayerInDatabase();
+            Toast.makeText(context, player.getName() + " ate a " + food.getName() + " and restored +" + food.getEnergy() + " health.", Toast.LENGTH_SHORT).show();
+        } else {
+            Toast.makeText(context, player.getName() + " already has full health.", Toast.LENGTH_SHORT).show();
+        }
+    }
+
+    public void removeWeapon(String UUID) {
+        System.out.println("ITEMS IN WEAPON TABLE: " + databaseHelper.getWeapons().size());
+        WeaponItem weaponItem = inventory.getWeapon(UUID);
+        inventory.getWeapons().remove(weaponItem);
+        databaseHelper.deleteWeapon(UUID);
+        System.out.println("ITEMS IN WEAPON TABLE: " + databaseHelper.getWeapons().size());
+    }
+
+    private class addItemTask extends AsyncTask<String, Integer, String> {
+
+        @Override
+        protected String doInBackground(String... params) {
+
+            return PostData(params);
+        }
+
+        @Override
+        protected void onPostExecute(String result) {
+
+        }
+    }
+
+
+    private String PostData(String[] valuse) {
+        String response = "";
+        try {
+            HttpClient httpClient = new DefaultHttpClient();
+            HttpPost httpPost = new HttpPost(WebDBHelper.URL + "AddItem");
+            List<NameValuePair> list = new ArrayList<>();
+            list.add(new BasicNameValuePair("player_id", valuse[0]));
+            list.add(new BasicNameValuePair("item_id", valuse[1]));
+            list.add(new BasicNameValuePair("quantity", valuse[2]));
+            httpPost.setEntity(new UrlEncodedFormEntity(list));
+            HttpResponse httpResponse = httpClient.execute(httpPost);
+
+            httpResponse.getEntity();
+            response = WebDBHelper.readResponse(httpResponse);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return response;
+    }
+
 }

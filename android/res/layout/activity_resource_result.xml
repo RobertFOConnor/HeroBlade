@@ -21,8 +21,9 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:gravity="center"
+            android:textStyle="bold"
             android:text="Good Job!  You collected:"
-            android:textColor="@color/black"
+            android:textColor="#404040"
             android:textSize="22sp" />
 
         <LinearLayout

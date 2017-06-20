@@ -34,35 +34,28 @@
         android:orientation="vertical">
 
 
-        <Button
-            android:id="@+id/sign_up_button"
-            android:layout_width="match_parent"
-            android:layout_height="@dimen/field_height"
-            android:layout_marginBottom="20dp"
-            android:background="@drawable/button_custom"
-            android:drawableStart="@drawable/ic_sign_up"
-            android:drawableTint="@color/white"
-            android:paddingLeft="25dp"
-            android:paddingRight="25dp"
-            android:text="@string/sign_up"
-            android:textAllCaps="false"
-            android:textColor="@color/white"
-            android:textSize="16sp" />
+        <!--<com.google.android.gms.common.SignInButton
+            android:id="@+id/sign_in_button"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" />-->
 
         <Button
-            android:id="@+id/log_in_button"
             android:layout_width="match_parent"
             android:layout_height="@dimen/field_height"
-            android:layout_marginBottom="30dp"
             android:background="@drawable/button_custom"
-            android:drawableStart="@drawable/ic_login"
-            android:drawableTint="@color/white"
-            android:paddingLeft="25dp"
-            android:paddingRight="25dp"
-            android:text="@string/login"
             android:textAllCaps="false"
             android:textColor="@color/white"
-            android:textSize="16sp" />
+            android:layout_marginBottom="10dp"
+            android:text="Sign In"
+            android:id="@+id/sign_in"/>
+        <Button
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/field_height"
+            android:background="@drawable/button_custom"
+            android:textAllCaps="false"
+            android:textColor="@color/white"
+            android:text="Register"
+            android:id="@+id/register"/>
 
 
     </LinearLayout>
