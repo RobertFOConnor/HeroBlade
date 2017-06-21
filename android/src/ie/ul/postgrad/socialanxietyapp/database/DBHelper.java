@@ -24,7 +24,7 @@ import ie.ul.postgrad.socialanxietyapp.game.item.WeaponItem;
 
 public class DBHelper extends SQLiteOpenHelper {
 
-    private static final int DATABASE_VERSION = 10;
+    private static final int DATABASE_VERSION = 13;
 
     private static final String DATABASE_NAME = "AnxietyApp.db";
 
@@ -89,6 +89,7 @@ public class DBHelper extends SQLiteOpenHelper {
         db.execSQL("DROP TABLE IF EXISTS " + USER_TABLE_NAME);
         db.execSQL("DROP TABLE IF EXISTS " + PLAYERS_TABLE_NAME);
         db.execSQL("DROP TABLE IF EXISTS " + INVENTORY_TABLE_NAME);
+        db.execSQL("DROP TABLE IF EXISTS " + WEAPON_TABLE_NAME);
         db.execSQL("DROP TABLE IF EXISTS " + TRAVEL_TABLE_NAME);
         db.execSQL("DROP TABLE IF EXISTS " + AVATAR_TABLE_NAME);
         onCreate(db);
@@ -116,7 +117,6 @@ public class DBHelper extends SQLiteOpenHelper {
         contentValues.put(AVATAR_COLUMN_HAIR_TYPE, avatar.getHairtype());
         contentValues.put(AVATAR_COLUMN_HAIR_COLOR, avatar.getHairColor());
         db.insert(AVATAR_TABLE_NAME, null, contentValues);
-
         return true;
     }
 
@@ -143,20 +143,6 @@ public class DBHelper extends SQLiteOpenHelper {
         return avatar;
     }
 
-    public boolean insertPlayer(String name, String email, int xp, int level, int money, int maxHealth) {
-        SQLiteDatabase db = this.getWritableDatabase();
-        ContentValues contentValues = new ContentValues();
-        contentValues.put(PLAYERS_COLUMN_NAME, name);
-        contentValues.put(PLAYERS_COLUMN_EMAIL, email);
-        contentValues.put(PLAYERS_COLUMN_XP, xp);
-        contentValues.put(PLAYERS_COLUMN_LEVEL, level);
-        contentValues.put(PLAYERS_COLUMN_MONEY, money);
-        contentValues.put(PLAYERS_COLUMN_MAX_HEALTH, maxHealth);
-        contentValues.put(PLAYERS_COLUMN_CURR_HEALTH, maxHealth);
-        db.insert(PLAYERS_TABLE_NAME, null, contentValues);
-        return true;
-    }
-
     public boolean insertItem(int player_id, int item_id, int quantity) {
         SQLiteDatabase db = this.getWritableDatabase();
         ContentValues contentValues = new ContentValues();
@@ -178,24 +164,6 @@ public class DBHelper extends SQLiteOpenHelper {
         return true;
     }
 
-    /*public Player getPlayer(int id) {
-        SQLiteDatabase db = this.getReadableDatabase();
-
-        Cursor cursor = db.query(PLAYERS_TABLE_NAME, new String[]{PLAYERS_COLUMN_ID,
-                        PLAYERS_COLUMN_NAME, PLAYERS_COLUMN_EMAIL, PLAYERS_COLUMN_XP, PLAYERS_COLUMN_LEVEL, PLAYERS_COLUMN_MONEY, PLAYERS_COLUMN_MAX_HEALTH, PLAYERS_COLUMN_CURR_HEALTH}, PLAYERS_COLUMN_ID + "=?",
-                new String[]{String.valueOf(id)}, null, null, null, null);
-
-        if (cursor != null) {
-            cursor.moveToFirst();
-            Player player = new Player(cursor.getString(1), cursor.getString(2), Integer.parseInt(cursor.getString(3)), Integer.parseInt(cursor.getString(4)), Integer.parseInt(cursor.getString(5)), Integer.parseInt(cursor.getString(6)), Integer.parseInt(cursor.getString(7)));
-            cursor.close();
-            db.close();
-            return player;
-        } else {
-            return null;
-        }
-    }*/
-
     public Cursor getInventoryData(int id) {
         SQLiteDatabase db = this.getReadableDatabase();
         return db.rawQuery(selectAllQuery(INVENTORY_TABLE_NAME) + " WHERE " + INVENTORY_COLUMN_ID + "=" + id, null);
@@ -204,11 +172,6 @@ public class DBHelper extends SQLiteOpenHelper {
     public Cursor getWeaponsData(String uuid) {
         SQLiteDatabase db = this.getReadableDatabase();
         return db.rawQuery(selectAllQuery(WEAPON_TABLE_NAME) + " WHERE " + WEAPON_COLUMN_UUID + "='" + uuid + "'", null);
-    }
-
-    public int numberOfPlayers() {
-        SQLiteDatabase db = this.getReadableDatabase();
-        return (int) DatabaseUtils.queryNumEntries(db, PLAYERS_TABLE_NAME);
     }
 
     public boolean updatePlayer(Player player) {
@@ -258,20 +221,6 @@ public class DBHelper extends SQLiteOpenHelper {
         return db.delete(WEAPON_TABLE_NAME,
                 WEAPON_COLUMN_UUID + " = ? ",
                 new String[]{UUID});
-    }
-
-    public Integer deletePlayer(int id) {
-        SQLiteDatabase db = this.getWritableDatabase();
-        return db.delete(PLAYERS_TABLE_NAME,
-                PLAYERS_COLUMN_ID + " = ? ",
-                new String[]{Integer.toString(id)});
-    }
-
-    public Integer deleteAvatar(int id) {
-        SQLiteDatabase db = this.getWritableDatabase();
-        return db.delete(AVATAR_TABLE_NAME,
-                AVATAR_COLUMN_PLAYER_ID + " = ? ",
-                new String[]{Integer.toString(id)});
     }
 
     public InventoryItemArray getInventory() {

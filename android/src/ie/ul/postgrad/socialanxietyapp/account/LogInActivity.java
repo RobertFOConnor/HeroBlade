@@ -87,16 +87,16 @@ public class LogInActivity extends AppCompatActivity implements View.OnClickList
         @Override
         protected void onPostExecute(String result) {
             if (result != null) {
-                GameManager.getInstance().startGame(getApplicationContext());
+
 
                 try {
                     JSONObject obj = new JSONObject(result);
                     String id = obj.getString("id");
                     String name = obj.getString("name");
-                    GameManager.getInstance().initUser(id, name, email, password, getApplicationContext());
+                    GameManager.getInstance().startGame(getApplicationContext(), id, name, email, password);
                 } catch (JSONException e) {
                     e.printStackTrace();
-                    GameManager.getInstance().initUser("getidfromwebservice", "GetNameFromWebService", email, password, getApplicationContext());
+                    GameManager.getInstance().startGame(getApplicationContext(), "getidfromwebservice", "GetNameFromWebService", email, password);
                 }
 
                 Intent intent = new Intent(getApplicationContext(), MapsActivity.class);
@@ -111,14 +111,14 @@ public class LogInActivity extends AppCompatActivity implements View.OnClickList
     }
 
 
-    public String PostData(String[] valuse) {
+    public String PostData(String[] values) {
         String response = "";
         try {
             HttpClient httpClient = new DefaultHttpClient();
             HttpPost httpPost = new HttpPost(WebDBHelper.URL + "LoginUser");
             List<NameValuePair> list = new ArrayList<NameValuePair>();
-            list.add(new BasicNameValuePair("email", valuse[0]));
-            list.add(new BasicNameValuePair("password", valuse[1]));
+            list.add(new BasicNameValuePair("email", values[0]));
+            list.add(new BasicNameValuePair("password", values[1]));
             httpPost.setEntity(new UrlEncodedFormEntity(list));
             HttpResponse httpResponse = httpClient.execute(httpPost);
 

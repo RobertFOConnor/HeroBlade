@@ -36,8 +36,6 @@ public class InventoryListAdapter extends ArrayAdapter<Item> {
 
         Item item = getItem(position);
         ViewHolder viewHolder;
-        final View result;
-
 
         if (convertView == null) {
 
@@ -47,20 +45,16 @@ public class InventoryListAdapter extends ArrayAdapter<Item> {
             viewHolder.nameText = (TextView) convertView.findViewById(R.id.item_title);
             viewHolder.quantityText = (TextView) convertView.findViewById(R.id.item_count);
             viewHolder.image = (ImageView) convertView.findViewById(R.id.item_image);
-
-            result = convertView;
-
             convertView.setTag(viewHolder);
         } else {
             viewHolder = (ViewHolder) convertView.getTag();
-            result = convertView;
         }
 
-        //Animation animation = AnimationUtils.loadAnimation(mContext, (position > lastPosition) ? R.anim.up_from_bottom : R.anim.down_from_top);
-        //result.startAnimation(animation);
+        String name = item.getName();
+        String quantity = "x" + GameManager.getInstance().getInventory().getItems().get(item.getId());
 
-        viewHolder.nameText.setText(item.getName());
-        viewHolder.quantityText.setText("x" + GameManager.getInstance().getInventory().getItems().get(item.getId()));
+        viewHolder.nameText.setText(name);
+        viewHolder.quantityText.setText(quantity);
         viewHolder.image.setImageResource(item.getImageID());
         // Return the completed view to render on screen
         return convertView;
@@ -72,6 +66,4 @@ public class InventoryListAdapter extends ArrayAdapter<Item> {
         TextView quantityText;
         ImageView image;
     }
-
-
 }

@@ -14,7 +14,7 @@ import java.io.InputStreamReader;
 
 public class WebDBHelper {
 
-    public static final String URL = "http://10.52.226.215:8080/AnxietyWebApp/servlet/";
+    public static final String URL = "http://192.168.0.87:8080/AnxietyWebApp/servlet/";
 
     public static String readResponse(HttpResponse res) {
         InputStream is;
