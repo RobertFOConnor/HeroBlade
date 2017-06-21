@@ -11,12 +11,12 @@
 
     <ImageView
         android:id="@+id/image"
-        android:tint="#777"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_width="30dp"
+        android:layout_height="30dp"
         android:layout_marginLeft="20dp"
         android:layout_marginRight="20dp"
-        android:src="@mipmap/ic_launcher" />
+        android:src="@mipmap/ic_launcher"
+        android:tint="@color/text_dark" />
 
     <TextView
         android:id="@+id/title"
@@ -24,7 +24,7 @@
         android:layout_height="wrap_content"
         android:padding="10dp"
         android:text="Wood"
-        android:textSize="17sp"
-        android:textStyle="bold" />
+        android:textColor="@color/text_dark"
+        android:textSize="17sp" />
 
 </LinearLayout>

@@ -1,7 +1,7 @@
 <resources>
     <string name="app_name">Placecraft+</string>
 
-    <string name="welcome">Welcome</string>
+    <string name="welcome">Welcome to Placecraft!</string>
 
     <string name="sign_up">Sign up</string>
     <string name="login">Log in</string>
@@ -39,6 +39,6 @@
     <string name="tools">Tools</string>
 
     <string name="empty_inventory">Your inventory is empty.</string>
-    <string name="empty_weapons">Your have no weapons.</string>
+    <string name="empty_weapons">You have no weapons.</string>
     <string name="choose_weapon">Choose your weapon</string>
 </resources>

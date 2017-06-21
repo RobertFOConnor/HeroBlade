@@ -11,4 +11,7 @@
     <color name="bg_color">#00A1A9</color>
     <color name="transparent">#00000000</color>
     <color name="half_transparent">#50000000</color>
+
+    <color name="text_dark">#333333</color>
+
 </resources>

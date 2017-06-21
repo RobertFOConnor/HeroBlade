@@ -56,6 +56,7 @@ import ie.ul.postgrad.socialanxietyapp.NavigationDrawerListAdapter;
 import ie.ul.postgrad.socialanxietyapp.NearbyLocationsActivity;
 import ie.ul.postgrad.socialanxietyapp.R;
 import ie.ul.postgrad.socialanxietyapp.ResourceResultActivity;
+import ie.ul.postgrad.socialanxietyapp.SettingsActivity;
 import ie.ul.postgrad.socialanxietyapp.StepsGraphActivity;
 import ie.ul.postgrad.socialanxietyapp.StepsService;
 import ie.ul.postgrad.socialanxietyapp.game.GameManager;

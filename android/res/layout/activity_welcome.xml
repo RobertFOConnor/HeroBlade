@@ -13,15 +13,21 @@
     tools:context="ie.ul.postgrad.socialanxietyapp.account.WelcomeActivity">
 
 
+    <ImageView
+        android:layout_width="60dp"
+        android:layout_height="80dp"
+        android:layout_gravity="center"
+        android:layout_marginTop="@dimen/account_ver_margin"
+        android:src="@drawable/welcome_icon" />
+
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center"
-        android:layout_marginBottom="@dimen/account_ver_margin"
-        android:layout_marginTop="@dimen/account_ver_margin"
+        android:layout_marginBottom="30dp"
         android:gravity="center"
+        android:lines="2"
         android:text="@string/welcome"
-        android:textAllCaps="true"
         android:textColor="#fff"
         android:textSize="@dimen/text_title_size"
         android:textStyle="bold" />

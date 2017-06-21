@@ -1,7 +1,11 @@
 package ie.ul.postgrad.socialanxietyapp;
 
+import android.os.Build;
 import android.os.Bundle;
+import android.support.v4.content.ContextCompat;
+import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
+import android.view.MenuItem;
 import android.widget.ListView;
 
 import java.util.ArrayList;
@@ -29,5 +33,23 @@ public class CraftingActivity extends AppCompatActivity {
         ListView itemList = (ListView) findViewById(R.id.craft_item_list);
         CraftableListAdapter adapter = new CraftableListAdapter(this, items);
         itemList.setAdapter(adapter);
+
+        ActionBar actionBar = getSupportActionBar();
+        actionBar.setTitle("Crafting");
+        actionBar.setDisplayHomeAsUpEnabled(true);
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            getWindow().setStatusBarColor(ContextCompat.getColor(this, R.color.bg_color));
+        }
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case android.R.id.home:
+                finish();
+                break;
+        }
+        return true;
     }
 }

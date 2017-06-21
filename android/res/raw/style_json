@@ -16,22 +16,6 @@
     ]
   },
   {
-    "featureType": "administrative.land_parcel",
-    "stylers": [
-      {
-        "visibility": "off"
-      }
-    ]
-  },
-  {
-    "featureType": "administrative.neighborhood",
-    "stylers": [
-      {
-        "visibility": "off"
-      }
-    ]
-  },
-  {
     "featureType": "landscape",
     "stylers": [
       {
@@ -51,7 +35,15 @@
     "featureType": "road",
     "stylers": [
       {
-        "color": "#8d7965"
+        "color": "#d6c7a3"
+      }
+    ]
+  },
+  {
+    "featureType": "water",
+    "stylers": [
+      {
+        "color": "#91e8e3"
       }
     ]
   }

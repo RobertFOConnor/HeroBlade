@@ -10,6 +10,7 @@ import com.badlogic.gdx.backends.android.AndroidApplication;
 import com.badlogic.gdx.backends.android.AndroidApplicationConfiguration;
 
 import ie.ul.postgrad.socialanxietyapp.game.GameManager;
+import ie.ul.postgrad.socialanxietyapp.map.MapsActivity;
 import ie.ul.postgrad.socialanxietyapp.screen.AvatarScreen;
 
 public class AvatarCustomizationActivity extends AndroidApplication implements LibGdxInterface, View.OnClickListener {
@@ -60,7 +61,7 @@ public class AvatarCustomizationActivity extends AndroidApplication implements L
                 break;
             case R.id.continue_button:
                 saveAvatar(avatarDisplay.getAvatar());
-                Intent intent = new Intent(getApplicationContext(), PlayerAvatarActivity.class);
+                Intent intent = new Intent(getApplicationContext(), MapsActivity.class);
                 startActivity(intent);
                 finish();
                 break;

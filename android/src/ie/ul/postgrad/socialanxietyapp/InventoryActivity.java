@@ -1,9 +1,15 @@
 package ie.ul.postgrad.socialanxietyapp;
 
+import android.os.Build;
 import android.os.Bundle;
+import android.support.v4.content.ContextCompat;
+import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.util.SparseIntArray;
+import android.view.MenuItem;
 import android.view.View;
+import android.view.Window;
+import android.view.WindowManager;
 import android.widget.AdapterView;
 import android.widget.ListView;
 import android.widget.TextView;
@@ -67,6 +73,15 @@ public class InventoryActivity extends AppCompatActivity implements View.OnClick
                 }
             }
         };
+
+        ActionBar actionBar = getSupportActionBar();
+        actionBar.setTitle("Inventory");
+        actionBar.setDisplayHomeAsUpEnabled(true);
+
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            getWindow().setStatusBarColor(ContextCompat.getColor(this, R.color.bg_color));
+        }
     }
 
     @Override
@@ -100,5 +115,15 @@ public class InventoryActivity extends AppCompatActivity implements View.OnClick
         } else {
             emptyMessage.setVisibility(View.INVISIBLE);
         }
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case android.R.id.home:
+                finish();
+                break;
+        }
+        return true;
     }
 }
