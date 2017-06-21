@@ -49,11 +49,11 @@ public class BattleActivity extends AndroidApplication implements LibGdxInterfac
         View v = initializeForView(game, new AndroidApplicationConfiguration());
         ((LinearLayout) findViewById(R.id.character_layout)).addView(v);
 
+        player = GameManager.getInstance().getPlayer();
+
+
         enemy = EnemyFactory.buildEnemy();
         ((TextView) findViewById(R.id.enemy_name)).setText(enemy.getName());
-
-
-        player = GameManager.getInstance().getPlayer();
 
         ArrayList<WeaponItem> weapons = GameManager.getInstance().getInventory().getWeapons();
         if (weapons.size() > 0) {

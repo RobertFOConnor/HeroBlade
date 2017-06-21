@@ -56,29 +56,9 @@ public class GameManager {
         visitedLocations = new ArrayList<>();
     }
 
-    public void startGame(Context context) {
+    public void startGame(Context context, String id, String name, String email, String password) {
         //Initialize database helper
         databaseHelper = new DBHelper(context);
-
-        /*//Add new player to database
-        if (databaseHelper.numberOfPlayers() == 0) {
-            databaseHelper.insertUser(userName, "", 0, 1, 0, 20);
-            databaseHelper.insertAvatar(new Avatar(0, 0));
-        } else {
-            if (!databaseHelper.getPlayer(1).getName().equals(userName)) {
-                databaseHelper.deletePlayer(1);
-                databaseHelper.deleteAvatar(1);
-
-                databaseHelper.insertPlayer(userName, "", 0, 1, 0, 20);
-                databaseHelper.insertAvatar(new Avatar(0, 0));
-            }
-        }
-
-        player = databaseHelper.getPlayer(1);
-        setInventory(new Inventory(databaseHelper.getInventory(), databaseHelper.getWeapons(), context));*/
-    }
-
-    public void initUser(String id, String name, String email, String password, Context context) {
         databaseHelper.insertUser(id, name, email, password);
         databaseHelper.insertAvatar(new Avatar(0, 0));
 
@@ -178,11 +158,9 @@ public class GameManager {
     }
 
     public void removeWeapon(String UUID) {
-        System.out.println("ITEMS IN WEAPON TABLE: " + databaseHelper.getWeapons().size());
         WeaponItem weaponItem = inventory.getWeapon(UUID);
         inventory.getWeapons().remove(weaponItem);
         databaseHelper.deleteWeapon(UUID);
-        System.out.println("ITEMS IN WEAPON TABLE: " + databaseHelper.getWeapons().size());
     }
 
     private class addItemTask extends AsyncTask<String, Integer, String> {

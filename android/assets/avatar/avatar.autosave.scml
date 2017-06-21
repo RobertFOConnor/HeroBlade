@@ -1481,7 +1481,7 @@
                     <object_ref id="8" parent="3" timeline="8" key="0" z_index="8"/>
                     <object_ref id="9" parent="4" timeline="9" key="0" z_index="9"/>
                     <object_ref id="10" parent="1" timeline="16" key="0" z_index="10"/>
-                    <object_ref id="11" parent="2" timeline="18" key="0" z_index="11"/>
+                    <object_ref id="11" parent="2" timeline="17" key="0" z_index="11"/>
                 </key>
                 <key id="1" time="455">
                     <bone_ref id="0" timeline="10" key="1"/>
@@ -1501,7 +1501,7 @@
                     <object_ref id="8" parent="3" timeline="8" key="0" z_index="8"/>
                     <object_ref id="9" parent="4" timeline="9" key="0" z_index="9"/>
                     <object_ref id="10" parent="1" timeline="16" key="0" z_index="10"/>
-                    <object_ref id="11" parent="2" timeline="18" key="0" z_index="11"/>
+                    <object_ref id="11" parent="2" timeline="17" key="0" z_index="11"/>
                 </key>
             </mainline>
             <timeline id="0" name="shoe">
@@ -1607,12 +1607,7 @@
                     <object folder="6" file="0" x="26.735823" y="1.688917" angle="268.549783" scale_x="0.328322" scale_y="-0.443173"/>
                 </key>
             </timeline>
-            <timeline id="17" name="item_0064">
-                <key id="0" spin="0">
-                    <object folder="0" file="8" x="-11.039873" y="13.422363" angle="69.227745" scale_x="0.538779" scale_y="0.574293"/>
-                </key>
-            </timeline>
-            <timeline id="18" name="hair_curly_long">
+            <timeline id="17" name="hair_curly_long">
                 <key id="0" spin="0">
                     <object folder="1" file="8" x="56.580869" y="44.740478" angle="316.273029" scale_x="0.789342" scale_y="0.774242"/>
                 </key>

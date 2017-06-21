@@ -56,7 +56,6 @@ import ie.ul.postgrad.socialanxietyapp.NavigationDrawerListAdapter;
 import ie.ul.postgrad.socialanxietyapp.NearbyLocationsActivity;
 import ie.ul.postgrad.socialanxietyapp.R;
 import ie.ul.postgrad.socialanxietyapp.ResourceResultActivity;
-import ie.ul.postgrad.socialanxietyapp.SettingsActivity;
 import ie.ul.postgrad.socialanxietyapp.StepsGraphActivity;
 import ie.ul.postgrad.socialanxietyapp.StepsService;
 import ie.ul.postgrad.socialanxietyapp.game.GameManager;
@@ -71,8 +70,7 @@ import static ie.ul.postgrad.socialanxietyapp.NavigationDrawerListAdapter.INVENT
 import static ie.ul.postgrad.socialanxietyapp.NavigationDrawerListAdapter.QUESTS;
 import static ie.ul.postgrad.socialanxietyapp.NavigationDrawerListAdapter.SETTINGS;
 
-public class MapsActivity extends AppCompatActivity implements OnMapReadyCallback, GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener,
-        LocationListener {
+public class MapsActivity extends AppCompatActivity implements OnMapReadyCallback, GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener, LocationListener {
 
     private static final String TAG = MapsActivity.class.getSimpleName();
     private GoogleMap mMap;
@@ -303,25 +301,6 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
             mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(mDefaultLocation, DEFAULT_ZOOM));
             mMap.getUiSettings().setMyLocationButtonEnabled(false);
         }
-
-        /*try {
-            mMap.getUiSettings().setMyLocationButtonEnabled(false);
-            mMap.setMyLocationEnabled(false);
-
-            if (mCurrentLocation != null) {
-
-                MarkerOptions playerMarker = new MarkerOptions()
-                        .position(new LatLng(mCurrentLocation.getLatitude(), mCurrentLocation.getLongitude()))
-                        .title(GameManager.getInstance().getPlayer().getName())
-                        .icon(BitmapDescriptorFactory.fromResource(R.drawable.avatar))
-                        .zIndex(1000)
-                        .snippet("I'm feeling hungry.");
-
-                mMap.addMarker(playerMarker).setTag("player");
-            }
-        } catch (SecurityException e) {
-            e.printStackTrace();
-        }*/
     }
 
     // Customise the styling of the base map using a JSON object defined
