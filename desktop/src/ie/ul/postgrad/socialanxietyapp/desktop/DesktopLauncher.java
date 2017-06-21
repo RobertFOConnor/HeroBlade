@@ -11,6 +11,6 @@ public class DesktopLauncher {
         LwjglApplicationConfiguration config = new LwjglApplicationConfiguration();
         config.width = 720 / 2;
         config.height = 1280 / 2;
-        new LwjglApplication(new MainGame(new DesktopLibgdxInterfaceDummy(), MainGame.BATTLE_SCREEN), config);
+        new LwjglApplication(new MainGame(new DesktopLibgdxInterfaceDummy(), MainGame.AVATAR_SCREEN), config);
     }
 }
