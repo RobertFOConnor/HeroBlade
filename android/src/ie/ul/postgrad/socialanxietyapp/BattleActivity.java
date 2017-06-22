@@ -209,7 +209,7 @@ public class BattleActivity extends AndroidApplication implements LibGdxInterfac
                 dialogueText.setText(player.getName() + " has lost the battle. " + player.getName() + " has passed out.");
             } else {
                 dialogueText.setText(player.getName() + " has won the battle. " + player.getName() + " gained 100XP!");
-                GameManager.getInstance().awardXP(100);
+                GameManager.getInstance().awardXP(getApplicationContext(), 100);
             }
         }
 

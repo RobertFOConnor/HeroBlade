@@ -71,14 +71,16 @@ public class Player {
         return xp;
     }
 
-    public void setXp(int xp) {
+    public boolean setXp(int xp) {
         this.xp = xp;
 
         if (xp >= getXPNeeded()) { //Check for level up
             setLevel(getLevel() + 1);
             setMaxHealth(getMaxHealth() + 5);
             setCurrHealth(getMaxHealth());
+            return true;
         }
+        return false;
     }
 
     public int getXPNeeded() {

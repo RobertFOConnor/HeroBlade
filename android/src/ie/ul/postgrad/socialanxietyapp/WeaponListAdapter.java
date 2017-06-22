@@ -1,7 +1,7 @@
 package ie.ul.postgrad.socialanxietyapp;
 
 import android.content.Context;
-import android.graphics.Color;
+import android.support.v4.content.ContextCompat;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -47,7 +47,6 @@ public class WeaponListAdapter extends ArrayAdapter<WeaponItem> {
             viewHolder.healthBar = (ProgressBar) convertView.findViewById(R.id.weapon_health_bar);
             viewHolder.damageText = (TextView) convertView.findViewById(R.id.damage_field);
             viewHolder.durabilityText = (TextView) convertView.findViewById(R.id.health_field);
-            viewHolder.UUIDText = (TextView) convertView.findViewById(R.id.uuid);
             viewHolder.img = (ImageView) convertView.findViewById(R.id.item_image);
             viewHolder.bg = (LinearLayout) convertView.findViewById(R.id.item_bg);
 
@@ -58,7 +57,6 @@ public class WeaponListAdapter extends ArrayAdapter<WeaponItem> {
         }
 
         viewHolder.nameText.setText(weaponItem.getName());
-        viewHolder.UUIDText.setText(weaponItem.getUUID());
         viewHolder.healthBar.setMax(weaponItem.getMaxHealth());
         viewHolder.healthBar.setProgress(weaponItem.getCurrHealth());
         viewHolder.damageText.setText("DMG: " + weaponItem.getDamage());
@@ -66,9 +64,8 @@ public class WeaponListAdapter extends ArrayAdapter<WeaponItem> {
         viewHolder.img.setImageResource(weaponItem.getImageID());
 
         if (weaponItem.getUUID().equals(currWeaponUUID)) {
-            viewHolder.bg.setBackgroundColor(Color.BLUE);
+            viewHolder.bg.setBackgroundColor(ContextCompat.getColor(getContext(), R.color.bg_color_transparent));
         }
-
         return convertView;
     }
 
@@ -76,7 +73,6 @@ public class WeaponListAdapter extends ArrayAdapter<WeaponItem> {
         TextView nameText;
         TextView damageText;
         TextView durabilityText;
-        TextView UUIDText;
         ProgressBar healthBar;
         ImageView img;
         LinearLayout bg;

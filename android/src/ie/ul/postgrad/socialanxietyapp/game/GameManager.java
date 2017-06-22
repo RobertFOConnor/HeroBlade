@@ -1,6 +1,7 @@
 package ie.ul.postgrad.socialanxietyapp.game;
 
 import android.content.Context;
+import android.content.Intent;
 import android.os.AsyncTask;
 import android.widget.Toast;
 
@@ -17,6 +18,7 @@ import java.util.List;
 import java.util.UUID;
 
 import ie.ul.postgrad.socialanxietyapp.Avatar;
+import ie.ul.postgrad.socialanxietyapp.LevelUpActivity;
 import ie.ul.postgrad.socialanxietyapp.database.DBHelper;
 import ie.ul.postgrad.socialanxietyapp.database.WebDBHelper;
 import ie.ul.postgrad.socialanxietyapp.game.item.FoodItem;
@@ -62,7 +64,7 @@ public class GameManager {
         databaseHelper.insertUser(id, name, email, password);
         databaseHelper.insertAvatar(new Avatar(0, 0));
 
-        player = new Player(id, name, email, 0, 0, 0, 10, 10);
+        player = new Player(id, name, email, 0, 1, 0, 10, 10);
         setInventory(new Inventory(databaseHelper.getInventory(), databaseHelper.getWeapons(), context));
     }
 
@@ -138,8 +140,11 @@ public class GameManager {
         this.activeQuest = activeQuest;
     }
 
-    public void awardXP(int xp) {
-        player.setXp(player.getXp() + xp);
+    public void awardXP(Context context, int xp) {
+        if(player.setXp(player.getXp() + xp)) {
+            Intent intent = new Intent(context, LevelUpActivity.class);
+            context.startActivity(intent);
+        }
         updatePlayerInDatabase();
     }
 

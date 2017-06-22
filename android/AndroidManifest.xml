@@ -93,7 +93,11 @@
             android:theme="@style/Theme.Transparent" />
         <activity
             android:name=".SettingsActivity"
-            android:screenOrientation="portrait"/>
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".LevelUpActivity"
+            android:screenOrientation="portrait"
+            android:theme="@style/Theme.Transparent" />
     </application>
 
 </manifest>

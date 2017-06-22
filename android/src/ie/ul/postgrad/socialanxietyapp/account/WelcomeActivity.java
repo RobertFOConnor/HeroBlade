@@ -1,8 +1,10 @@
 package ie.ul.postgrad.socialanxietyapp.account;
 
 import android.content.Intent;
+import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 
@@ -24,6 +26,10 @@ public class WelcomeActivity extends AppCompatActivity implements View.OnClickLi
         findViewById(R.id.guest).setOnClickListener(this);
         findViewById(R.id.sign_in).setOnClickListener(this);
         findViewById(R.id.register).setOnClickListener(this);
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            getWindow().setStatusBarColor(ContextCompat.getColor(this, R.color.bg_color));
+        }
     }
 
     @Override
