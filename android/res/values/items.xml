@@ -787,24 +787,24 @@
         <item name="name">Treasure Chest</item>
         <item name="desc"></item>
         <item name="worth">20</item>
-        <item name="damage">50</item>
-        <item name="energy">0</item>
+        <item name="damage">0</item>
+        <item name="energy">2</item>
     </array>
 
     <array name="item_75">
-        <item name="name">Gold Treasure Chest</item>
+        <item name="name">Gold Chest</item>
         <item name="desc"></item>
         <item name="worth">20</item>
-        <item name="damage">50</item>
-        <item name="energy">0</item>
+        <item name="damage">0</item>
+        <item name="energy">5</item>
     </array>
 
     <array name="item_76">
-        <item name="name">Ruby Treasure Chest</item>
+        <item name="name">Ruby Chest</item>
         <item name="desc"></item>
         <item name="worth">20</item>
-        <item name="damage">50</item>
-        <item name="energy">0</item>
+        <item name="damage">0</item>
+        <item name="energy">10</item>
     </array>
 
     <array name="item_array_refs">

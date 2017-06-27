@@ -1,4 +1,4 @@
-package ie.ul.postgrad.socialanxietyapp.map;
+package ie.ul.postgrad.socialanxietyapp.screens;
 
 import android.content.Context;
 import android.content.Intent;
@@ -47,33 +47,28 @@ import com.google.android.gms.maps.model.Marker;
 import java.util.ArrayList;
 
 import ie.ul.postgrad.socialanxietyapp.AndroidLauncher;
-import ie.ul.postgrad.socialanxietyapp.BattleActivity;
-import ie.ul.postgrad.socialanxietyapp.ConversationActivity;
-import ie.ul.postgrad.socialanxietyapp.CraftingActivity;
-import ie.ul.postgrad.socialanxietyapp.InventoryActivity;
 import ie.ul.postgrad.socialanxietyapp.MainGame;
-import ie.ul.postgrad.socialanxietyapp.NavigationDrawerListAdapter;
-import ie.ul.postgrad.socialanxietyapp.NearbyLocationsActivity;
 import ie.ul.postgrad.socialanxietyapp.R;
-import ie.ul.postgrad.socialanxietyapp.ResourceResultActivity;
-import ie.ul.postgrad.socialanxietyapp.SettingsActivity;
-import ie.ul.postgrad.socialanxietyapp.StepsGraphActivity;
 import ie.ul.postgrad.socialanxietyapp.StepsService;
+import ie.ul.postgrad.socialanxietyapp.adapter.NavigationDrawerListAdapter;
 import ie.ul.postgrad.socialanxietyapp.game.GameManager;
 import ie.ul.postgrad.socialanxietyapp.game.InventoryItemArray;
 import ie.ul.postgrad.socialanxietyapp.game.item.MarkerFactory;
 import ie.ul.postgrad.socialanxietyapp.game.quest.Quest;
 import ie.ul.postgrad.socialanxietyapp.game.quest.QuestFactory;
+import ie.ul.postgrad.socialanxietyapp.map.MapWrapperLayout;
+import ie.ul.postgrad.socialanxietyapp.map.OnInfoWindowElemTouchListener;
 
-import static ie.ul.postgrad.socialanxietyapp.NavigationDrawerListAdapter.ACHIEVEMENTS;
-import static ie.ul.postgrad.socialanxietyapp.NavigationDrawerListAdapter.CRAFTING;
-import static ie.ul.postgrad.socialanxietyapp.NavigationDrawerListAdapter.INVENTORY;
-import static ie.ul.postgrad.socialanxietyapp.NavigationDrawerListAdapter.QUESTS;
-import static ie.ul.postgrad.socialanxietyapp.NavigationDrawerListAdapter.SETTINGS;
+import static ie.ul.postgrad.socialanxietyapp.adapter.NavigationDrawerListAdapter.ACHIEVEMENTS;
+import static ie.ul.postgrad.socialanxietyapp.adapter.NavigationDrawerListAdapter.CRAFTING;
+import static ie.ul.postgrad.socialanxietyapp.adapter.NavigationDrawerListAdapter.INVENTORY;
+import static ie.ul.postgrad.socialanxietyapp.adapter.NavigationDrawerListAdapter.QUESTS;
+import static ie.ul.postgrad.socialanxietyapp.adapter.NavigationDrawerListAdapter.SETTINGS;
 
 public class MapsActivity extends AppCompatActivity implements OnMapReadyCallback, GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener, LocationListener {
 
     private static final String TAG = MapsActivity.class.getSimpleName();
+    public static boolean active = false;
     private GoogleMap mMap;
     private CameraPosition mCameraPosition;
     private GoogleApiClient mGoogleApiClient; //Entry point to Play Services (used by Places API).
@@ -164,6 +159,14 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
             }
         });
 
+        findViewById(R.id.updates_button).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(getApplicationContext(), ChestViewActivity.class);
+                startActivity(intent);
+            }
+        });
+
         mDrawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
         mDrawerList = (ListView) findViewById(R.id.left_drawer);
     }
@@ -171,7 +174,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
     @Override
     protected void onStart() {
         super.onStart();
-        updateDistanceText();
+        active = true;
 
         final String[] menuTitles = new String[]{"Inventory", "Quests", "Crafting", "Achievements", "Settings"};
         int[] menuIcons = new int[]{R.drawable.ic_backpack, R.drawable.ic_quest, R.drawable.ic_crafting, R.drawable.ic_achievements, R.drawable.ic_settings};
@@ -428,6 +431,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
     @Override
     protected void onStop() {
         super.onStop();
+        active = false;
     }
 
     /**
@@ -624,8 +628,8 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
                     startActivity(i);
                     break;
                 case QUESTS:
-                    //i = new Intent(getApplicationContext(), ConversationActivity.class);
-                    //startActivity(i);
+                    i = new Intent(getApplicationContext(), ChestOpenActivity.class);
+                    startActivity(i);
                     break;
                 case CRAFTING:
                     i = new Intent(getApplicationContext(), CraftingActivity.class);

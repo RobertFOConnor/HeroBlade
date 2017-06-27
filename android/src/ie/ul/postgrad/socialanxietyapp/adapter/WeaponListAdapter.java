@@ -1,4 +1,4 @@
-package ie.ul.postgrad.socialanxietyapp;
+package ie.ul.postgrad.socialanxietyapp.adapter;
 
 import android.content.Context;
 import android.support.v4.content.ContextCompat;
@@ -13,6 +13,7 @@ import android.widget.TextView;
 
 import java.util.ArrayList;
 
+import ie.ul.postgrad.socialanxietyapp.R;
 import ie.ul.postgrad.socialanxietyapp.game.item.WeaponItem;
 
 /**

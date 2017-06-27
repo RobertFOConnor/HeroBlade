@@ -51,8 +51,7 @@
         <ImageView
             android:layout_gravity="center"
             android:layout_width="150dp"
-            android:layout_height="150dp"
-            android:src="@drawable/chest_locked"/>
+            android:layout_height="150dp"/>
 
     </LinearLayout>
 

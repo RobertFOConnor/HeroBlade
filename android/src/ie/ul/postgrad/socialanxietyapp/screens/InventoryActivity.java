@@ -1,4 +1,4 @@
-package ie.ul.postgrad.socialanxietyapp;
+package ie.ul.postgrad.socialanxietyapp.screens;
 
 import android.os.Build;
 import android.os.Bundle;
@@ -8,14 +8,15 @@ import android.support.v7.app.AppCompatActivity;
 import android.util.SparseIntArray;
 import android.view.MenuItem;
 import android.view.View;
-import android.view.Window;
-import android.view.WindowManager;
 import android.widget.AdapterView;
 import android.widget.ListView;
 import android.widget.TextView;
 
 import java.util.ArrayList;
 
+import ie.ul.postgrad.socialanxietyapp.adapter.InventoryListAdapter;
+import ie.ul.postgrad.socialanxietyapp.R;
+import ie.ul.postgrad.socialanxietyapp.adapter.WeaponListAdapter;
 import ie.ul.postgrad.socialanxietyapp.game.GameManager;
 import ie.ul.postgrad.socialanxietyapp.game.Inventory;
 import ie.ul.postgrad.socialanxietyapp.game.item.FoodItem;

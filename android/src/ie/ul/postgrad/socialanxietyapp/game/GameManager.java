@@ -18,14 +18,15 @@ import java.util.List;
 import java.util.UUID;
 
 import ie.ul.postgrad.socialanxietyapp.Avatar;
-import ie.ul.postgrad.socialanxietyapp.LevelUpActivity;
 import ie.ul.postgrad.socialanxietyapp.database.DBHelper;
 import ie.ul.postgrad.socialanxietyapp.database.WebDBHelper;
+import ie.ul.postgrad.socialanxietyapp.game.item.ChestItem;
 import ie.ul.postgrad.socialanxietyapp.game.item.FoodItem;
 import ie.ul.postgrad.socialanxietyapp.game.item.Item;
 import ie.ul.postgrad.socialanxietyapp.game.item.ItemFactory;
 import ie.ul.postgrad.socialanxietyapp.game.item.WeaponItem;
 import ie.ul.postgrad.socialanxietyapp.game.quest.Quest;
+import ie.ul.postgrad.socialanxietyapp.screens.LevelUpActivity;
 
 /**
  * Created by Robert on 15-Mar-17.
@@ -66,6 +67,7 @@ public class GameManager {
 
         player = new Player(id, name, email, 0, 1, 0, 10, 10);
         setInventory(new Inventory(databaseHelper.getInventory(), databaseHelper.getWeapons(), context));
+        awardChest(context);
     }
 
     public Player getPlayer() {
@@ -126,7 +128,7 @@ public class GameManager {
         } else {
             getInventory().addItem(itemId, quantity);
             updateItemInDatabase(itemId);
-            new addItemTask().execute(player.getId(), Integer.toString(itemId), Integer.toString(getInventory().getItems().get(itemId)));
+            //new addItemTask().execute(player.getId(), Integer.toString(itemId), Integer.toString(getInventory().getItems().get(itemId)));
         }
 
         //Toast.makeText(context, "You received " + quantity + " " + ItemFactory.buildItem(context, itemId).getName(), Toast.LENGTH_SHORT).show();
@@ -141,11 +143,31 @@ public class GameManager {
     }
 
     public void awardXP(Context context, int xp) {
-        if(player.setXp(player.getXp() + xp)) {
+        if (player.setXp(player.getXp() + xp)) {
+            awardChest(context);
+
             Intent intent = new Intent(context, LevelUpActivity.class);
             context.startActivity(intent);
         }
         updatePlayerInDatabase();
+    }
+
+    private void awardChest(Context context) {
+        int random = (int) (Math.random() * 10);
+        int chestId = ChestItem.NORMAL_CHEST; // normal chest default.
+
+        if (random == 9) {
+            chestId = ChestItem.RARE_CHEST; // 1 in 10 chance of rare chest.
+        } else if (random > 5) {
+            chestId = ChestItem.GOLD_CHEST; // 4 in 10 chance of gold chest.
+        }
+        player.getChests().add((ChestItem) ItemFactory.buildItem(context, chestId));
+    }
+
+    private void openChest(int chestId) {
+        if(chestId == ChestItem.NORMAL_CHEST) {
+
+        }
     }
 
     public void consumeFoodItem(Context context, int id) {

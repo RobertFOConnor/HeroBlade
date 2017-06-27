@@ -1,5 +1,9 @@
 package ie.ul.postgrad.socialanxietyapp.game;
 
+import java.util.ArrayList;
+
+import ie.ul.postgrad.socialanxietyapp.game.item.ChestItem;
+
 /**
  * Created by Robert on 22-Feb-17.
  * <p>
@@ -19,6 +23,8 @@ public class Player {
     private int maxHealth;
     private int currHealth;
 
+    private ArrayList<ChestItem> chests;
+
     public Player(String id, String name, String email, int xp, int level, int money, int maxHealth, int currHealth) {
         this.id = id;
         this.name = name;
@@ -30,6 +36,7 @@ public class Player {
         currQuestId = 1;
         this.maxHealth = maxHealth;
         this.currHealth = currHealth;
+        chests = new ArrayList<>();
     }
 
     public Player() {
@@ -41,6 +48,8 @@ public class Player {
         weapon_id = -1;
         maxHealth = 10;
         currHealth = maxHealth;
+
+        chests = new ArrayList<>();
     }
 
     public String getId() {
@@ -69,6 +78,10 @@ public class Player {
 
     public int getXp() {
         return xp;
+    }
+
+    public ArrayList<ChestItem> getChests() {
+        return chests;
     }
 
     public boolean setXp(int xp) {
@@ -135,6 +148,8 @@ public class Player {
         this.currHealth = currHealth;
         if (currHealth > maxHealth) {
             this.currHealth = maxHealth;
+        } else if (currHealth < 0) {
+            this.currHealth = 0;
         }
     }
 

@@ -9,7 +9,7 @@
     android:paddingLeft="@dimen/activity_horizontal_margin"
     android:paddingRight="@dimen/activity_horizontal_margin"
     android:paddingTop="?attr/actionBarSize"
-    tools:context="ie.ul.postgrad.socialanxietyapp.PlayerAvatarActivity">
+    tools:context="ie.ul.postgrad.socialanxietyapp.screens.PlayerAvatarActivity">
 
 
     <TextView

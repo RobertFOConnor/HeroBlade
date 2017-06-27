@@ -27,7 +27,7 @@ import ie.ul.postgrad.socialanxietyapp.FontManager;
 import ie.ul.postgrad.socialanxietyapp.R;
 import ie.ul.postgrad.socialanxietyapp.database.WebDBHelper;
 import ie.ul.postgrad.socialanxietyapp.game.GameManager;
-import ie.ul.postgrad.socialanxietyapp.map.MapsActivity;
+import ie.ul.postgrad.socialanxietyapp.screens.MapsActivity;
 
 
 public class LogInActivity extends AppCompatActivity implements View.OnClickListener {

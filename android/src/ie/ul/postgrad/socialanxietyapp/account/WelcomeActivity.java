@@ -11,10 +11,9 @@ import android.view.View;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
 
-import ie.ul.postgrad.socialanxietyapp.AvatarCustomizationActivity;
+import ie.ul.postgrad.socialanxietyapp.screens.AvatarCustomizationActivity;
 import ie.ul.postgrad.socialanxietyapp.R;
 import ie.ul.postgrad.socialanxietyapp.game.GameManager;
-import ie.ul.postgrad.socialanxietyapp.map.MapsActivity;
 
 public class WelcomeActivity extends AppCompatActivity implements View.OnClickListener, GoogleApiClient.OnConnectionFailedListener {
 

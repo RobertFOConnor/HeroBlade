@@ -1,16 +1,18 @@
-package ie.ul.postgrad.socialanxietyapp;
+package ie.ul.postgrad.socialanxietyapp.screens;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.v7.widget.Toolbar;
 import android.view.View;
 import android.widget.LinearLayout;
 
 import com.badlogic.gdx.backends.android.AndroidApplication;
 import com.badlogic.gdx.backends.android.AndroidApplicationConfiguration;
 
+import ie.ul.postgrad.socialanxietyapp.Avatar;
+import ie.ul.postgrad.socialanxietyapp.LibGdxInterface;
+import ie.ul.postgrad.socialanxietyapp.MainGame;
+import ie.ul.postgrad.socialanxietyapp.R;
 import ie.ul.postgrad.socialanxietyapp.game.GameManager;
-import ie.ul.postgrad.socialanxietyapp.map.MapsActivity;
 import ie.ul.postgrad.socialanxietyapp.screen.AvatarScreen;
 
 public class AvatarCustomizationActivity extends AndroidApplication implements LibGdxInterface, View.OnClickListener {

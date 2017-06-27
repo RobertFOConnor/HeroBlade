@@ -39,11 +39,11 @@ public class ItemFactory {
 
         SparseIntArray ingredients = new SparseIntArray();
 
-        for(int i = INGREDIENT_1_ID; i < itemValues.length(); i+=2) {
+        for (int i = INGREDIENT_1_ID; i < itemValues.length(); i += 2) {
             int ingredientId = i;
-            int ingredientQuantity = i+1;
+            int ingredientQuantity = i + 1;
 
-            if(itemValues.getString(ingredientId) != null) {
+            if (itemValues.getString(ingredientId) != null) {
                 int ingredient_1_id = Integer.parseInt(itemValues.getString(ingredientId));
                 int ingredient_1_quantity = Integer.parseInt(itemValues.getString(ingredientQuantity));
                 ingredients.put(ingredient_1_id, ingredient_1_quantity);
@@ -54,9 +54,11 @@ public class ItemFactory {
         itemValues.recycle();
 
 
-        if(damage > 0) {
-            return new WeaponItem(id, name, description, imageId, damage, damage+2, 10, 10, ingredients);
-        } else if(energy > 0) {
+        if (damage > 0) {
+            return new WeaponItem(id, name, description, imageId, damage, damage + 2, 10, 10, ingredients);
+        } else if (id >= 74) {
+            return new ChestItem(id, name, description, imageId, energy);
+        } else if (energy > 0) {
             return new FoodItem(id, name, description, imageId, ingredients, energy);
         } else {
             return new Item(id, name, description, imageId, ingredients);

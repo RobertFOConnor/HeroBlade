@@ -1,4 +1,4 @@
-package ie.ul.postgrad.socialanxietyapp;
+package ie.ul.postgrad.socialanxietyapp.adapter;
 
 import android.content.Context;
 import android.content.Intent;
@@ -9,8 +9,10 @@ import android.widget.BaseAdapter;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import ie.ul.postgrad.socialanxietyapp.R;
 import ie.ul.postgrad.socialanxietyapp.game.GameManager;
-import ie.ul.postgrad.socialanxietyapp.map.MapsActivity;
+import ie.ul.postgrad.socialanxietyapp.screens.MapsActivity;
+import ie.ul.postgrad.socialanxietyapp.screens.PlayerAvatarActivity;
 
 /**
  * Created by Robert on 18/03/2017.

@@ -1,10 +1,11 @@
-package ie.ul.postgrad.socialanxietyapp;
+package ie.ul.postgrad.socialanxietyapp.screens;
 
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.widget.TextView;
 
+import ie.ul.postgrad.socialanxietyapp.R;
 import ie.ul.postgrad.socialanxietyapp.game.GameManager;
 
 public class LevelUpActivity extends AppCompatActivity {

@@ -5,7 +5,7 @@
     android:layout_height="match_parent"
     android:paddingTop="40dp"
     android:orientation="vertical"
-    tools:context="ie.ul.postgrad.socialanxietyapp.StepsGraphActivity">
+    tools:context="ie.ul.postgrad.socialanxietyapp.screens.StepsGraphActivity">
 
     <TextView
         android:textSize="18sp"

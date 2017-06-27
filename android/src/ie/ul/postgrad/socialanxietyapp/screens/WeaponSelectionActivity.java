@@ -1,4 +1,4 @@
-package ie.ul.postgrad.socialanxietyapp;
+package ie.ul.postgrad.socialanxietyapp.screens;
 
 import android.app.Activity;
 import android.content.Intent;
@@ -12,6 +12,8 @@ import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ListView;
 
+import ie.ul.postgrad.socialanxietyapp.R;
+import ie.ul.postgrad.socialanxietyapp.adapter.WeaponListAdapter;
 import ie.ul.postgrad.socialanxietyapp.game.GameManager;
 import ie.ul.postgrad.socialanxietyapp.game.item.WeaponItem;
 
@@ -42,8 +44,12 @@ public class WeaponSelectionActivity extends AppCompatActivity {
                 Intent returnIntent = new Intent();
                 returnIntent.putExtra("result", selectedWeaponUUID);
 
-                if (currWeaponUUID.equals(selectedWeaponUUID)) { //Check if they already equipped this weapon.
-                    setResult(Activity.RESULT_CANCELED, returnIntent);
+                if (currWeaponUUID != null) {
+                    if (currWeaponUUID.equals(selectedWeaponUUID)) { //Check if they already equipped this weapon.
+                        setResult(Activity.RESULT_CANCELED, returnIntent);
+                    } else {
+                        setResult(Activity.RESULT_OK, returnIntent);
+                    }
                 } else {
                     setResult(Activity.RESULT_OK, returnIntent);
                 }

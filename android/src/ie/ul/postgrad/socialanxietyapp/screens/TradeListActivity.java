@@ -1,10 +1,12 @@
-package ie.ul.postgrad.socialanxietyapp;
+package ie.ul.postgrad.socialanxietyapp.screens;
 
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
 import android.widget.TextView;
+
+import ie.ul.postgrad.socialanxietyapp.R;
 
 public class TradeListActivity extends AppCompatActivity {
 

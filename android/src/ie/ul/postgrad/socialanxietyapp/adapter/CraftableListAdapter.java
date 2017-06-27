@@ -1,4 +1,4 @@
-package ie.ul.postgrad.socialanxietyapp;
+package ie.ul.postgrad.socialanxietyapp.adapter;
 
 import android.content.Context;
 import android.util.SparseIntArray;
@@ -12,6 +12,7 @@ import android.widget.Toast;
 
 import java.util.ArrayList;
 
+import ie.ul.postgrad.socialanxietyapp.R;
 import ie.ul.postgrad.socialanxietyapp.game.GameManager;
 import ie.ul.postgrad.socialanxietyapp.game.InventoryItemArray;
 import ie.ul.postgrad.socialanxietyapp.game.item.Item;

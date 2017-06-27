@@ -15,8 +15,13 @@ import android.os.IBinder;
 import android.support.annotation.Nullable;
 import android.support.v4.app.NotificationCompat;
 
+import java.util.ArrayList;
+
 import ie.ul.postgrad.socialanxietyapp.database.DBHelper;
-import ie.ul.postgrad.socialanxietyapp.map.MapsActivity;
+import ie.ul.postgrad.socialanxietyapp.game.GameManager;
+import ie.ul.postgrad.socialanxietyapp.game.item.ChestItem;
+import ie.ul.postgrad.socialanxietyapp.screens.ChestOpenActivity;
+import ie.ul.postgrad.socialanxietyapp.screens.MapsActivity;
 
 /**
  * Created by Robert on 16-Mar-17.
@@ -30,6 +35,7 @@ public class StepsService extends Service implements SensorEventListener {
     private Sensor mStepDetectorSensor;
     private DBHelper dbHelper;
     private float totalDistance;
+    private ArrayList<ChestItem> chests;
 
     @Override
     public void onCreate() {
@@ -43,6 +49,8 @@ public class StepsService extends Service implements SensorEventListener {
         }
         dbHelper = new DBHelper(this);
         totalDistance = dbHelper.getDistance();
+
+        chests = GameManager.getInstance().getPlayer().getChests();
     }
 
     @Override
@@ -58,12 +66,20 @@ public class StepsService extends Service implements SensorEventListener {
 
     @Override
     public void onSensorChanged(SensorEvent event) {
-        System.out.println("STEPS ADDED:"); //Log Comment for testing steps
+
         totalDistance += 0.8f;
         dbHelper.insertStepsEntry(totalDistance);
 
-        if (dbHelper.getSteps() % 300 == 0) { // send notification every 100 steps //TEMP//
-            //notifyOpenedChest();
+        for (ChestItem chest : chests) {
+            chest.setCurrDistance(chest.getCurrDistance() - 0.8f);
+
+            if (chest.getCurrDistance() < 0) {
+                if(!MapsActivity.active) {
+                    notifyOpenedChest(chest);
+                }
+                chests.remove(chest);
+                GameManager.getInstance().getPlayer().getChests().remove(0);
+            }
         }
     }
 
@@ -73,8 +89,8 @@ public class StepsService extends Service implements SensorEventListener {
     }
 
     /* Example method for what chest open notification might look like.. */
-    private void notifyOpenedChest() {
-        Intent resultIntent = new Intent(this, MapsActivity.class);
+    private void notifyOpenedChest(ChestItem chest) {
+        Intent resultIntent = new Intent(this, ChestOpenActivity.class);
         // Because clicking the notification opens a new ("special") activity, there's
         // no need to create an artificial back stack.
         PendingIntent resultPendingIntent =
@@ -88,8 +104,8 @@ public class StepsService extends Service implements SensorEventListener {
         NotificationCompat.Builder mBuilder =
                 new NotificationCompat.Builder(this)
                         .setSmallIcon(R.drawable.ic_chest_open)
-                        .setContentTitle("You've unlocked a treasure chest!")
-                        .setContentText("You walked 300 steps! The chest has been opened.")
+                        .setContentTitle("You've unlocked a " + chest.getName())
+                        .setContentText("You walked " + chest.getMaxDistance() + "km. The " + chest.getName() + " has been opened.")
                         .setVibrate(new long[]{1000, 1000})
                         .setLights(Color.BLUE, 3000, 3000)
                         .setAutoCancel(true)

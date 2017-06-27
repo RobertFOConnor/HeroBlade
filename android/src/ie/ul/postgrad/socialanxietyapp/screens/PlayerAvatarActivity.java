@@ -1,4 +1,4 @@
-package ie.ul.postgrad.socialanxietyapp;
+package ie.ul.postgrad.socialanxietyapp.screens;
 
 import android.content.Intent;
 import android.os.Build;
@@ -12,6 +12,10 @@ import com.badlogic.gdx.backends.android.AndroidApplication;
 import com.badlogic.gdx.backends.android.AndroidApplicationConfiguration;
 import com.google.firebase.auth.FirebaseAuth;
 
+import ie.ul.postgrad.socialanxietyapp.Avatar;
+import ie.ul.postgrad.socialanxietyapp.LibGdxInterface;
+import ie.ul.postgrad.socialanxietyapp.MainGame;
+import ie.ul.postgrad.socialanxietyapp.R;
 import ie.ul.postgrad.socialanxietyapp.account.WelcomeActivity;
 import ie.ul.postgrad.socialanxietyapp.game.GameManager;
 import ie.ul.postgrad.socialanxietyapp.game.Player;

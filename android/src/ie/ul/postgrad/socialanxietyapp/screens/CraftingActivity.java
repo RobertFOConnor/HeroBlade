@@ -1,4 +1,4 @@
-package ie.ul.postgrad.socialanxietyapp;
+package ie.ul.postgrad.socialanxietyapp.screens;
 
 import android.os.Build;
 import android.os.Bundle;
@@ -10,6 +10,8 @@ import android.widget.ListView;
 
 import java.util.ArrayList;
 
+import ie.ul.postgrad.socialanxietyapp.R;
+import ie.ul.postgrad.socialanxietyapp.adapter.CraftableListAdapter;
 import ie.ul.postgrad.socialanxietyapp.game.item.Item;
 import ie.ul.postgrad.socialanxietyapp.game.item.ItemFactory;
 
@@ -35,8 +37,10 @@ public class CraftingActivity extends AppCompatActivity {
         itemList.setAdapter(adapter);
 
         ActionBar actionBar = getSupportActionBar();
-        actionBar.setTitle("Crafting");
-        actionBar.setDisplayHomeAsUpEnabled(true);
+        if (actionBar != null) {
+            actionBar.setTitle("Crafting");
+            actionBar.setDisplayHomeAsUpEnabled(true);
+        }
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             getWindow().setStatusBarColor(ContextCompat.getColor(this, R.color.bg_color));

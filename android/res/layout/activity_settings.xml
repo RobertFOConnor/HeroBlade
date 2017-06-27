@@ -4,6 +4,6 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="ie.ul.postgrad.socialanxietyapp.SettingsActivity">
+    tools:context="ie.ul.postgrad.socialanxietyapp.screens.SettingsActivity">
 
 </android.support.constraint.ConstraintLayout>

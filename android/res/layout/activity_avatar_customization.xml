@@ -6,7 +6,7 @@
     android:background="@color/bg_color"
     android:orientation="vertical"
     android:padding="10dp"
-    tools:context="ie.ul.postgrad.socialanxietyapp.AvatarCustomizationActivity">
+    tools:context="ie.ul.postgrad.socialanxietyapp.screens.AvatarCustomizationActivity">
 
     <LinearLayout
         android:id="@+id/style_menu"

@@ -3,7 +3,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="ie.ul.postgrad.socialanxietyapp.ConversationActivity">
+    tools:context="ie.ul.postgrad.socialanxietyapp.screens.ConversationActivity">
 
     <LinearLayout
         android:id="@+id/character_layout"

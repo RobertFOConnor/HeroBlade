@@ -4,7 +4,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    tools:context="ie.ul.postgrad.socialanxietyapp.BattleActivity">
+    tools:context="ie.ul.postgrad.socialanxietyapp.screens.BattleActivity">
 
     <LinearLayout
         android:id="@+id/character_layout"
@@ -14,23 +14,11 @@
 
     </LinearLayout>
 
-    <TextView
-        android:id="@+id/textView"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_centerHorizontal="true"
-        android:layout_gravity="center"
-        android:layout_marginTop="40dp"
-        android:gravity="center"
-        android:padding="10dp"
-        android:text="Battle Title" />
-
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_alignParentStart="true"
         android:layout_marginTop="20dp"
-        android:layout_below="@+id/textView"
         android:orientation="horizontal">
 
         <LinearLayout
@@ -42,15 +30,22 @@
             android:orientation="vertical">
 
             <TextView
+                android:id="@+id/player_name"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="Health" />
 
             <ProgressBar
-                android:id="@+id/user_health"
+                android:id="@+id/user_bar"
                 style="@style/Base.Widget.AppCompat.ProgressBar.Horizontal"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content" />
+
+            <TextView
+                android:id="@+id/player_health"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Health" />
 
         </LinearLayout>
 
@@ -70,10 +65,17 @@
                 android:text="Enemy Health" />
 
             <ProgressBar
-                android:id="@+id/enemy_health"
+                android:id="@+id/enemy_bar"
                 style="@style/Base.Widget.AppCompat.ProgressBar.Horizontal"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content" />
+
+            <TextView
+                android:id="@+id/enemy_health"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="end"
+                android:text="Health" />
 
         </LinearLayout>
 
