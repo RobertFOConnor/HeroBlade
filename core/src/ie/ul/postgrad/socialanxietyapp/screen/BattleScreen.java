@@ -33,14 +33,11 @@ public class BattleScreen implements Screen {
     private Player player, npcPlayer;
     private SpriteBatch sb;
     private Avatar avatar;
-    private Color hairColor;
     private LibGdxInterface libGdxInterface;
 
     public BattleScreen(LibGdxInterface libGdxInterface, SpriteBatch sb) {
         this.libGdxInterface = libGdxInterface;
         avatar = libGdxInterface.getAvatar();
-        float[][] hcArr = AvatarScreen.hairColorArray; //set up correct avatar hair color.
-        hairColor = new Color(hcArr[avatar.getHairColor()][0], hcArr[avatar.getHairColor()][1], hcArr[avatar.getHairColor()][2], 1);
         this.sb = sb;
     }
 
@@ -78,11 +75,9 @@ public class BattleScreen implements Screen {
         sb.begin();
         drawer.setColor(1, 1, 1, 1);
         sb.draw(bg, 0, 0, WIDTH, HEIGHT);
-        drawer.draw(player);
-        drawer.draw(npcPlayer);
+        avatar.drawAvatar(drawer, player);
 
-        drawer.setColor(hairColor.r, hairColor.g, hairColor.b, 1); //draw correct avatar hair color if user is shown.
-        drawer.draw(player.getObject("hair"));
+        drawer.draw(npcPlayer);
         sb.end();
     }
 

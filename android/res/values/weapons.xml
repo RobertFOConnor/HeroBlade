@@ -1,0 +1,643 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <array name="nul_item">
+        <item name="name">Bagel</item>
+    </array>
+
+    <array name="weapon_1">
+        <item name="name">Lava Blade</item>
+        <item name="desc">A deadly blade with glowing hot lava</item>
+        <item name="type">FIRE</item>
+        <item name="worth">500</item>
+        <item name="damage">10</item>
+        <item name="health">8</item>
+        <item name="rarity">3</item>
+    </array>
+
+    <array name="weapon_2">
+        <item name="name">Fire Sword</item>
+        <item name="desc">A sword coated in a bright flame.</item>
+        <item name="type">FIRE</item>
+        <item name="worth">300</item>
+        <item name="damage">5</item>
+        <item name="health">12</item>
+        <item name="rarity">2</item>
+    </array>
+
+    <array name="weapon_3">
+        <item name="name">Staff of Flames</item>
+        <item name="desc">This ancient staff once belonged to a dangerous sorcerer.</item>
+        <item name="type">FIRE</item>
+        <item name="worth">600</item>
+        <item name="damage">11</item>
+        <item name="health">10</item>
+        <item name="rarity">3</item>
+    </array>
+
+    <array name="weapon_4">
+        <item name="name">Dynamite</item>
+        <item name="desc">A stick of dynamite can yield explosive results.</item>
+        <item name="type">FIRE</item>
+        <item name="worth">150</item>
+        <item name="damage">4</item>
+        <item name="health">12</item>
+        <item name="rarity">1</item>
+    </array>
+
+    <array name="weapon_5">
+        <item name="name">Fire Axe</item>
+        <item name="desc">Only two things in life are certain: death and axes. The former usually
+            follows the latter.
+        </item>
+        <item name="type">FIRE</item>
+        <item name="worth">350</item>
+        <item name="damage">6</item>
+        <item name="health">10</item>
+        <item name="rarity">2</item>
+    </array>
+
+    <array name="weapon_6">
+        <item name="name">Blow Torch</item>
+        <item name="desc">Creates a hot blue flame. Useful for melting things.</item>
+        <item name="type">FIRE</item>
+        <item name="worth">200</item>
+        <item name="damage">3</item>
+        <item name="health">10</item>
+        <item name="rarity">1</item>
+    </array>
+
+    <array name="weapon_7">
+        <item name="name">Giant Safety Match</item>
+        <item name="desc">Don\'t let the name fool you. There\'s nothing safe about this match.
+        </item>
+        <item name="type">FIRE</item>
+        <item name="worth">100</item>
+        <item name="damage">3</item>
+        <item name="health">15</item>
+        <item name="rarity">1</item>
+    </array>
+
+    <array name="weapon_8">
+        <item name="name">Fire Hydrant</item>
+        <item name="desc">Try not to park near it.</item>
+        <item name="type">FIRE</item>
+        <item name="worth">150</item>
+        <item name="damage">5</item>
+        <item name="health">8</item>
+        <item name="rarity">1</item>
+    </array>
+
+    <array name="weapon_9">
+        <item name="name">Burning Branch</item>
+        <item name="desc">Step one: find tree. Step two: light it. Step three: profit?</item>
+        <item name="type">FIRE</item>
+        <item name="worth">300</item>
+        <item name="damage">6</item>
+        <item name="health">10</item>
+        <item name="rarity">2</item>
+    </array>
+
+    <array name="weapon_10">
+        <item name="name">Stick of Charcoal</item>
+        <item name="desc">Good luck getting it off your hands.</item>
+        <item name="type">FIRE</item>
+        <item name="worth">200</item>
+        <item name="damage">4</item>
+        <item name="health">10</item>
+        <item name="rarity">1</item>
+    </array>
+
+    <array name="weapon_11">
+        <item name="name">Epic Axe of Flames</item>
+        <item name="desc">Crafted after an axe which once brought down an entire empire.</item>
+        <item name="type">FIRE</item>
+        <item name="worth">600</item>
+        <item name="damage">12</item>
+        <item name="health">8</item>
+        <item name="rarity">3</item>
+    </array>
+
+    <array name="weapon_12">
+        <item name="name">Laser Sword</item>
+        <item name="desc">Like something out of a sci-fi movie, but completely copyright free.
+        </item>
+        <item name="type">FIRE</item>
+        <item name="worth">500</item>
+        <item name="damage">13</item>
+        <item name="health">10</item>
+        <item name="rarity">3</item>
+    </array>
+
+    <array name="weapon_13">
+        <item name="name">Tiki Torch</item>
+        <item name="desc">Great at parties.</item>
+        <item name="type">FIRE</item>
+        <item name="worth">250</item>
+        <item name="damage">5</item>
+        <item name="health">12</item>
+        <item name="rarity">2</item>
+    </array>
+
+    <array name="weapon_14">
+        <item name="name">Volcano Sword</item>
+        <item name="desc">A sword made up of a tiny volcano, and a hilt.</item>
+        <item name="type">FIRE</item>
+        <item name="worth">300</item>
+        <item name="damage">6</item>
+        <item name="health">11</item>
+        <item name="rarity">2</item>
+    </array>
+
+    <array name="weapon_15">
+        <item name="name">Hot Dog Staff</item>
+        <item name="desc">Let them laugh, then hit them with your hot dog staff.</item>
+        <item name="type">FIRE</item>
+        <item name="worth">150</item>
+        <item name="damage">3</item>
+        <item name="health">15</item>
+        <item name="rarity">1</item>
+    </array>
+
+    <array name="weapon_16">
+        <item name="name">Red Hot Chilli Blade</item>
+        <item name="desc">For a sword made from a pepper, it\'s surprisingly sharp.</item>
+        <item name="type">FIRE</item>
+        <item name="worth">400</item>
+        <item name="damage">7</item>
+        <item name="health">10</item>
+        <item name="rarity">2</item>
+    </array>
+
+    <array name="weapon_17">
+        <item name="name">Thermometer Sword</item>
+        <item name="desc">Measures temperature.</item>
+        <item name="type">FIRE</item>
+        <item name="worth">350</item>
+        <item name="damage">5</item>
+        <item name="health">13</item>
+        <item name="rarity">2</item>
+    </array>
+
+    <array name="weapon_18">
+        <item name="name">Marshmallow Stick</item>
+        <item name="desc">A fluffy white marshmallow on the end of a wooden stick.</item>
+        <item name="type">FIRE</item>
+        <item name="worth">100</item>
+        <item name="damage">2</item>
+        <item name="health">16</item>
+        <item name="rarity">1</item>
+    </array>
+
+    <array name="weapon_19">
+        <item name="name">Epic Battle Blade</item>
+        <item name="desc">A weapon worthy of a true warrior.</item>
+        <item name="type">FIRE</item>
+        <item name="worth">700</item>
+        <item name="damage">15</item>
+        <item name="health">10</item>
+        <item name="rarity">3</item>
+    </array>
+
+    <array name="weapon_20">
+        <item name="name">Fire Iron</item>
+        <item name="desc">Lightweight and sharp. What more do you need?</item>
+        <item name="type">FIRE</item>
+        <item name="worth">100</item>
+        <item name="damage">3</item>
+        <item name="health">15</item>
+        <item name="rarity">1</item>
+    </array>
+
+
+    <array name="weapon_21">
+        <item name="name">Toilet Brush</item>
+        <item name="desc">Gross.</item>
+        <item name="type">WATER</item>
+        <item name="worth">150</item>
+        <item name="damage">3</item>
+        <item name="health">16</item>
+        <item name="rarity">1</item>
+    </array>
+
+    <array name="weapon_22">
+        <item name="name">Mackerel Sword</item>
+        <item name="desc">It stinks.</item>
+        <item name="type">WATER</item>
+        <item name="worth">200</item>
+        <item name="damage">4</item>
+        <item name="health">14</item>
+        <item name="rarity">1</item>
+    </array>
+
+    <array name="weapon_23">
+        <item name="name">Claw Blade</item>
+        <item name="desc">Crafted from the sharp claw edge of a large crab creature.</item>
+        <item name="type">WATER</item>
+        <item name="worth">350</item>
+        <item name="damage">6</item>
+        <item name="health">12</item>
+        <item name="rarity">2</item>
+    </array>
+
+    <array name="weapon_24">
+        <item name="name">Harpoon</item>
+        <item name="desc">A sharp spear commonly used in fishing.</item>
+        <item name="type">WATER</item>
+        <item name="worth">250</item>
+        <item name="damage">5</item>
+        <item name="health">5</item>
+        <item name="rarity">1</item>
+    </array>
+
+    <array name="weapon_25">
+        <item name="name">Epic Trident</item>
+        <item name="desc">A weapon similar to something found in an underwater city.</item>
+        <item name="type">WATER</item>
+        <item name="worth">600</item>
+        <item name="damage">12</item>
+        <item name="health">9</item>
+        <item name="rarity">3</item>
+    </array>
+
+    <array name="weapon_26">
+        <item name="name">Shark Tooth Blade</item>
+        <item name="desc">No cavities here.</item>
+        <item name="type">WATER</item>
+        <item name="worth">200</item>
+        <item name="damage">4</item>
+        <item name="health">13</item>
+        <item name="rarity">1</item>
+    </array>
+
+    <array name="weapon_27">
+        <item name="name">Seaweed Sword</item>
+        <item name="desc">Although worn by the salty sea, this sword still has some life.</item>
+        <item name="type">WATER</item>
+        <item name="worth">400</item>
+        <item name="damage">6</item>
+        <item name="health">11</item>
+        <item name="rarity">2</item>
+    </array>
+
+    <array name="weapon_28">
+        <item name="name">Coral Blade</item>
+        <item name="desc">Sharpened coral from the watery depths.</item>
+        <item name="type">WATER</item>
+        <item name="worth">450</item>
+        <item name="damage">8</item>
+        <item name="health">9</item>
+        <item name="rarity">2</item>
+    </array>
+
+    <array name="weapon_29">
+        <item name="name">Fishing Rod</item>
+        <item name="desc">Hook, line, and sinker.</item>
+        <item name="type">WATER</item>
+        <item name="worth">350</item>
+        <item name="damage">5</item>
+        <item name="health">12</item>
+        <item name="rarity">2</item>
+    </array>
+
+    <array name="weapon_30">
+        <item name="name">Seahorse</item>
+        <item name="desc">Seahorses prefer to swim in pairs with their tails linked together.</item>
+        <item name="type">WATER</item>
+        <item name="worth">240</item>
+        <item name="damage">3</item>
+        <item name="health">14</item>
+        <item name="rarity">1</item>
+    </array>
+
+    <array name="weapon_31">
+        <item name="name">Shell Sword</item>
+        <item name="desc">A fashionable sword.</item>
+        <item name="type">WATER</item>
+        <item name="worth">380</item>
+        <item name="damage">5</item>
+        <item name="health">13</item>
+        <item name="rarity">2</item>
+    </array>
+
+    <array name="weapon_32">
+        <item name="name">Ship Sail</item>
+        <item name="desc">A piece of a pirate ship.</item>
+        <item name="type">WATER</item>
+        <item name="worth">120</item>
+        <item name="damage">2</item>
+        <item name="health">14</item>
+        <item name="rarity">1</item>
+    </array>
+
+    <array name="weapon_33">
+        <item name="name">Swordfish</item>
+        <item name="desc">An obvious choice.</item>
+        <item name="type">WATER</item>
+        <item name="worth">330</item>
+        <item name="damage">8</item>
+        <item name="health">10</item>
+        <item name="rarity">2</item>
+    </array>
+
+    <array name="weapon_34">
+        <item name="name">Sunken Pipe</item>
+        <item name="desc">Ripped from an old ship\'s pluming.</item>
+        <item name="type">WATER</item>
+        <item name="worth">420</item>
+        <item name="damage">7</item>
+        <item name="health">12</item>
+        <item name="rarity">2</item>
+    </array>
+
+    <array name="weapon_35">
+        <item name="name">Staff of Showers</item>
+        <item name="desc">Legends say it can change the weather. But who knows.</item>
+        <item name="type">WATER</item>
+        <item name="worth">660</item>
+        <item name="damage">13</item>
+        <item name="health">9</item>
+        <item name="rarity">3</item>
+    </array>
+
+    <array name="weapon_36">
+        <item name="name">Umbrella Sword</item>
+        <item name="desc">You can stand under it, and it shall keep you dry.</item>
+        <item name="type">WATER</item>
+        <item name="worth">400</item>
+        <item name="damage">6</item>
+        <item name="health">12</item>
+        <item name="rarity">2</item>
+    </array>
+
+    <array name="weapon_37">
+        <item name="name">Icicle Dagger</item>
+        <item name="desc">Sharp but slippery.</item>
+        <item name="type">WATER</item>
+        <item name="worth">300</item>
+        <item name="damage">9</item>
+        <item name="health">7</item>
+        <item name="rarity">2</item>
+    </array>
+
+    <array name="weapon_38">
+        <item name="name">Epic Blade of Oceans</item>
+        <item name="desc">Can split the very oceans.</item>
+        <item name="type">WATER</item>
+        <item name="worth">750</item>
+        <item name="damage">14</item>
+        <item name="health">11</item>
+        <item name="rarity">3</item>
+    </array>
+
+    <array name="weapon_39">
+        <item name="name">Grass Blade</item>
+        <item name="desc">Allows for fast strikes.</item>
+        <item name="type">GRASS</item>
+        <item name="worth">700</item>
+        <item name="damage">13</item>
+        <item name="health">10</item>
+        <item name="rarity">3</item>
+    </array>
+
+    <array name="weapon_40">
+        <item name="name">Carrot Sword</item>
+        <item name="desc">Loaded with beta-carotene.</item>
+        <item name="type">GRASS</item>
+        <item name="worth">300</item>
+        <item name="damage">6</item>
+        <item name="health">12</item>
+        <item name="rarity">2</item>
+    </array>
+
+    <array name="weapon_41">
+        <item name="name">Grass Axe</item>
+        <item name="desc">Nothing gets a point across like a battle-axe.</item>
+        <item name="type">GRASS</item>
+        <item name="worth">350</item>
+        <item name="damage">7</item>
+        <item name="health">13</item>
+        <item name="rarity">2</item>
+    </array>
+
+    <array name="weapon_42">
+        <item name="name">Forest Staff</item>
+        <item name="desc">Another mysterious weapon from the dark woods.</item>
+        <item name="type">GRASS</item>
+        <item name="worth">800</item>
+        <item name="damage">12</item>
+        <item name="health">9</item>
+        <item name="rarity">3</item>
+    </array>
+
+    <array name="weapon_43">
+        <item name="name">Tree Branch</item>
+        <item name="desc">A tree branch from a tree. Good stuff.</item>
+        <item name="type">GRASS</item>
+        <item name="worth">50</item>
+        <item name="damage">2</item>
+        <item name="health">15</item>
+        <item name="rarity">1</item>
+    </array>
+
+    <array name="weapon_44">
+        <item name="name">Flower Sword</item>
+        <item name="desc">Beautiful looking weapon. It\'s not very effective.</item>
+        <item name="type">GRASS</item>
+        <item name="worth">20</item>
+        <item name="damage">2</item>
+        <item name="health">12</item>
+        <item name="rarity">1</item>
+    </array>
+
+    <array name="weapon_45">
+        <item name="name">Cardboard Roll</item>
+        <item name="desc">There used to be paper around it.</item>
+        <item name="type">GRASS</item>
+        <item name="worth">100</item>
+        <item name="damage">3</item>
+        <item name="health">15</item>
+        <item name="rarity">1</item>
+    </array>
+
+    <array name="weapon_46">
+        <item name="name">Walking Cane</item>
+        <item name="desc">Believed to once belong to a goblin king.</item>
+        <item name="type">GRASS</item>
+        <item name="worth">650</item>
+        <item name="damage">6</item>
+        <item name="health">12</item>
+        <item name="rarity">2</item>
+    </array>
+
+    <array name="weapon_47">
+        <item name="name">Leaf Blade</item>
+        <item name="desc">It fell from a large tree.</item>
+        <item name="type">GRASS</item>
+        <item name="worth">400</item>
+        <item name="damage">7</item>
+        <item name="health">12</item>
+        <item name="rarity">2</item>
+    </array>
+
+    <array name="weapon_48">
+        <item name="name">Watermelon Blade</item>
+        <item name="desc">A weapon which can do a lot of damage, plus it\'s tasty.</item>
+        <item name="type">GRASS</item>
+        <item name="worth">300</item>
+        <item name="damage">8</item>
+        <item name="health">10</item>
+        <item name="rarity">2</item>
+    </array>
+
+    <array name="weapon_49">
+        <item name="name">Bamboo Stick</item>
+        <item name="desc">A stick of bamboo.</item>
+        <item name="type">GRASS</item>
+        <item name="worth">100</item>
+        <item name="damage">4</item>
+        <item name="health">14</item>
+        <item name="rarity">1</item>
+    </array>
+
+    <array name="weapon_50">
+        <item name="name">Wooden Log</item>
+        <item name="desc">A large wooden log.</item>
+        <item name="type">GRASS</item>
+        <item name="worth">50</item>
+        <item name="damage">3</item>
+        <item name="health">15</item>
+        <item name="rarity">1</item>
+    </array>
+
+    <array name="weapon_51">
+        <item name="name">Grass Pick-axe</item>
+        <item name="desc">A sharp pick-axe.</item>
+        <item name="type">GRASS</item>
+        <item name="worth">150</item>
+        <item name="damage">4</item>
+        <item name="health">14</item>
+        <item name="rarity">1</item>
+    </array>
+
+    <array name="weapon_52">
+        <item name="name">Wooden Sword</item>
+        <item name="desc">Durable, but it could be sharper.</item>
+        <item name="type">GRASS</item>
+        <item name="worth">300</item>
+        <item name="damage">5</item>
+        <item name="health">13</item>
+        <item name="rarity">2</item>
+    </array>
+
+    <array name="weapon_53">
+        <item name="name">Plank and Nail</item>
+        <item name="desc">A plank of wood with a nail in it. Ouch.</item>
+        <item name="type">GRASS</item>
+        <item name="worth">250</item>
+        <item name="damage">8</item>
+        <item name="health">10</item>
+        <item name="rarity">2</item>
+    </array>
+
+    <array name="weapon_54">
+        <item name="name">Grass Boomerang</item>
+        <item name="desc">Easy to make and it looks pretty cool too.</item>
+        <item name="type">GRASS</item>
+        <item name="worth">250</item>
+        <item name="damage">8</item>
+        <item name="health">10</item>
+        <item name="rarity">2</item>
+    </array>
+
+    <array name="weapon_55">
+        <item name="name">Wooden Plank</item>
+        <item name="desc">A plank of wood.</item>
+        <item name="type">GRASS</item>
+        <item name="worth">50</item>
+        <item name="damage">3</item>
+        <item name="health">15</item>
+        <item name="rarity">1</item>
+    </array>
+
+    <array name="weapon_56">
+        <item name="name">Epic Staff of the Woods</item>
+        <item name="desc">A weapon lost to the ages, but it\'s power still lingers.</item>
+        <item name="type">GRASS</item>
+        <item name="worth">1500</item>
+        <item name="damage">15</item>
+        <item name="health">15</item>
+        <item name="rarity">3</item>
+    </array>
+
+    <array name="weapon_57">
+        <item name="name">Ultimate Grass Dagger</item>
+        <item name="desc">Believed by many to be a myth.</item>
+        <item name="type">GRASS</item>
+        <item name="worth">1000</item>
+        <item name="damage">14</item>
+        <item name="health">12</item>
+        <item name="rarity">3</item>
+    </array>
+
+    <array name="weapon_array_refs">
+        <item>@array/nul_item</item>
+        <item>@array/weapon_1</item>
+        <item>@array/weapon_2</item>
+        <item>@array/weapon_3</item>
+        <item>@array/weapon_4</item>
+        <item>@array/weapon_5</item>
+        <item>@array/weapon_6</item>
+        <item>@array/weapon_7</item>
+        <item>@array/weapon_8</item>
+        <item>@array/weapon_9</item>
+        <item>@array/weapon_10</item>
+        <item>@array/weapon_11</item>
+        <item>@array/weapon_12</item>
+        <item>@array/weapon_13</item>
+        <item>@array/weapon_14</item>
+        <item>@array/weapon_15</item>
+        <item>@array/weapon_16</item>
+        <item>@array/weapon_17</item>
+        <item>@array/weapon_18</item>
+        <item>@array/weapon_19</item>
+        <item>@array/weapon_20</item>
+        <item>@array/weapon_21</item>
+        <item>@array/weapon_22</item>
+        <item>@array/weapon_23</item>
+        <item>@array/weapon_24</item>
+        <item>@array/weapon_25</item>
+        <item>@array/weapon_26</item>
+        <item>@array/weapon_27</item>
+        <item>@array/weapon_28</item>
+        <item>@array/weapon_29</item>
+        <item>@array/weapon_30</item>
+        <item>@array/weapon_31</item>
+        <item>@array/weapon_32</item>
+        <item>@array/weapon_33</item>
+        <item>@array/weapon_34</item>
+        <item>@array/weapon_35</item>
+        <item>@array/weapon_36</item>
+        <item>@array/weapon_37</item>
+        <item>@array/weapon_38</item>
+        <item>@array/weapon_39</item>
+        <item>@array/weapon_40</item>
+        <item>@array/weapon_41</item>
+        <item>@array/weapon_42</item>
+        <item>@array/weapon_43</item>
+        <item>@array/weapon_44</item>
+        <item>@array/weapon_45</item>
+        <item>@array/weapon_46</item>
+        <item>@array/weapon_47</item>
+        <item>@array/weapon_48</item>
+        <item>@array/weapon_49</item>
+        <item>@array/weapon_50</item>
+        <item>@array/weapon_51</item>
+        <item>@array/weapon_52</item>
+        <item>@array/weapon_53</item>
+        <item>@array/weapon_54</item>
+        <item>@array/weapon_55</item>
+        <item>@array/weapon_56</item>
+        <item>@array/weapon_57</item>
+    </array>
+</resources>

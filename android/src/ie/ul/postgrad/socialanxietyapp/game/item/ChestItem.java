@@ -17,6 +17,7 @@ public class ChestItem extends Item {
     private String name;
     private String description;
     private int imageID;
+    private int rarity;
 
     private float maxDistance;
     private float currDistance;
@@ -29,10 +30,21 @@ public class ChestItem extends Item {
         this.imageID = imageID;
         this.maxDistance = maxDistance * 1000; // in meters.
         this.currDistance = maxDistance * 1000;
+
+        rarity = 1;
+        if(itemID == ChestItem.GOLD_CHEST) {
+            rarity = 2;
+        } else if(itemID == ChestItem.RARE_CHEST) {
+            rarity = 3;
+        }
     }
 
     public String getUID() {
         return UID;
+    }
+
+    public void setUID(String UID) {
+        this.UID = UID;
     }
 
     public int getItemID() {
@@ -61,5 +73,9 @@ public class ChestItem extends Item {
 
     public void setCurrDistance(float currDistance) {
         this.currDistance = currDistance;
+    }
+
+    public int getRarity() {
+        return rarity;
     }
 }

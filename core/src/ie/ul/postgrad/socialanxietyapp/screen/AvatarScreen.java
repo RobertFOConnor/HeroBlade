@@ -27,36 +27,13 @@ import ie.ul.postgrad.socialanxietyapp.spriter.LibGdxLoader;
 
 public class AvatarScreen implements Screen {
 
-    private static final int HAIR_STYLE = 0;
-    private static final int HAIR_COLOR = 1;
-    private static final int SKIN_COLOR = 2;
-    private static final int SHIRT_COLOR = 3;
-
-    private static final float[] BLOND = {255f / 255f, 231f / 255f, 70f / 255f};
-    private static final float[] BLACK = {0.2f, 0.2f, 0.2f};
-    private static final float[] BROWN = {115 / 255f, 85 / 255f, 59 / 255f};
-    private static final float[] GINGER = {250 / 255f, 149 / 255f, 40 / 255f};
-    private static final float[] GRAY = {0.6f, 0.6f, 0.6f};
-    private static final float[] WHITE = {1f, 1f, 1f};
-
-    public static float[][] hairColorArray = new float[][]{BLOND, BLACK, GRAY, BROWN, GINGER, WHITE};
-    private int hairColorIndex = 0;
-
     private Drawer drawer;
     private Player player;
     private SpriteBatch sb;
-
-    private int hairIndex = 0;
-
-    private final LibGdxInterface libGdxInterface;
     private Avatar avatar;
 
     public AvatarScreen(LibGdxInterface libGdxInterface, SpriteBatch sb) {
-        this.libGdxInterface = libGdxInterface;
         avatar = libGdxInterface.getAvatar();
-
-        hairIndex = avatar.getHairtype();
-        hairColorIndex = avatar.getHairColor();
 
         this.sb = sb;
         ShapeRenderer renderer = new ShapeRenderer();
@@ -95,35 +72,15 @@ public class AvatarScreen implements Screen {
         player.update();
         if (Gdx.input.justTouched()) {
             player.setAnimation("scratch");
-
-            /*if (Gdx.input.getX() < MainGame.WIDTH / 2) {
-
-                hairIndex++;
-                if (hairIndex >= 9) { //No. of hairstyles
-                    hairIndex = 0;
-                }
-            } else {
-
-                hairColorIndex++;
-                if (hairColorIndex >= hairColorArray.length) {
-                    hairColorIndex = 0;
-                }
-            }
-            avatar.setHairtype(hairIndex);
-            avatar.setHairColor(hairColorIndex);
-            libGdxInterface.saveAvatar(avatar);*/
         }
-        player.setObject("hair", 1f, 1, hairIndex);
+        player.setObject("hair", 1f, 1, avatar.getHairtype());
     }
 
     public void render() {
         update();
 
         sb.begin();
-        drawer.setColor(1, 1, 1, 1);
-        drawer.draw(player);
-        drawer.setColor(hairColorArray[hairColorIndex][0], hairColorArray[hairColorIndex][1], hairColorArray[hairColorIndex][2], 1);
-        drawer.draw(player.getObject("hair"));
+        avatar.drawAvatar(drawer, player);
         sb.end();
     }
 
@@ -133,19 +90,15 @@ public class AvatarScreen implements Screen {
     }
 
     public void changeHairStyle() {
-        hairIndex++;
-        if (hairIndex >= 9) { //No. of hairstyles
-            hairIndex = 0;
-        }
-        avatar.setHairtype(hairIndex);
+        avatar.setHairtype(avatar.getHairtype() + 1);
     }
 
     public void changeHairColor() {
-        hairColorIndex++;
-        if (hairColorIndex >= hairColorArray.length) {
-            hairColorIndex = 0;
-        }
-        avatar.setHairColor(hairColorIndex);
+        avatar.setHairColor(avatar.getHairColor() + 1);
+    }
+
+    public void changeSkinColor() {
+        avatar.setSkinColor(avatar.getSkinColor() + 1);
     }
 
     public Avatar getAvatar() {

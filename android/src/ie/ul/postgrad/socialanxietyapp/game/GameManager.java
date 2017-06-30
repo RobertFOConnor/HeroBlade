@@ -24,6 +24,7 @@ import ie.ul.postgrad.socialanxietyapp.game.item.ChestItem;
 import ie.ul.postgrad.socialanxietyapp.game.item.FoodItem;
 import ie.ul.postgrad.socialanxietyapp.game.item.Item;
 import ie.ul.postgrad.socialanxietyapp.game.item.ItemFactory;
+import ie.ul.postgrad.socialanxietyapp.game.item.WeaponFactory;
 import ie.ul.postgrad.socialanxietyapp.game.item.WeaponItem;
 import ie.ul.postgrad.socialanxietyapp.game.quest.Quest;
 import ie.ul.postgrad.socialanxietyapp.screens.LevelUpActivity;
@@ -62,48 +63,65 @@ public class GameManager {
     public void startGame(Context context, String id, String name, String email, String password) {
         //Initialize database helper
         databaseHelper = new DBHelper(context);
-        databaseHelper.insertUser(id, name, email, password);
-        databaseHelper.insertAvatar(new Avatar(0, 0));
 
-        player = new Player(id, name, email, 0, 1, 0, 10, 10);
-        setInventory(new Inventory(databaseHelper.getInventory(), databaseHelper.getWeapons(), context));
-        awardChest(context);
+        if (!databaseHelper.userExists()) {
+            player = new Player(id, name, 0, 1, 0, 10, 10);
+            inventory = new Inventory();
+            databaseHelper.insertUser(id, name, email, password);
+            databaseHelper.insertPlayer(player);
+            databaseHelper.insertAvatar(new Avatar(0, 0, 0));
+            awardChest(context);
+        } else {
+            player = databaseHelper.getPlayer();
+            inventory = new Inventory(databaseHelper.getItems(), databaseHelper.getWeapons(), databaseHelper.getChests(), context);
+        }
+    }
+
+    public void startGame(Context context) {
+        databaseHelper = new DBHelper(context);
     }
 
     public Player getPlayer() {
-        return player;
+        return databaseHelper.getPlayer();
+    }
+
+    public Avatar getAvatar() {
+        return databaseHelper.getAvatar(player.getId());
     }
 
     public Inventory getInventory() {
         return inventory;
     }
 
-    private void setInventory(Inventory inventory) {
-        this.inventory = inventory;
+    public ArrayList<ChestItem> getChests() {
+        return databaseHelper.getChests();
     }
-
 
     public void updateItemInDatabase(int itemId) {
         int quantity = getInventory().getItems().get(itemId);
 
         if (databaseHelper.getInventoryData(itemId).moveToFirst()) {
             if (quantity > 0) {
-                databaseHelper.updateItem(1, itemId, quantity);
+                databaseHelper.updateItem(player.getId(), itemId, quantity);
             } else {
                 databaseHelper.deleteItem(itemId);
             }
         } else {
-            databaseHelper.insertItem(1, itemId, quantity);
+            databaseHelper.insertItem(player.getId(), itemId, quantity);
         }
     }
 
     public void updateWeaponInDatabase(String UUID, int itemId, int currHealth) {
 
         if (databaseHelper.getWeaponsData(UUID).moveToFirst()) {
-            databaseHelper.updateWeapon(1, UUID, itemId, currHealth);
+            databaseHelper.updateWeapon(player.getId(), UUID, itemId, currHealth);
         } else {
-            databaseHelper.insertWeapon(1, UUID, itemId, currHealth);
+            databaseHelper.insertWeapon(player.getId(), UUID, itemId, currHealth);
         }
+    }
+
+    public void printTables() {
+        databaseHelper.printAllTables();
     }
 
     public void updatePlayerInDatabase() {
@@ -152,7 +170,7 @@ public class GameManager {
         updatePlayerInDatabase();
     }
 
-    private void awardChest(Context context) {
+    public void awardChest(Context context) {
         int random = (int) (Math.random() * 10);
         int chestId = ChestItem.NORMAL_CHEST; // normal chest default.
 
@@ -161,13 +179,33 @@ public class GameManager {
         } else if (random > 5) {
             chestId = ChestItem.GOLD_CHEST; // 4 in 10 chance of gold chest.
         }
-        player.getChests().add((ChestItem) ItemFactory.buildItem(context, chestId));
+        ChestItem chest = (ChestItem) ItemFactory.buildItem(context, chestId);
+        chest.setUID(UUID.randomUUID().toString());
+        inventory.getChests().add(chest);
+        databaseHelper.insertChest(player.getId(), chest.getUID(), chest.getId(), chest.getCurrDistance());
+    }
+
+    public void updateChest(ChestItem chest) {
+        databaseHelper.updateChest(player.getId(), chest.getUID(), chest.getId(), chest.getCurrDistance());
+    }
+
+    public void removeChest() {
+        ChestItem chest = getChests().get(0);
+        databaseHelper.removeChest(chest.getUID());
     }
 
     private void openChest(int chestId) {
-        if(chestId == ChestItem.NORMAL_CHEST) {
+        if (chestId == ChestItem.NORMAL_CHEST) {
 
         }
+    }
+
+    public WeaponItem unlockWeapon(Context context, int rarity) {
+        WeaponItem weaponReward = WeaponFactory.getRandomWeaponByRarity(context, rarity);
+        weaponReward.setUUID(UUID.randomUUID().toString());
+        inventory.getWeapons().add(weaponReward);
+        databaseHelper.insertWeapon(player.getId(), weaponReward.getUUID(), weaponReward.getId(), weaponReward.getCurrHealth());
+        return weaponReward;
     }
 
     public void consumeFoodItem(Context context, int id) {

@@ -21,7 +21,7 @@ class DesktopLibgdxInterfaceDummy implements LibGdxInterface {
 
     @Override
     public Avatar getAvatar() {
-        return new Avatar(2, 2);
+        return new Avatar(2, 2, 2);
     }
 
     @Override

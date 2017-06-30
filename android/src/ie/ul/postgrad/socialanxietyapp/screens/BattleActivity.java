@@ -129,7 +129,12 @@ public class BattleActivity extends AndroidApplication implements LibGdxInterfac
     }
 
     private void strikeEnemy(View v, WeaponItem weaponItem) {
-        enemy.setCurrHealth(enemy.getCurrHealth() - weaponItem.getDamage());
+
+        int damage = 0;
+
+        damage = (int) Math.floor(Math.floor(Math.floor(2 * player.getLevel() / 5 + 2) * weaponItem.getDamage()) / 50) + 2;
+
+        enemy.setCurrHealth(enemy.getCurrHealth() - damage);
         enemyHealthBar.setProgress(enemy.getCurrHealth());
         enemyHealthText.setText(hPString(enemy.getCurrHealth(), enemy.getMaxHealth()));
         weaponItem.setCurrHealth(weaponItem.getCurrHealth() - 1);
@@ -292,7 +297,7 @@ public class BattleActivity extends AndroidApplication implements LibGdxInterfac
 
     @Override
     public Avatar getAvatar() {
-        return GameManager.getDatabaseHelper().getAvatar(1);
+        return GameManager.getInstance().getAvatar();
     }
 
     @Override

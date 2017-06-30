@@ -14,29 +14,20 @@ public class Player {
 
     private String id;
     private String name;
-    private String email;
     private int xp;
     private int level;
     private int money;
-    private int weapon_id;
-    private int currQuestId;
     private int maxHealth;
     private int currHealth;
 
-    private ArrayList<ChestItem> chests;
-
-    public Player(String id, String name, String email, int xp, int level, int money, int maxHealth, int currHealth) {
+    public Player(String id, String name, int xp, int level, int money, int maxHealth, int currHealth) {
         this.id = id;
         this.name = name;
-        this.email = email;
         this.xp = xp;
         this.level = level;
         this.money = money;
-        this.weapon_id = -1;
-        currQuestId = 1;
         this.maxHealth = maxHealth;
         this.currHealth = currHealth;
-        chests = new ArrayList<>();
     }
 
     public Player() {
@@ -45,11 +36,8 @@ public class Player {
         xp = 0;
         level = 1;
         money = 0;
-        weapon_id = -1;
         maxHealth = 10;
         currHealth = maxHealth;
-
-        chests = new ArrayList<>();
     }
 
     public String getId() {
@@ -58,14 +46,6 @@ public class Player {
 
     public void setId(String id) {
         this.id = id;
-    }
-
-    public int getWeapon() {
-        return weapon_id;
-    }
-
-    public void setWeapon(int weapon) {
-        this.weapon_id = weapon;
     }
 
     public String getName() {
@@ -78,10 +58,6 @@ public class Player {
 
     public int getXp() {
         return xp;
-    }
-
-    public ArrayList<ChestItem> getChests() {
-        return chests;
     }
 
     public boolean setXp(int xp) {
@@ -118,18 +94,6 @@ public class Player {
 
     public void setMoney(int money) {
         this.money = money;
-    }
-
-    public String getEmail() {
-        return email;
-    }
-
-    public void setEmail(String email) {
-        this.email = email;
-    }
-
-    public int getCurrQuestId() {
-        return currQuestId;
     }
 
     public int getMaxHealth() {

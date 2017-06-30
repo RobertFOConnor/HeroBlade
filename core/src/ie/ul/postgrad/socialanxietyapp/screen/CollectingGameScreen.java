@@ -242,11 +242,7 @@ public class CollectingGameScreen implements Screen {
 
             batch.draw(resource, WIDTH / 3f, HEIGHT / 8, WIDTH * 0.56f, HEIGHT * 0.46f);
 
-            drawer.setColor(1, 1, 1, 1);
-            drawer.draw(player);
-            drawer.setColor(AvatarScreen.hairColorArray[avatar.getHairColor()][0], AvatarScreen.hairColorArray[avatar.getHairColor()][1], AvatarScreen.hairColorArray[avatar.getHairColor()][2], 1);
-            drawer.draw(player.getObject("hair"));
-            drawer.setColor(1, 1, 1, 1);
+            avatar.drawAvatar(drawer, player);
             drawer.draw(player.getObject("item_0064"));
 
             int xPos = (WIDTH / 2) - (((sequence.length - seqPos) * (arrowSize + arrowSpace)) / 2);

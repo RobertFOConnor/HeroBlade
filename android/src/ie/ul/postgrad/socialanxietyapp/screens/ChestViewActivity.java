@@ -27,7 +27,7 @@ public class ChestViewActivity extends AppCompatActivity {
         chestList = (LinearLayout) findViewById(R.id.chest_list);
         LayoutInflater inflater = LayoutInflater.from(this);
 
-        ArrayList<ChestItem> chests = GameManager.getInstance().getPlayer().getChests();
+        ArrayList<ChestItem> chests = GameManager.getInstance().getInventory().getChests();
 
         for (ChestItem chest : chests) {
 

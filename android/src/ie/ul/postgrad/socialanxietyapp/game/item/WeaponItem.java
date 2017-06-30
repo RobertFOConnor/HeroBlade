@@ -11,27 +11,27 @@ import android.util.SparseIntArray;
 public class WeaponItem extends Item {
 
     private String UID;
+    private String type;
     private int damage; //How much damage the weapon can do.
-    private int critDamage; //How much damage a critical hit can do.
     private int maxHealth; //How many hits the weapon can last.
     private int currHealth; //How much health does the weapon have left.
+    private int rarity;
+    private int worth;
     private SparseIntArray ingredients;
 
-    protected WeaponItem(int id, String name, String description, int imageID, int damage, int critDamage, int maxHealth, int currHealth, SparseIntArray ingredients) {
+    protected WeaponItem(int id, String name, String description, String type, int imageID, int worth, int damage, int maxHealth, int rarity, SparseIntArray ingredients) {
         super(id, name, description, imageID, ingredients);
+        this.type = type;
+        this.worth = worth;
         this.damage = damage;
-        this.critDamage = critDamage;
         this.maxHealth = maxHealth;
-        this.currHealth = currHealth;
+        this.currHealth = this.maxHealth;
         this.ingredients = ingredients;
+        this.rarity = rarity;
     }
 
     public int getDamage() {
         return damage;
-    }
-
-    public int getCritDamage() {
-        return critDamage;
     }
 
     public int getMaxHealth() {
@@ -56,5 +56,17 @@ public class WeaponItem extends Item {
 
     public void setUUID(String UUID) {
         this.UID = UUID;
+    }
+
+    public String getType() {
+        return type;
+    }
+
+    public int getRarity() {
+        return rarity;
+    }
+
+    public int getWorth() {
+        return worth;
     }
 }

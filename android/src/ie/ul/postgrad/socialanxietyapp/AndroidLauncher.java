@@ -30,7 +30,7 @@ public class AndroidLauncher extends AndroidApplication implements LibGdxInterfa
 
     @Override
     public Avatar getAvatar() {
-        return GameManager.getDatabaseHelper().getAvatar(1);
+        return GameManager.getInstance().getAvatar();
     }
 
     @Override

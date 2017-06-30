@@ -169,6 +169,8 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
 
         mDrawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
         mDrawerList = (ListView) findViewById(R.id.left_drawer);
+
+        GameManager.getInstance().printTables();
     }
 
     @Override

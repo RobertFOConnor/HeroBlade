@@ -72,7 +72,7 @@ public class PlayerAvatarActivity extends AndroidApplication implements LibGdxIn
 
     @Override
     public Avatar getAvatar() {
-        return GameManager.getDatabaseHelper().getAvatar(1);
+        return GameManager.getInstance().getAvatar();
     }
 
     @Override

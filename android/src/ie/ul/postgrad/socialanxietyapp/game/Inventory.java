@@ -4,6 +4,7 @@ import android.content.Context;
 
 import java.util.ArrayList;
 
+import ie.ul.postgrad.socialanxietyapp.game.item.ChestItem;
 import ie.ul.postgrad.socialanxietyapp.game.item.Item;
 import ie.ul.postgrad.socialanxietyapp.game.item.ItemFactory;
 import ie.ul.postgrad.socialanxietyapp.game.item.WeaponItem;
@@ -19,15 +20,18 @@ public class Inventory {
     private Context context;
     private InventoryItemArray items;
     private ArrayList<WeaponItem> weapons;
+    private ArrayList<ChestItem> chests;
 
     public Inventory() {
         items = new InventoryItemArray();
         weapons = new ArrayList<>();
+        chests = new ArrayList<>();
     }
 
-    public Inventory(InventoryItemArray items, ArrayList<WeaponItem> weapons, Context context) {
+    public Inventory(InventoryItemArray items, ArrayList<WeaponItem> weapons, ArrayList<ChestItem> chests, Context context) {
         this.items = items;
         this.weapons = weapons;
+        this.chests = chests;
         this.context = context;
     }
 
@@ -56,6 +60,10 @@ public class Inventory {
 
     public ArrayList<WeaponItem> getWeapons() {
         return weapons;
+    }
+
+    public ArrayList<ChestItem> getChests() {
+        return chests;
     }
 
     public WeaponItem getWeapon(String UUID) {

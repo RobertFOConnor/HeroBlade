@@ -89,4 +89,5 @@ public class MainGame extends ApplicationAdapter {
     public Screen getScreen() {
         return ScreenManager.getCurrentScreen();
     }
+
 }

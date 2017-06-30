@@ -12,7 +12,7 @@
         android:id="@+id/style_menu"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="30dp"
+        android:layout_marginTop="10dp"
         android:orientation="horizontal">
 
         <Button
@@ -20,6 +20,7 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="0.25"
+            android:background="@drawable/google_sign_in_button"
             android:text="Hair Style" />
 
         <Button
@@ -27,6 +28,7 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="0.25"
+            android:background="@drawable/google_sign_in_button"
             android:text="Hair Color" />
 
         <Button
@@ -34,7 +36,7 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="0.25"
-            android:enabled="false"
+            android:background="@drawable/google_sign_in_button"
             android:text="Skin Color" />
 
         <Button
@@ -42,6 +44,7 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="0.25"
+            android:background="@drawable/google_sign_in_button"
             android:enabled="false"
             android:text="Shirt Color" />
 
@@ -51,10 +54,10 @@
         android:id="@+id/avatar_view"
         android:layout_width="300dp"
         android:layout_height="500dp"
-        android:layout_gravity="center"
-        android:orientation="vertical"
+        android:layout_centerHorizontal="true"
         android:layout_centerVertical="true"
-        android:layout_centerHorizontal="true">
+        android:layout_gravity="center"
+        android:orientation="vertical">
 
     </LinearLayout>
 

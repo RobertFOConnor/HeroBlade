@@ -54,9 +54,7 @@ public class ItemFactory {
         itemValues.recycle();
 
 
-        if (damage > 0) {
-            return new WeaponItem(id, name, description, imageId, damage, damage + 2, 10, 10, ingredients);
-        } else if (id >= 74) {
+        if (id >= 74) {
             return new ChestItem(id, name, description, imageId, energy);
         } else if (energy > 0) {
             return new FoodItem(id, name, description, imageId, ingredients, energy);

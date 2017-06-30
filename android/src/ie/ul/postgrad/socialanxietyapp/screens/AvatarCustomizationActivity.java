@@ -57,6 +57,7 @@ public class AvatarCustomizationActivity extends AndroidApplication implements L
                 break;
             case R.id.skin_color_button:
                 currState = SKIN_COLOR;
+                avatarDisplay.changeSkinColor();
                 break;
             case R.id.shirt_color_button:
                 currState = SHIRT_COLOR;
@@ -78,7 +79,7 @@ public class AvatarCustomizationActivity extends AndroidApplication implements L
 
     @Override
     public Avatar getAvatar() {
-        return GameManager.getDatabaseHelper().getAvatar(1);
+        return GameManager.getInstance().getAvatar();
     }
 
     @Override
