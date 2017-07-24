@@ -27,7 +27,7 @@ import ie.ul.postgrad.socialanxietyapp.game.item.WeaponItem;
 
 public class DBHelper extends SQLiteOpenHelper {
 
-    private static final int DATABASE_VERSION = 25;
+    private static final int DATABASE_VERSION = 41;
 
     private static final String DATABASE_NAME = "AnxietyApp.db";
 
@@ -56,6 +56,7 @@ public class DBHelper extends SQLiteOpenHelper {
     private static final String WEAPON_COLUMN_UUID = "weapon_uuid";
     private static final String WEAPON_COLUMN_ID = "weapon_id";
     private static final String WEAPON_COLUMN_CURR_HEALTH = "curr_health";
+    private static final String WEAPON_COLUMN_EQUIPPED = "equipped";
 
     private static final String CHEST_TABLE_NAME = "chest_inventory";
     private static final String CHEST_COLUMN_PLAYER_ID = "player_id";
@@ -75,7 +76,7 @@ public class DBHelper extends SQLiteOpenHelper {
     private static final String AVATAR_COLUMN_SKIN_COLOR = "skin_color";
     private static final String AVATAR_COLUMN_HAIR_TYPE = "hair_type";
     private static final String AVATAR_COLUMN_HAIR_COLOR = "hair_color";
-    private static final String AVATAR_COLUMN_SHIRT_COLOR = "shirt";
+    private static final String AVATAR_COLUMN_SHIRT_COLOR = "shirt_color";
     private Context context;
 
     public DBHelper(Context context) {
@@ -87,10 +88,10 @@ public class DBHelper extends SQLiteOpenHelper {
         db.execSQL("CREATE TABLE " + USER_TABLE_NAME + " (id text primary key, name text, email text, password text)");
         db.execSQL("CREATE TABLE " + PLAYERS_TABLE_NAME + " (id text primary key, name text, xp integer, level integer, money integer, max_health integer, curr_health integer)");
         db.execSQL("CREATE TABLE " + ITEM_TABLE_NAME + " (player_id text key, item_id integer, quantity integer)");
-        db.execSQL("CREATE TABLE " + WEAPON_TABLE_NAME + " (player_id text key, weapon_uuid text, weapon_id integer, curr_health integer)");
+        db.execSQL("CREATE TABLE " + WEAPON_TABLE_NAME + " (player_id text key, weapon_uuid text, weapon_id integer, curr_health integer, equipped integer)");
         db.execSQL("CREATE TABLE " + CHEST_TABLE_NAME + " (player_id text key, chest_uuid text, chest_id integer, distance_left real)");
         db.execSQL("CREATE TABLE " + TRAVEL_TABLE_NAME + " (player_id text key, creation_date text, step_count integer, distance integer)");
-        db.execSQL("CREATE TABLE " + AVATAR_TABLE_NAME + " (player_id text key, skin_color integer, hair_type integer, hair_color integer)");
+        db.execSQL("CREATE TABLE " + AVATAR_TABLE_NAME + " (player_id text key, shirt_color integer, skin_color integer, hair_type integer, hair_color integer)");
     }
 
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
@@ -137,6 +138,7 @@ public class DBHelper extends SQLiteOpenHelper {
         SQLiteDatabase db = this.getWritableDatabase();
         ContentValues contentValues = new ContentValues();
         contentValues.put(AVATAR_COLUMN_PLAYER_ID, getPlayer().getId());
+        contentValues.put(AVATAR_COLUMN_SHIRT_COLOR, avatar.getShirtColor());
         contentValues.put(AVATAR_COLUMN_SKIN_COLOR, avatar.getSkinColor());
         contentValues.put(AVATAR_COLUMN_HAIR_TYPE, avatar.getHairtype());
         contentValues.put(AVATAR_COLUMN_HAIR_COLOR, avatar.getHairColor());
@@ -154,13 +156,18 @@ public class DBHelper extends SQLiteOpenHelper {
         return true;
     }
 
-    public boolean insertWeapon(String player_id, String UUID, int weapon_id, int curr_health) {
+    public boolean insertWeapon(String player_id, String UUID, int weapon_id, int curr_health, boolean equipped) {
         SQLiteDatabase db = this.getWritableDatabase();
         ContentValues contentValues = new ContentValues();
         contentValues.put(WEAPON_COLUMN_PLAYER_ID, player_id);
         contentValues.put(WEAPON_COLUMN_UUID, UUID);
         contentValues.put(WEAPON_COLUMN_ID, weapon_id);
         contentValues.put(WEAPON_COLUMN_CURR_HEALTH, curr_health);
+        if (equipped) {
+            contentValues.put(WEAPON_COLUMN_EQUIPPED, 1);
+        } else {
+            contentValues.put(WEAPON_COLUMN_EQUIPPED, 0);
+        }
         db.insert(WEAPON_TABLE_NAME, null, contentValues);
         return true;
     }
@@ -192,6 +199,7 @@ public class DBHelper extends SQLiteOpenHelper {
     public boolean updateAvatar(Avatar avatar) {
         SQLiteDatabase db = this.getWritableDatabase();
         ContentValues contentValues = new ContentValues();
+        contentValues.put(AVATAR_COLUMN_SHIRT_COLOR, avatar.getShirtColor());
         contentValues.put(AVATAR_COLUMN_SKIN_COLOR, avatar.getSkinColor());
         contentValues.put(AVATAR_COLUMN_HAIR_TYPE, avatar.getHairtype());
         contentValues.put(AVATAR_COLUMN_HAIR_COLOR, avatar.getHairColor());
@@ -209,13 +217,18 @@ public class DBHelper extends SQLiteOpenHelper {
         return true;
     }
 
-    public boolean updateWeapon(String player_id, String UUID, int weapon_id, int curr_health) {
+    public boolean updateWeapon(String player_id, String UUID, int weapon_id, int curr_health, boolean equipped) {
         SQLiteDatabase db = this.getWritableDatabase();
         ContentValues contentValues = new ContentValues();
         contentValues.put(WEAPON_COLUMN_PLAYER_ID, player_id);
         contentValues.put(WEAPON_COLUMN_UUID, UUID);
         contentValues.put(WEAPON_COLUMN_ID, weapon_id);
         contentValues.put(WEAPON_COLUMN_CURR_HEALTH, curr_health);
+        if (equipped) {
+            contentValues.put(WEAPON_COLUMN_EQUIPPED, 1);
+        } else {
+            contentValues.put(WEAPON_COLUMN_EQUIPPED, 0);
+        }
         db.update(WEAPON_TABLE_NAME, contentValues, WEAPON_COLUMN_UUID + " = ? ", new String[]{UUID});
         return true;
     }
@@ -233,13 +246,13 @@ public class DBHelper extends SQLiteOpenHelper {
 
     public Avatar getAvatar(String player_id) {
         SQLiteDatabase db = this.getReadableDatabase();
-        Cursor cursor = db.query(AVATAR_TABLE_NAME, new String[]{AVATAR_COLUMN_PLAYER_ID, AVATAR_COLUMN_SKIN_COLOR,
+        Cursor cursor = db.query(AVATAR_TABLE_NAME, new String[]{AVATAR_COLUMN_PLAYER_ID, AVATAR_COLUMN_SHIRT_COLOR, AVATAR_COLUMN_SKIN_COLOR,
                         AVATAR_COLUMN_HAIR_TYPE, AVATAR_COLUMN_HAIR_COLOR}, AVATAR_COLUMN_PLAYER_ID + "=?",
                 new String[]{player_id}, null, null, null, null);
         if (cursor.getCount() > 0) {
             cursor.moveToFirst();
         }
-        Avatar avatar = new Avatar(cursor.getInt(1), cursor.getInt(2), cursor.getInt(3));
+        Avatar avatar = new Avatar(cursor.getInt(1), cursor.getInt(2), cursor.getInt(3), cursor.getInt(4));
         cursor.close();
         db.close();
         return avatar;
@@ -310,6 +323,7 @@ public class DBHelper extends SQLiteOpenHelper {
             WeaponItem weaponItem = WeaponFactory.buildWeapon(context, Integer.parseInt(res.getString(res.getColumnIndex(WEAPON_COLUMN_ID))));
             weaponItem.setCurrHealth(Integer.parseInt(res.getString(res.getColumnIndex(WEAPON_COLUMN_CURR_HEALTH))));
             weaponItem.setUUID(res.getString(res.getColumnIndex(WEAPON_COLUMN_UUID)));
+            weaponItem.setEquipped(Integer.parseInt(res.getString(res.getColumnIndex(WEAPON_COLUMN_EQUIPPED))) == 1);
             array_list.add(weaponItem);
             res.moveToNext();
         }

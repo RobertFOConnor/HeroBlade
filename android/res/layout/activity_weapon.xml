@@ -9,7 +9,32 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:orientation="vertical"
-        tools:context="ie.ul.postgrad.socialanxietyapp.screens.InventoryActivity">
+        tools:context="ie.ul.postgrad.socialanxietyapp.screens.WeaponActivity">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+
+            <Button
+                android:id="@+id/item_button"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight=".5"
+                android:background="@color/bg_color"
+                android:text="Equipped Weapons"
+                android:textColor="@color/white" />
+
+            <Button
+                android:id="@+id/weapon_button"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight=".5"
+                android:background="@color/bg_color"
+                android:text="Stored Weapons"
+                android:textColor="@color/white" />
+
+        </LinearLayout>
 
         <ListView
             android:id="@+id/item_list"
@@ -28,7 +53,7 @@
             android:layout_height="wrap_content"
             android:layout_centerHorizontal="true"
             android:layout_centerVertical="true"
-            android:text="There are no items you can use!"
+            android:text="@string/empty_inventory"
             android:visibility="invisible" />
     </RelativeLayout>
 </FrameLayout>

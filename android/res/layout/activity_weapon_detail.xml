@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:gravity="center"
+    android:layout_gravity="center"
+    android:orientation="vertical"
+    tools:context="ie.ul.postgrad.socialanxietyapp.WeaponDetailActivity">
+
+    <TextView
+        android:layout_margin="10dp"
+        android:id="@+id/name"
+        android:gravity="center"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="test" />
+
+    <TextView
+        android:layout_margin="10dp"
+        android:gravity="center"
+        android:id="@+id/description"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="test" />
+
+    <TextView
+        android:layout_margin="10dp"
+        android:gravity="center"
+        android:id="@+id/type"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="test" />
+
+    <TextView
+        android:layout_margin="10dp"
+        android:gravity="center"
+        android:id="@+id/damage"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="test" />
+
+    <TextView
+        android:layout_margin="10dp"
+        android:gravity="center"
+        android:id="@+id/health"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="test" />
+
+    <TextView
+        android:layout_margin="10dp"
+        android:gravity="center"
+        android:id="@+id/rarity"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="test" />
+
+    <Button
+        android:text="Equip Weapon"
+        android:layout_margin="10dp"
+        android:gravity="center"
+        android:id="@+id/equip_button"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" />
+
+</LinearLayout>

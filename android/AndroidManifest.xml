@@ -106,6 +106,9 @@
             android:name=".screens.ChestOpenActivity"
             android:screenOrientation="portrait"
             android:theme="@style/Theme.Transparent" />
+        <activity android:name=".screens.ItemSelectionActivity" />
+        <activity android:name=".screens.WeaponActivity" />
+        <activity android:name=".WeaponDetailActivity"></activity>
     </application>
 
 </manifest>

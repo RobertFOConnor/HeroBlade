@@ -62,7 +62,7 @@ public class WeaponListAdapter extends ArrayAdapter<WeaponItem> {
         viewHolder.healthBar.setProgress(weaponItem.getCurrHealth());
         viewHolder.damageText.setText("DMG: " + weaponItem.getDamage());
         viewHolder.durabilityText.setText("DU: " + weaponItem.getCurrHealth() + "/" + weaponItem.getMaxHealth());
-        viewHolder.img.setImageResource(weaponItem.getImageID());
+        viewHolder.img.setImageResource(weaponItem.getTypeDrawableRes());
 
         if (weaponItem.getUUID().equals(currWeaponUUID)) {
             viewHolder.bg.setBackgroundColor(ContextCompat.getColor(getContext(), R.color.bg_color_transparent));

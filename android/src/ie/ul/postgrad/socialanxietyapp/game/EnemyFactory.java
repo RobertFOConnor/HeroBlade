@@ -1,5 +1,7 @@
 package ie.ul.postgrad.socialanxietyapp.game;
 
+import ie.ul.postgrad.socialanxietyapp.game.item.WeaponItem;
+
 /**
  * Created by Robert on 02-May-17.
  */
@@ -20,9 +22,21 @@ public class EnemyFactory {
             level = 1;
         }
 
-        int health = 10 + ((level - 1) * 5);
+        int health = 5 + ((level - 1) * 5) + ((int) Math.random() * 31);
 
-        return new Enemy(name, level, health);
+        int random = (int) (Math.random() * 3);
+        String type = WeaponItem.FIRE_TYPE;
+        switch (random) {
+
+            case 0:
+                type = WeaponItem.WATER_TYPE;
+                break;
+            case 1:
+                type = WeaponItem.GRASS_TYPE;
+                break;
+        }
+
+        return new Enemy(name, type, level, health);
     }
 
 }

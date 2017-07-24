@@ -54,6 +54,26 @@ public class Inventory {
         }
     }
 
+    public ArrayList<WeaponItem> getEquippedWeapons() {
+        ArrayList<WeaponItem> equippedWeapons = new ArrayList<>();
+        for (WeaponItem weaponItem : weapons) {
+            if (weaponItem.isEquipped()) {
+                equippedWeapons.add(weaponItem);
+            }
+        }
+        return equippedWeapons;
+    }
+
+    public ArrayList<WeaponItem> getUnequippedWeapons() {
+        ArrayList<WeaponItem> unequippedWeapons = new ArrayList<>();
+        for (WeaponItem weaponItem : weapons) {
+            if (!weaponItem.isEquipped()) {
+                unequippedWeapons.add(weaponItem);
+            }
+        }
+        return unequippedWeapons;
+    }
+
     public InventoryItemArray getItems() {
         return items;
     }

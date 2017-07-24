@@ -65,11 +65,11 @@ public class GameManager {
         databaseHelper = new DBHelper(context);
 
         if (!databaseHelper.userExists()) {
-            player = new Player(id, name, 0, 1, 0, 10, 10);
+            player = new Player(id, name, 0, 1, 0, 150, 150);
             inventory = new Inventory();
             databaseHelper.insertUser(id, name, email, password);
             databaseHelper.insertPlayer(player);
-            databaseHelper.insertAvatar(new Avatar(0, 0, 0));
+            databaseHelper.insertAvatar(new Avatar(0, 0, 0, 0));
             awardChest(context);
         } else {
             player = databaseHelper.getPlayer();
@@ -111,12 +111,12 @@ public class GameManager {
         }
     }
 
-    public void updateWeaponInDatabase(String UUID, int itemId, int currHealth) {
+    public void updateWeaponInDatabase(String UUID, int itemId, int currHealth, boolean equipped) {
 
         if (databaseHelper.getWeaponsData(UUID).moveToFirst()) {
-            databaseHelper.updateWeapon(player.getId(), UUID, itemId, currHealth);
+            databaseHelper.updateWeapon(player.getId(), UUID, itemId, currHealth, equipped);
         } else {
-            databaseHelper.insertWeapon(player.getId(), UUID, itemId, currHealth);
+            databaseHelper.insertWeapon(player.getId(), UUID, itemId, currHealth, equipped);
         }
     }
 
@@ -124,7 +124,7 @@ public class GameManager {
         databaseHelper.printAllTables();
     }
 
-    public void updatePlayerInDatabase() {
+    public void updatePlayerInDatabase(Player player) {
         databaseHelper.updatePlayer(player);
     }
 
@@ -141,8 +141,13 @@ public class GameManager {
         if (item instanceof WeaponItem) {
             WeaponItem weaponItem = (WeaponItem) item;
             weaponItem.setUUID(UUID.randomUUID().toString());
-            getInventory().getWeapons().add(weaponItem);
-            updateWeaponInDatabase(weaponItem.getUUID(), weaponItem.getId(), weaponItem.getCurrHealth());
+            boolean equipped = false;
+            if (inventory.getEquippedWeapons().size() < 6) {
+                equipped = true;
+            }
+            weaponItem.setEquipped(equipped);
+            inventory.getWeapons().add(weaponItem);
+            updateWeaponInDatabase(weaponItem.getUUID(), weaponItem.getId(), weaponItem.getCurrHealth(), equipped);
         } else {
             getInventory().addItem(itemId, quantity);
             updateItemInDatabase(itemId);
@@ -167,7 +172,12 @@ public class GameManager {
             Intent intent = new Intent(context, LevelUpActivity.class);
             context.startActivity(intent);
         }
-        updatePlayerInDatabase();
+        updatePlayerInDatabase(player);
+    }
+
+    public void awardMoney(int money) {
+        player.setMoney(player.getMoney()+ money);
+        updatePlayerInDatabase(player);
     }
 
     public void awardChest(Context context) {
@@ -203,8 +213,13 @@ public class GameManager {
     public WeaponItem unlockWeapon(Context context, int rarity) {
         WeaponItem weaponReward = WeaponFactory.getRandomWeaponByRarity(context, rarity);
         weaponReward.setUUID(UUID.randomUUID().toString());
+        boolean equipped = false;
+        if (inventory.getEquippedWeapons().size() < 6) {
+            equipped = true;
+        }
+        weaponReward.setEquipped(equipped);
         inventory.getWeapons().add(weaponReward);
-        databaseHelper.insertWeapon(player.getId(), weaponReward.getUUID(), weaponReward.getId(), weaponReward.getCurrHealth());
+        databaseHelper.insertWeapon(player.getId(), weaponReward.getUUID(), weaponReward.getId(), weaponReward.getCurrHealth(), weaponReward.isEquipped());
         return weaponReward;
     }
 
@@ -215,7 +230,7 @@ public class GameManager {
             player.setCurrHealth(player.getCurrHealth() + food.getEnergy());
             inventory.removeItem(id, 1);
             updateItemInDatabase(id);
-            updatePlayerInDatabase();
+            updatePlayerInDatabase(player);
             Toast.makeText(context, player.getName() + " ate a " + food.getName() + " and restored +" + food.getEnergy() + " health.", Toast.LENGTH_SHORT).show();
         } else {
             Toast.makeText(context, player.getName() + " already has full health.", Toast.LENGTH_SHORT).show();

@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <array name="enemy_null">
+        <item name="name">Null Enemy</item>
+        <item name="Description">Nothing to see here.</item>
+        <item name="base_level">Nothing to see here.</item>
+        <item name="type">Nothing to see here.</item>
+        <item name="can_poison">Nothing to see here.</item>
+        <item name="can_heal">Nothing to see here.</item>
+    </array>
+
+
+
+    <array name="enemy_array_refs">
+        <item>@array/enemy_null</item>
+    </array>
+
+
+
+</resources>

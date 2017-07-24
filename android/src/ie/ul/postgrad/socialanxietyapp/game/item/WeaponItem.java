@@ -2,6 +2,8 @@ package ie.ul.postgrad.socialanxietyapp.game.item;
 
 import android.util.SparseIntArray;
 
+import ie.ul.postgrad.socialanxietyapp.R;
+
 /**
  * Created by Robert on 24-Feb-17.
  * <p>
@@ -18,6 +20,11 @@ public class WeaponItem extends Item {
     private int rarity;
     private int worth;
     private SparseIntArray ingredients;
+    private boolean equipped = false;
+
+    public static final String GRASS_TYPE = "GRASS";
+    public static final String WATER_TYPE = "WATER";
+    public static final String FIRE_TYPE = "FIRE";
 
     protected WeaponItem(int id, String name, String description, String type, int imageID, int worth, int damage, int maxHealth, int rarity, SparseIntArray ingredients) {
         super(id, name, description, imageID, ingredients);
@@ -68,5 +75,25 @@ public class WeaponItem extends Item {
 
     public int getWorth() {
         return worth;
+    }
+
+    public boolean isEquipped() {
+        return equipped;
+    }
+
+    public void setEquipped(boolean equipped) {
+        this.equipped = equipped;
+    }
+
+    public int getTypeDrawableRes() {
+        switch (getType()) {
+            case WeaponItem.FIRE_TYPE:
+                return R.drawable.fire;
+            case WeaponItem.WATER_TYPE:
+                return R.drawable.water;
+            case WeaponItem.GRASS_TYPE:
+                return R.drawable.grass;
+        }
+        return R.drawable.grass;
     }
 }

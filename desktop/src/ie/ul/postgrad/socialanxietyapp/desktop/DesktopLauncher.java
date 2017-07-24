@@ -11,18 +11,19 @@ public class DesktopLauncher {
         LwjglApplicationConfiguration config = new LwjglApplicationConfiguration();
         config.width = 720 / 2;
         config.height = 1280 / 2;
-        new LwjglApplication(new MainGame(new DesktopLibgdxInterfaceDummy(), MainGame.AVATAR_SCREEN), config);
+        new LwjglApplication(new MainGame(new DesktopLibgdxInterfaceDummy(), MainGame.BATTLE_SCREEN), config);
 
 
         int damage = 0;
 
-        int level = 20;
-        int basePower = 8;
-        int offence = 20;
+        int level = 25;
+        int basePower = 15;
+        int offence = 30;
         int defense = 2;
 
         damage = (int) Math.floor(Math.floor(Math.floor(2 * level / 5 + 2) * offence * basePower / defense) / 50) + 2;
 
+        damage = (int) (damage / 1.5f);
 
         System.out.println(damage);
     }

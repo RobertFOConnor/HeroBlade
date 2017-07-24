@@ -20,13 +20,6 @@ public class AvatarCustomizationActivity extends AndroidApplication implements L
     MainGame game;
     private AvatarScreen avatarDisplay;
 
-    private static final int HAIR_STYLE = 0;
-    private static final int HAIR_COLOR = 1;
-    private static final int SKIN_COLOR = 2;
-    private static final int SHIRT_COLOR = 3;
-
-    private int currState = 0;
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -48,19 +41,16 @@ public class AvatarCustomizationActivity extends AndroidApplication implements L
         avatarDisplay = (AvatarScreen) game.getScreen();
         switch (v.getId()) {
             case R.id.hair_style_button:
-                currState = HAIR_STYLE;
                 avatarDisplay.changeHairStyle();
                 break;
             case R.id.hair_color_button:
-                currState = HAIR_COLOR;
                 avatarDisplay.changeHairColor();
                 break;
             case R.id.skin_color_button:
-                currState = SKIN_COLOR;
                 avatarDisplay.changeSkinColor();
                 break;
             case R.id.shirt_color_button:
-                currState = SHIRT_COLOR;
+                avatarDisplay.changeShirtColor();
                 break;
             case R.id.continue_button:
                 saveAvatar(avatarDisplay.getAvatar());

@@ -1,6 +1,8 @@
 package ie.ul.postgrad.socialanxietyapp.screens;
 
+import android.app.Dialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.content.res.Resources;
@@ -9,9 +11,11 @@ import android.os.Bundle;
 import android.os.Vibrator;
 import android.support.annotation.NonNull;
 import android.support.v4.app.ActivityCompat;
+import android.support.v4.app.DialogFragment;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
@@ -24,6 +28,7 @@ import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
@@ -46,14 +51,13 @@ import com.google.android.gms.maps.model.Marker;
 
 import java.util.ArrayList;
 
-import ie.ul.postgrad.socialanxietyapp.AndroidLauncher;
-import ie.ul.postgrad.socialanxietyapp.MainGame;
 import ie.ul.postgrad.socialanxietyapp.R;
 import ie.ul.postgrad.socialanxietyapp.StepsService;
 import ie.ul.postgrad.socialanxietyapp.adapter.NavigationDrawerListAdapter;
 import ie.ul.postgrad.socialanxietyapp.game.GameManager;
-import ie.ul.postgrad.socialanxietyapp.game.InventoryItemArray;
+import ie.ul.postgrad.socialanxietyapp.game.Player;
 import ie.ul.postgrad.socialanxietyapp.game.item.MarkerFactory;
+import ie.ul.postgrad.socialanxietyapp.game.item.WeaponItem;
 import ie.ul.postgrad.socialanxietyapp.game.quest.Quest;
 import ie.ul.postgrad.socialanxietyapp.game.quest.QuestFactory;
 import ie.ul.postgrad.socialanxietyapp.map.MapWrapperLayout;
@@ -64,6 +68,7 @@ import static ie.ul.postgrad.socialanxietyapp.adapter.NavigationDrawerListAdapte
 import static ie.ul.postgrad.socialanxietyapp.adapter.NavigationDrawerListAdapter.INVENTORY;
 import static ie.ul.postgrad.socialanxietyapp.adapter.NavigationDrawerListAdapter.QUESTS;
 import static ie.ul.postgrad.socialanxietyapp.adapter.NavigationDrawerListAdapter.SETTINGS;
+import static ie.ul.postgrad.socialanxietyapp.adapter.NavigationDrawerListAdapter.WEAPONS;
 
 public class MapsActivity extends AppCompatActivity implements OnMapReadyCallback, GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener, LocationListener {
 
@@ -178,8 +183,8 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
         super.onStart();
         active = true;
 
-        final String[] menuTitles = new String[]{"Inventory", "Quests", "Crafting", "Achievements", "Settings"};
-        int[] menuIcons = new int[]{R.drawable.ic_backpack, R.drawable.ic_quest, R.drawable.ic_crafting, R.drawable.ic_achievements, R.drawable.ic_settings};
+        final String[] menuTitles = new String[]{"Inventory", "Weapons", "Quests", "Crafting", "Achievements", "Settings"};
+        int[] menuIcons = new int[]{R.drawable.ic_backpack, R.drawable.ic_backpack, R.drawable.ic_quest, R.drawable.ic_crafting, R.drawable.ic_achievements, R.drawable.ic_settings};
 
         mDrawerList.setAdapter(new NavigationDrawerListAdapter(this, menuTitles, menuIcons));
         mDrawerList.setOnItemClickListener(new DrawerItemClickListener());
@@ -226,12 +231,23 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
 
                 if (distance < 500) {
 
-                    if (markerId > 5) {
-                        Intent intent = new Intent(getApplicationContext(), ResourceResultActivity.class);
-                        intent.putExtra(ResourceResultActivity.MARKER_ID, markerId);
-                        startActivity(intent);
+                    if (markerId == 3) {
+                        Player player = GameManager.getInstance().getPlayer();
+                        player.setCurrHealth(player.getMaxHealth());
+                        GameManager.getInstance().awardXP(getApplicationContext(), 50);
+                        GameManager.getInstance().updatePlayerInDatabase(player);
+                        Toast.makeText(getApplicationContext(), "Village: Your health has been restored! +50XP", Toast.LENGTH_SHORT).show();
+                    } else if (markerId == 4) {
+                        for (WeaponItem weaponItem : GameManager.getInstance().getInventory().getWeapons()) {
+                            weaponItem.setCurrHealth(weaponItem.getMaxHealth());
+                            GameManager.getInstance().updateWeaponInDatabase(weaponItem.getUUID(), weaponItem.getId(), weaponItem.getCurrHealth(), weaponItem.isEquipped());
+                            GameManager.getInstance().awardXP(getApplicationContext(), 50);
+                        }
+                        Toast.makeText(getApplicationContext(), "Blacksmith: Your weapons have been repaired! +50XP", Toast.LENGTH_SHORT).show();
 
-                    } else if (markerId == MarkerFactory.ID_TREE) { //TEMP
+
+
+                    /*} else if (markerId == MarkerFactory.ID_TREE) { //TEMP
                         Intent i = new Intent(getApplicationContext(), AndroidLauncher.class); //LibGDX Tree game Activity!
                         i.putExtra(AndroidLauncher.screenString, MainGame.TREE_GAME_SCREEN);
                         startActivity(i);
@@ -241,7 +257,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
                         startActivity(i);
                     } else if (markerId == MarkerFactory.ID_QUEST) {
                         Intent i = new Intent(getApplicationContext(), ConversationActivity.class); //Quest Activity!
-                        startActivity(i);
+                        startActivity(i);*/
                     } else if (markerId == MarkerFactory.ID_ENEMY) {
                         Intent i = new Intent(getApplicationContext(), BattleActivity.class); //Battle Activity!
                         startActivity(i);
@@ -391,6 +407,16 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
                                     id = 3;
                                 }
 
+                                id = 1;
+
+                                int random = ((int) (Math.random() * 3));
+
+                                if (random == 0) {
+                                    id = 3;
+                                } else if (random == 1) {
+                                    id = 4;
+                                }
+
                                 Marker marker = MarkerFactory.buildMarker(getApplicationContext(), mMap, placeLikelihood.getPlace().getLatLng(), id);
                                 //marker.setVisible(false);
                                 int markerPos;
@@ -446,6 +472,26 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
             getDeviceLocation();
         }
         updateMarkers();
+
+        if (GameManager.getInstance().getPlayer().getCurrHealth() <= 5) {
+            new LowHealthDialogFragment().show(getSupportFragmentManager(), "");
+        }
+    }
+
+    public static class LowHealthDialogFragment extends DialogFragment {
+        @Override
+        public Dialog onCreateDialog(Bundle savedInstanceState) {
+            // Use the Builder class for convenient dialog construction
+            AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
+            builder.setMessage("Your health is in critical condition. Find a nearby village to heal you.")
+                    .setPositiveButton("OK", new DialogInterface.OnClickListener() {
+                        public void onClick(DialogInterface dialog, int id) {
+                            // FIRE ZE MISSILES!
+                        }
+                    });
+            // Create the AlertDialog object and return it
+            return builder.create();
+        }
     }
 
     /**
@@ -624,9 +670,10 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
             switch (position) {
                 case INVENTORY:
                     i = new Intent(getApplicationContext(), InventoryActivity.class);
-                    Bundle bundle = new Bundle();
-                    bundle.putParcelable("player_items", new InventoryItemArray(GameManager.getInstance().getInventory().getItems()));
-                    i.putExtras(bundle);
+                    startActivity(i);
+                    break;
+                case WEAPONS:
+                    i = new Intent(getApplicationContext(), WeaponActivity.class);
                     startActivity(i);
                     break;
                 case QUESTS:

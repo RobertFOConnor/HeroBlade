@@ -11,26 +11,43 @@ import com.brashmonkey.spriter.Player;
 
 public class Avatar {
 
-    private static final float[] BLOND = {255f / 255f, 231f / 255f, 70f / 255f};
-    private static final float[] BLACK = {0.2f, 0.2f, 0.2f};
-    private static final float[] BROWN = {115 / 255f, 85 / 255f, 59 / 255f};
-    private static final float[] GINGER = {250 / 255f, 149 / 255f, 40 / 255f};
-    private static final float[] GRAY = {0.6f, 0.6f, 0.6f};
-    private static final float[] WHITE = {1f, 1f, 1f};
-    private static final float[] PEACH = {255f / 255f, 209f / 255f, 173f / 255f};
-    private static final float[] TAN = {209f / 255f, 158f / 255f, 119f / 255f};
+    private static final float[] BLOND = RGB(255f, 231f, 70f);
+    private static final float[] BLACK = RGB(20f, 20f, 20f);
+    private static final float[] DARK_BROWN = RGB(69f, 54f, 44f);
+    private static final float[] BROWN = RGB(115f, 85f, 59f);
+    private static final float[] GINGER = RGB(250f, 149f, 40f);
+    private static final float[] GRAY = RGB(100f, 100f, 100f);
+    private static final float[] WHITE = RGB(255f, 255f, 255f);
+    private static final float[] PEACH = RGB(255f, 209f, 173f);
+    private static final float[] TAN = RGB(209f, 158f, 119f);
+    private static final float[] GREEN = RGB(145f, 255f, 120f);
+    private static final float[] RED = RGB(255f, 59f, 96f);
 
     private static float[][] skinColorArray = new float[][]{PEACH, TAN, BROWN};
-    static float[][] hairColorArray = new float[][]{BLOND, BLACK, GRAY, BROWN, GINGER, WHITE};
+    static float[][] hairColorArray = new float[][]{BLOND, BLACK, GRAY, DARK_BROWN, GINGER, WHITE};
+    static float[][] shirtColorArray = new float[][]{BLOND, GREEN, RED, BLACK, WHITE};
 
+    private int shirtColor;
     private int skinColor;
     private int hairtype;
     private int hairColor;
 
-    public Avatar(int skinColor, int hairType, int hairColor) {
+    public Avatar(int shirtColor, int skinColor, int hairType, int hairColor) {
+        this.shirtColor = shirtColor;
         this.skinColor = skinColor;
         this.hairtype = hairType;
         this.hairColor = hairColor;
+    }
+
+    public int getShirtColor() {
+        return shirtColor;
+    }
+
+    public void setShirtColor(int shirtColor) {
+        if (shirtColor >= shirtColorArray.length) { //No. of hairstyles
+            shirtColor = 0;
+        }
+        this.shirtColor = shirtColor;
     }
 
     public int getHairtype() {
@@ -74,10 +91,21 @@ public class Avatar {
         return new float[]{hairColorArray[hairColor][0], hairColorArray[hairColor][1], hairColorArray[hairColor][2]};
     }
 
+    public float[] getShirtRGB() {
+        return new float[]{shirtColorArray[shirtColor][0], shirtColorArray[shirtColor][1], shirtColorArray[shirtColor][2]};
+    }
+
     public void drawAvatar(Drawer drawer, Player player) {
 
         drawer.setColor(1, 1, 1, 1);
         drawer.draw(player);
+
+
+        float[] shirtColor = getShirtRGB();
+        drawer.setColor(shirtColor[0], shirtColor[1], shirtColor[2], 1);
+        drawer.draw(player.getObject("shirt"));
+        drawer.draw(player.getObject("arm"));
+        drawer.draw(player.getObject("arm_000"));
 
         float[] skinColor = getSkinRGB();
         drawer.setColor(skinColor[0], skinColor[1], skinColor[2], 1);
@@ -91,5 +119,9 @@ public class Avatar {
 
         drawer.setColor(1, 1, 1, 1);
         drawer.draw(player.getObject("eyes"));
+    }
+
+    private static float[] RGB(float r, float g, float b) {
+        return new float[]{r / 255f, g / 255f, b / 255f};
     }
 }

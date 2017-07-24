@@ -37,13 +37,6 @@
             android:layout_marginBottom="40dp">
 
         </LinearLayout>
-
-        <Button
-            android:id="@+id/log_out"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="LOG OUT" />
-
     </LinearLayout>
 
 

@@ -47,6 +47,12 @@
                 android:layout_height="wrap_content"
                 android:text="Health" />
 
+            <ImageView
+                android:layout_marginTop="10dp"
+                android:id="@+id/user_type_img"
+                android:layout_width="30dp"
+                android:layout_height="30dp" />
+
         </LinearLayout>
 
         <LinearLayout
@@ -72,6 +78,20 @@
 
             <TextView
                 android:id="@+id/enemy_health"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="end"
+                android:text="Health" />
+
+            <ImageView
+                android:layout_marginTop="10dp"
+                android:layout_gravity="end"
+                android:id="@+id/enemy_type_img"
+                android:layout_width="30dp"
+                android:layout_height="30dp" />
+
+            <TextView
+                android:id="@+id/enemy_count"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="end"

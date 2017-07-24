@@ -1,9 +1,5 @@
 package ie.ul.postgrad.socialanxietyapp.game;
 
-import java.util.ArrayList;
-
-import ie.ul.postgrad.socialanxietyapp.game.item.ChestItem;
-
 /**
  * Created by Robert on 22-Feb-17.
  * <p>
@@ -36,7 +32,7 @@ public class Player {
         xp = 0;
         level = 1;
         money = 0;
-        maxHealth = 10;
+        maxHealth = 30;
         currHealth = maxHealth;
     }
 

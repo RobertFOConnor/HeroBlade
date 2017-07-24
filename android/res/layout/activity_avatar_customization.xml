@@ -45,7 +45,6 @@
             android:layout_height="wrap_content"
             android:layout_weight="0.25"
             android:background="@drawable/google_sign_in_button"
-            android:enabled="false"
             android:text="Shirt Color" />
 
     </LinearLayout>
