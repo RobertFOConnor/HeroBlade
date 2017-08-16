@@ -62,12 +62,12 @@ public class ItemSelectionActivity extends AppCompatActivity {
                     if (quantity <= 0) {
                         adapter.remove(adapter.getItem(position));
                     } else {
-                        String quantityString = "x" + quantity;
+                        String quantityString = getString(R.string.quantity_string, quantity);
                         ((TextView) view.findViewById(R.id.item_count)).setText(quantityString);
                     }
 
                     Intent returnIntent = new Intent();
-                    returnIntent.putExtra("result", itemId);
+                    returnIntent.putExtra(getString(R.string.result), itemId);
                     setResult(Activity.RESULT_OK, returnIntent);
                     finish();
                 }
@@ -77,7 +77,7 @@ public class ItemSelectionActivity extends AppCompatActivity {
         ActionBar actionBar = getSupportActionBar();
 
         if (actionBar != null) {
-            actionBar.setTitle("Choose an item");
+            actionBar.setTitle(getString(R.string.choose_item));
             actionBar.setDisplayHomeAsUpEnabled(true);
         }
 

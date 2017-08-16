@@ -31,7 +31,7 @@ public class WeaponSelectionActivity extends AppCompatActivity {
                 int selectedItemID = GameManager.getInstance().getInventory().getWeapons().keyAt((int) itemList.getItemAtPosition(position));
 
                 Intent returnIntent = new Intent();
-                returnIntent.putExtra("result",selectedItemID);
+                returnIntent.putExtra(getString(R.string.result),selectedItemID);
                 setResult(Activity.RESULT_OK,returnIntent);
                 finish();
             }

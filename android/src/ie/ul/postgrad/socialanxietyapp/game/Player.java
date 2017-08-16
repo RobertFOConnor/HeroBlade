@@ -112,18 +112,4 @@ public class Player {
             this.currHealth = 0;
         }
     }
-
-    /*
-    public void addUsedLocation(LatLng latLng) {
-        usedLocations.add(new ConsumedLocation(latLng));
-    }
-
-    public boolean hasUsedLocation(LatLng latLng) {
-        for (int i = 0; i < usedLocations.size(); i++) {
-            if (usedLocations.get(i).getLatLong().equals(latLng)) {
-                return true;
-            }
-        }
-        return false;
-    }*/
 }

@@ -9,6 +9,7 @@ import ie.ul.postgrad.socialanxietyapp.game.item.WeaponItem;
 
 public class Enemy {
 
+    private int id;
     private String name;
     private int level;
     private int currHealth;
@@ -16,12 +17,17 @@ public class Enemy {
     private String type;
     private boolean poisoned = false;
 
-    public Enemy(String name, String type, int level, int maxHealth) {
+    public Enemy(int id, String name, String type, int level, int maxHealth) {
+        this.id = id;
         this.name = name;
         this.type = type;
         this.level = level;
         this.currHealth = maxHealth;
         this.maxHealth = maxHealth;
+    }
+
+    public int getId() {
+        return id;
     }
 
     public String getType() {

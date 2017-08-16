@@ -1,6 +1,9 @@
 package ie.ul.postgrad.socialanxietyapp.game;
 
-import ie.ul.postgrad.socialanxietyapp.game.item.WeaponItem;
+import android.content.Context;
+import android.content.res.TypedArray;
+
+import ie.ul.postgrad.socialanxietyapp.R;
 
 /**
  * Created by Robert on 02-May-17.
@@ -8,35 +11,43 @@ import ie.ul.postgrad.socialanxietyapp.game.item.WeaponItem;
 
 public class EnemyFactory {
 
-    public static Enemy buildEnemy(Player player) {
+    public static final int ENEMY_COUNT = 6;
 
-        String[] enemyNames = {"Giant Spider", "Skeleton", "Robo_Brain", "Fire Demon", "Angler-Man", "Sharkhead", "Turnip-Legs", "Dark Angel", "Gremlin", "Scissor-Man", "Wolf-Man", "Giant", "Evil Crab"};
+    private static final int NAME = 0;
+    private static final int BASE_LEVEL = 1;
+    private static final int TYPE = 2;
+    private static final int POISON = 3;
+    private static final int HEAL = 4;
 
-        //Logic here to select enemy type (Name and image, attack set)
-        String name = enemyNames[(int) (Math.random() * enemyNames.length)];
+    //temp String[] enemyNames = {"Giant Spider", "Skeleton", "Robo_Brain", "Fire Demon", "Angler-Man", "Sharkhead", "Turnip-Legs", "Dark Angel", "Gremlin", "Scissor-Man", "Wolf-Man", "Giant", "Evil Crab"};
 
-        //Enemy level based within -3/+3 of players level.
-        int level = (player.getLevel() - 3) + ((int) (Math.random() * 7));
+    public static Enemy buildEnemy(Context context, Player player, int id) {
 
-        if (level < 1) {
-            level = 1;
+        try {
+
+            TypedArray ta = context.getResources().obtainTypedArray(R.array.enemy_array_refs);
+            int resId = ta.getResourceId(id, 0);
+            TypedArray itemValues = context.getResources().obtainTypedArray(resId);
+
+
+            String name = itemValues.getString(NAME);
+            int baseLevel = Integer.parseInt(itemValues.getString(BASE_LEVEL));
+            String type = itemValues.getString(TYPE);
+
+            int level = (player.getLevel() - 3) + ((int) (Math.random() * 7)) + baseLevel;
+            if (level < 1) {
+                level = 1;
+            }
+            int health = 5 + ((level - 1) * 5) + ((int) (Math.random() * 31));
+
+            ta.recycle();
+            itemValues.recycle();
+
+            return new Enemy(id, name, type, level, health);
+        } catch (Exception e) {
+            e.printStackTrace();
+            return new Enemy(1, "Giant Spider", "GRASS", 2, 15);
         }
-
-        int health = 5 + ((level - 1) * 5) + ((int) Math.random() * 31);
-
-        int random = (int) (Math.random() * 3);
-        String type = WeaponItem.FIRE_TYPE;
-        switch (random) {
-
-            case 0:
-                type = WeaponItem.WATER_TYPE;
-                break;
-            case 1:
-                type = WeaponItem.GRASS_TYPE;
-                break;
-        }
-
-        return new Enemy(name, type, level, health);
     }
 
 }

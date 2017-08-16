@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <array name="chest_1">
+        <item name="name">Treasure Chest</item>
+        <item name="desc">Walk 2km to unlock this chest.</item>
+        <item name="distance">2</item>
+    </array>
+
+    <array name="chest_2">
+        <item name="name">Gold Chest</item>
+        <item name="desc">Walk 5km to unlock this chest.</item>
+        <item name="distance">5</item>
+    </array>
+
+    <array name="chest_3">
+        <item name="name">Ruby Chest</item>
+        <item name="desc">Walk 10km to unlock this chest.</item>
+        <item name="distance">10</item>
+    </array>
+
+</resources>

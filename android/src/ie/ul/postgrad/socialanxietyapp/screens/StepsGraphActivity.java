@@ -20,7 +20,7 @@ public class StepsGraphActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_steps_graph);
 
-        ArrayList<Integer> dailySteps = GameManager.getDatabaseHelper().getDailySteps();
+        ArrayList<Integer> dailySteps = GameManager.getDbHelper().getDailySteps();
 
         DataPoint[] dataPoints = new DataPoint[dailySteps.size()];
 

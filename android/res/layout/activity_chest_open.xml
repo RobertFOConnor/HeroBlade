@@ -23,8 +23,7 @@
                 android:layout_width="100dp"
                 android:layout_height="100dp"
                 android:layout_gravity="center"
-                android:layout_margin="20dp"
-                android:src="@drawable/item_0076" />
+                android:layout_margin="20dp" />
 
             <TextView
                 android:id="@+id/title"
@@ -32,7 +31,7 @@
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
                 android:gravity="center"
-                android:text="Your treasure chest has been unlocked!"
+                android:text="@string/chest_unlock_title"
                 android:textColor="@color/text_dark"
                 android:textSize="20sp" />
 
@@ -42,7 +41,7 @@
                 android:layout_gravity="center"
                 android:gravity="center"
                 android:paddingTop="20dp"
-                android:text="Scroll down to see rewards!"
+                android:text="@string/scroll_for_rewards"
                 android:textColor="@color/text_dark"
                 android:textStyle="bold" />
 
@@ -60,7 +59,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="30dp"
-                android:text="Got it" />
+                android:text="@string/proceed" />
         </LinearLayout>
     </ScrollView>
 </RelativeLayout>

@@ -38,7 +38,7 @@ public class CraftingActivity extends AppCompatActivity {
 
         ActionBar actionBar = getSupportActionBar();
         if (actionBar != null) {
-            actionBar.setTitle("Crafting");
+            actionBar.setTitle(getString(R.string.crafting));
             actionBar.setDisplayHomeAsUpEnabled(true);
         }
 

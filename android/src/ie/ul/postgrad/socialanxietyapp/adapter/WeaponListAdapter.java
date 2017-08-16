@@ -24,13 +24,10 @@ import ie.ul.postgrad.socialanxietyapp.game.item.WeaponItem;
 
 public class WeaponListAdapter extends ArrayAdapter<WeaponItem> {
 
-    private ArrayList<WeaponItem> weaponItems;
-    private Context context;
     private String currWeaponUUID;
 
     public WeaponListAdapter(Context context, ArrayList<WeaponItem> weapons, String selectedWeaponUUID) {
         super(context, R.layout.fragment_weapon_item, weapons);
-        weaponItems = weapons;
         this.currWeaponUUID = selectedWeaponUUID;
     }
 
@@ -64,8 +61,10 @@ public class WeaponListAdapter extends ArrayAdapter<WeaponItem> {
         viewHolder.durabilityText.setText("DU: " + weaponItem.getCurrHealth() + "/" + weaponItem.getMaxHealth());
         viewHolder.img.setImageResource(weaponItem.getTypeDrawableRes());
 
-        if (weaponItem.getUUID().equals(currWeaponUUID)) {
-            viewHolder.bg.setBackgroundColor(ContextCompat.getColor(getContext(), R.color.bg_color_transparent));
+        if (currWeaponUUID != null) {
+            if (weaponItem.getUUID().equals(currWeaponUUID)) {
+                viewHolder.bg.setBackgroundColor(ContextCompat.getColor(getContext(), R.color.bg_color_transparent));
+            }
         }
         return convertView;
     }

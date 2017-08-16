@@ -24,7 +24,7 @@ public class AndroidLauncher extends AndroidApplication implements LibGdxInterfa
 
     @Override
     public void saveAvatar(Avatar avatar) {
-        GameManager.getDatabaseHelper().updateAvatar(avatar);
+        GameManager.getDbHelper().updateAvatar(avatar);
         //save to database
     }
 
@@ -40,11 +40,11 @@ public class AndroidLauncher extends AndroidApplication implements LibGdxInterfa
 
     @Override
     public void collectResource() {
-        if (screen.equals(MainGame.TREE_GAME_SCREEN)) {
-            GameManager.getInstance().givePlayer(this, 23, 1);
+       /* if (screen.equals(MainGame.TREE_GAME_SCREEN)) {
+            GameManager.getInstance().giveItem(this, 23, 1);
         } else if (screen.equals(MainGame.ROCK_GAME_SCREEN)) {
-            GameManager.getInstance().givePlayer(this, 27, 1);
-        }
+            GameManager.getInstance().giveItem(this, 27, 1);
+        }*/
     }
 
     @Override

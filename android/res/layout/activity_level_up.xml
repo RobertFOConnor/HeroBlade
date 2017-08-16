@@ -21,20 +21,20 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:gravity="center"
-            android:textStyle="bold"
-            android:text="Congratulations! You reached level"
+            android:text="@string/level_up_title"
             android:textColor="#404040"
-            android:textSize="22sp" />
+            android:textSize="22sp"
+            android:textStyle="bold" />
 
         <TextView
             android:id="@+id/level_num"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:gravity="center"
-            android:textStyle="bold"
-            android:text="20"
+            android:text="5"
             android:textColor="@color/bg_color"
-            android:textSize="40sp" />
+            android:textSize="50sp"
+            android:textStyle="bold" />
 
         <LinearLayout
             android:id="@+id/resource_list"
@@ -50,7 +50,7 @@
             android:id="@+id/continue_button"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Continue" />
+            android:text="@string/proceed" />
 
     </LinearLayout>
 

@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+Google Play game services IDs.
+Save this file as res/values/games-ids.xml in your project.
+-->
+<resources>
+    <string name="app_id">671511226110</string>
+    <string name="package_name">ie.ul.postgrad.socialanxietyapp</string>
+    <string name="achievement_the_journey_begins">CgkI_s3AycUTEAIQAQ</string>
+    <string name="achievement_5_sword_apprentice">CgkI_s3AycUTEAIQAg</string>
+    <string name="achievement_10_sword_knight">CgkI_s3AycUTEAIQAw</string>
+    <string name="achievement_20_sword_ninja">CgkI_s3AycUTEAIQBA</string>
+    <string name="achievement_mr.ms._popular">CgkI_s3AycUTEAIQBQ</string>
+    <string name="achievement_repairs_all_round">CgkI_s3AycUTEAIQBg</string>
+    <string name="achievement_inside_the_chest">CgkI_s3AycUTEAIQBw</string>
+    <string name="achievement_you_are_a_pirate">CgkI_s3AycUTEAIQCA</string>
+    <string name="achievement_the_true_sword_master">CgkI_s3AycUTEAIQCQ</string>
+    <string name="achievement_a_hero_is_born">CgkI_s3AycUTEAIQCg</string>
+    <string name="achievement_this_is_too_easy">CgkI_s3AycUTEAIQCw</string>
+    <string name="achievement_the_legend_is_real">CgkI_s3AycUTEAIQDA</string>
+    <string name="achievement_moving_on_up">CgkI_s3AycUTEAIQDQ</string>
+    <string name="achievement_experience_is_knowledge">CgkI_s3AycUTEAIQDg</string>
+    <string name="achievement_quartersized_hero">CgkI_s3AycUTEAIQDw</string>
+    <string name="achievement_impossible_hero">CgkI_s3AycUTEAIQEA</string>
+</resources>

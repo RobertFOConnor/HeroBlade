@@ -8,8 +8,7 @@
     <ImageView
         android:id="@+id/image"
         android:layout_width="70dp"
-        android:layout_height="70dp"
-        android:src="@drawable/item_0074" />
+        android:layout_height="70dp" />
 
     <ProgressBar
         android:id="@+id/progressBar"

@@ -24,16 +24,10 @@ import ie.ul.postgrad.socialanxietyapp.game.item.Item;
 public class SettingsListAdapter extends BaseAdapter {
 
     private String[] result;
-    private Context context;
-    private int[] imageId;
     private static LayoutInflater inflater = null;
 
     public SettingsListAdapter(Context context) {
-        this.context = context;
-        result = new String[]{"Log Out"};
-        //imageId = new int[items.size()];
-
-        this.context = context;
+        result = new String[]{"Log Out", "Unlock Chest"};
         inflater = (LayoutInflater) context.
                 getSystemService(Context.LAYOUT_INFLATER_SERVICE);
     }
@@ -69,16 +63,10 @@ public class SettingsListAdapter extends BaseAdapter {
         View rowView;
         rowView = inflater.inflate(R.layout.fragment_settings_item, null);
         holder.tv = (TextView) rowView.findViewById(R.id.item_title);
-        holder.tv2 = (TextView) rowView.findViewById(R.id.item_req);
+        holder.tv2 = (TextView) rowView.findViewById(R.id.item_desc);
         holder.img = (ImageView) rowView.findViewById(R.id.item_image);
         holder.tv.setText(result[position]);
-        //holder.img.setImageResource(imageId[position]);
-        rowView.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
 
-            }
-        });
         return rowView;
     }
 }

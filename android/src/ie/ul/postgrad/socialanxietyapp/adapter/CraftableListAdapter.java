@@ -16,7 +16,6 @@ import ie.ul.postgrad.socialanxietyapp.R;
 import ie.ul.postgrad.socialanxietyapp.game.GameManager;
 import ie.ul.postgrad.socialanxietyapp.game.InventoryItemArray;
 import ie.ul.postgrad.socialanxietyapp.game.item.Item;
-import ie.ul.postgrad.socialanxietyapp.game.item.WeaponItem;
 
 /**
  * Created by Robert on 20-Feb-17.
@@ -107,17 +106,13 @@ public class CraftableListAdapter extends BaseAdapter {
                 if (canCraft) {
 
                     for (int i = 0; i < ingredients.size(); i++) {
-                        int itemId = ingredients.keyAt(i);
-
-                        GameManager.getInstance().getInventory().removeItem(ingredients.keyAt(i), ingredients.valueAt(i));
-                        GameManager.getInstance().updateItemInDatabase(itemId);
-
+                        GameManager.getInstance().giveItem(ingredients.keyAt(i), -ingredients.valueAt(i));
                     }
-                    GameManager.getInstance().givePlayer(context, selectedItem.getId(), 1);
+                    GameManager.getInstance().giveItem(selectedItem.getId(), 1);
 
-                    Toast.makeText(context, "You crafted a new " + selectedItem.getName(), Toast.LENGTH_SHORT).show();
+                    Toast.makeText(context, context.getString(R.string.craft_success, selectedItem.getName()), Toast.LENGTH_SHORT).show();
                 } else {
-                    Toast.makeText(context, "You can't craft a " + selectedItem.getName(), Toast.LENGTH_SHORT).show();
+                    Toast.makeText(context, context.getString(R.string.craft_fail, selectedItem.getName()), Toast.LENGTH_SHORT).show();
                 }
             }
         });

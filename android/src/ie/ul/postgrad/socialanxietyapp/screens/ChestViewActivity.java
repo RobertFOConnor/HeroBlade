@@ -38,7 +38,7 @@ public class ChestViewActivity extends AppCompatActivity {
             progressBar.setProgress((int) chest.getCurrDistance());
 
             TextView text = (TextView) chestView.findViewById(R.id.title);
-            text.setText("Unlocks in: " + String.format("%.1f", chest.getCurrDistance() / 1000f) + "km");
+            text.setText(getString(R.string.chest_unlocked_distance, String.format("%.1f", chest.getCurrDistance() / 1000f)));
 
             ImageView image = (ImageView) chestView.findViewById(R.id.image);
             image.setImageResource(chest.getImageID());

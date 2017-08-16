@@ -4,7 +4,6 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
-import android.widget.Button;
 import android.widget.GridLayout;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -20,6 +19,7 @@ import ie.ul.postgrad.socialanxietyapp.Avatar;
 import ie.ul.postgrad.socialanxietyapp.LibGdxInterface;
 import ie.ul.postgrad.socialanxietyapp.MainGame;
 import ie.ul.postgrad.socialanxietyapp.R;
+import ie.ul.postgrad.socialanxietyapp.game.AchievementManager;
 import ie.ul.postgrad.socialanxietyapp.game.Enemy;
 import ie.ul.postgrad.socialanxietyapp.game.EnemyFactory;
 import ie.ul.postgrad.socialanxietyapp.game.GameManager;
@@ -33,15 +33,14 @@ public class BattleActivity extends AndroidApplication implements LibGdxInterfac
     private static final int WEAPON_REQUEST = 1;
     private static final int ITEM_REQUEST = 2;
 
+    private GameManager gm;
     private Player player;
     private ArrayList<Enemy> enemies;
     private Enemy enemy;
     private String weaponUUID;
-
     private LinearLayout textDisplay;
     private GridLayout battleMenu;
     private TextView dialogueText;
-    private Button nextButton;
     private ProgressBar userHealthBar;
     private ProgressBar enemyHealthBar;
     private TextView userHealthText;
@@ -50,8 +49,9 @@ public class BattleActivity extends AndroidApplication implements LibGdxInterfac
     private TextView enemiesLeft;
     private ImageView weaponType, enemyType;
     private int turnCount = 0;
-    int rewardedXP = 150;
-    int rewardMoney = 10;
+    private int rewardedXP = 150;
+    private int rewardMoney = 30;
+    final Context context = new Context();
     DialogInterface.OnClickListener dialogClickListener;
 
     @Override
@@ -59,7 +59,6 @@ public class BattleActivity extends AndroidApplication implements LibGdxInterfac
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_battle);
         dialogueText = (TextView) findViewById(R.id.dialogue);
-        nextButton = (Button) findViewById(R.id.next_button);
         textDisplay = (LinearLayout) findViewById(R.id.text_display);
         battleMenu = (GridLayout) findViewById(R.id.battle_menu);
         userHealthText = (TextView) findViewById(R.id.player_health);
@@ -73,19 +72,27 @@ public class BattleActivity extends AndroidApplication implements LibGdxInterfac
         View v = initializeForView(game, new AndroidApplicationConfiguration());
         ((LinearLayout) findViewById(R.id.character_layout)).addView(v);
 
-        player = GameManager.getInstance().getPlayer();
-        ((TextView) findViewById(R.id.player_name)).setText(player.getName() + " LVL: " + player.getLevel());
+        gm = GameManager.getInstance();
+        gm.initDatabaseHelper(this);
+        player = gm.getPlayer();
+        ((TextView) findViewById(R.id.player_name)).setText(getString(R.string.name_with_level, player.getName(), player.getLevel()));
 
 
         enemies = new ArrayList<>();
-        int enemyCount = ((int) (Math.random() * 6)) + 1;
+
+        int enemyCount;
+        if (player.getLevel() < 3) {
+            enemyCount = 1;
+        } else {
+            enemyCount = ((int) (Math.random() * 6)) + 1;
+        }
         for (int i = 0; i < enemyCount; i++) {
-            enemies.add(EnemyFactory.buildEnemy(player));
+            enemies.add(EnemyFactory.buildEnemy(this, player, (int) (Math.random() * EnemyFactory.ENEMY_COUNT) + 1));
         }
         enemy = enemies.get(0);
 
-        ArrayList<WeaponItem> weapons = GameManager.getInstance().getInventory().getEquippedWeapons();
-        if (weapons.size() > 0 && player.getCurrHealth() > 0 && hasUsableWeapon()) {
+        ArrayList<WeaponItem> weapons = gm.getInventory().getEquippedWeapons();
+        if (weapons.size() > 0 && player.getCurrHealth() > 0 && gm.getInventory().hasUsableWeapons()) {
 
             for (int i = weapons.size() - 1; i > -1; i--) {
                 if (weapons.get(i).getCurrHealth() > 0) {
@@ -93,38 +100,27 @@ public class BattleActivity extends AndroidApplication implements LibGdxInterfac
                     weaponType.setImageResource(weapons.get(i).getTypeDrawableRes());
                 }
             }
-        } else {
-            finish(); //TEMP /LEAVE BATTLE IF PLAYER HAS NO WEAPONS
         }
 
         userHealthBar = (ProgressBar) findViewById(R.id.user_bar);
         userHealthBar.setScaleY(3f);
         userHealthBar.setMax(player.getMaxHealth());
         userHealthBar.setProgress(player.getCurrHealth());
-        userHealthText.setText(hPString(player.getCurrHealth(), player.getMaxHealth()));
+        userHealthText.setText(getString(R.string.health_amount, player.getCurrHealth(), player.getMaxHealth()));
 
         enemyHealthBar = (ProgressBar) findViewById(R.id.enemy_bar);
         enemyHealthBar.setScaleY(3f);
         enemyHealthBar.setRotation(180);
         initEnemyUI();
 
-
-        final Context context = new Context();
         StartState startState = new StartState();
         context.setState(startState);
-
-
-        nextButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                context.getState().advance(context);
-            }
-        });
 
         findViewById(R.id.attack_button).setOnClickListener(this);
         findViewById(R.id.change_weapon_button).setOnClickListener(this);
         findViewById(R.id.item_button).setOnClickListener(this);
         findViewById(R.id.run_button).setOnClickListener(this);
+        findViewById(R.id.next_button).setOnClickListener(this);
 
         dialogClickListener = new DialogInterface.OnClickListener() {
             @Override
@@ -145,15 +141,15 @@ public class BattleActivity extends AndroidApplication implements LibGdxInterfac
     private void initEnemyUI() {
         enemyHealthBar.setMax(enemy.getMaxHealth());
         enemyHealthBar.setProgress(enemy.getCurrHealth());
-        enemyHealthText.setText(hPString(enemy.getCurrHealth(), enemy.getMaxHealth()));
+        enemyHealthText.setText(getString(R.string.health_amount, enemy.getCurrHealth(), enemy.getMaxHealth()));
         enemyType.setImageResource(enemy.getTypeDrawableRes());
-        enemyNameText.setText(enemy.getName() + " LVL: " + enemy.getLevel());
-        enemiesLeft.setText("Enemies Left: " + enemies.size());
+        enemyNameText.setText(getString(R.string.name_with_level, enemy.getName(), enemy.getLevel()));
+        enemiesLeft.setText(getString(R.string.enemies_left, enemies.size()));
     }
 
     @Override
     public void onClick(View v) {
-        WeaponItem weaponItem = GameManager.getInstance().getInventory().getWeapon(weaponUUID);
+        WeaponItem weaponItem = gm.getInventory().getWeapon(weaponUUID);
         switch (v.getId()) {
             case R.id.attack_button:
                 if (weaponItem != null) {
@@ -168,6 +164,9 @@ public class BattleActivity extends AndroidApplication implements LibGdxInterfac
                 break;
             case R.id.run_button:
                 showExitDialog();
+                break;
+            case R.id.next_button:
+                context.getState().advance(context);
                 break;
         }
     }
@@ -185,8 +184,8 @@ public class BattleActivity extends AndroidApplication implements LibGdxInterfac
     }
 
     private void changeWeapon() {
-        Intent intent = new Intent(this, WeaponSelectionActivity.class);
-        intent.putExtra(WeaponSelectionActivity.CURR_WEAPON, weaponUUID);
+        Intent intent = new Intent(this, ItemSelectActivity.class);
+        intent.putExtra(ItemSelectActivity.CURR_WEAPON, weaponUUID);
         startActivityForResult(intent, WEAPON_REQUEST);
     }
 
@@ -209,36 +208,26 @@ public class BattleActivity extends AndroidApplication implements LibGdxInterfac
 
         enemy.setCurrHealth(enemy.getCurrHealth() - damage);
         enemyHealthBar.setProgress(enemy.getCurrHealth());
-        enemyHealthText.setText(hPString(enemy.getCurrHealth(), enemy.getMaxHealth()));
+        enemyHealthText.setText(getString(R.string.health_amount, enemy.getCurrHealth(), enemy.getMaxHealth()));
         weaponItem.setCurrHealth(weaponItem.getCurrHealth() - 1);
 
-        String attackMessage = player.getName() + "'s " + weaponItem.getName() + " did " + damage + " damage!";
+        String attackMessage = getString(R.string.name_with_damage, player.getName(), weaponItem.getName(), damage);
 
         if (crit) {
-            attackMessage = player.getName() + "'s " + weaponItem.getName() + " did " + damage + " CRITICAL damage!";
+            attackMessage = getString(R.string.name_with_crit_damage, player.getName(), weaponItem.getName(), damage);
         }
 
         if (weaponItem.getCurrHealth() <= 0) {
             //GameManager.getInstance().removeWeapon(weaponItem.getUUID());
-            attackMessage += " " + player.getName() + "'s " + weaponItem.getName() + " is broken!";
+            attackMessage += getString(R.string.broken_weapon);
             weaponUUID = null;
             v.setEnabled(false);
         }
-        GameManager.getInstance().updateWeaponInDatabase(weaponItem.getUUID(), weaponItem.getId(), weaponItem.getCurrHealth(), weaponItem.isEquipped());
-
+        gm.updateWeaponInDatabase(weaponItem.getUUID(), weaponItem.getId(), weaponItem.getCurrHealth(), weaponItem.isEquipped());
 
         turnCount++;
         showText();
         dialogueText.setText(attackMessage);
-    }
-
-    private boolean hasUsableWeapon() {
-        for (WeaponItem weapon : GameManager.getInstance().getInventory().getEquippedWeapons()) {
-            if (weapon.getCurrHealth() > 0) {
-                return true;
-            }
-        }
-        return false;
     }
 
     @Override
@@ -248,43 +237,43 @@ public class BattleActivity extends AndroidApplication implements LibGdxInterfac
             // Make sure the request was successful
             if (resultCode == RESULT_OK) {
                 // The user picked a weapon.
-                weaponUUID = data.getStringExtra("result");
-                WeaponItem weaponItem = GameManager.getInstance().getInventory().getWeapon(weaponUUID);
+                weaponUUID = data.getStringExtra(getString(R.string.result));
+                WeaponItem weaponItem = gm.getInventory().getWeapon(weaponUUID);
                 weaponType.setImageResource(weaponItem.getTypeDrawableRes());
                 showText();
-                dialogueText.setText(player.getName() + " changed weapon to " + weaponItem.getName() + ".");
+                dialogueText.setText(getString(R.string.weapon_change, player.getName(), weaponItem.getName()));
                 findViewById(R.id.attack_button).setEnabled(true);
             }
         } else if (requestCode == ITEM_REQUEST) {
             if (resultCode == RESULT_OK) {
                 // The user used an item.
-                FoodItem item = (FoodItem) ItemFactory.buildItem(this, data.getIntExtra("result", 0));
-                player.setCurrHealth(GameManager.getInstance().getPlayer().getCurrHealth());
+                FoodItem item = (FoodItem) ItemFactory.buildItem(this, data.getIntExtra(getString(R.string.result), 0));
+                player.setCurrHealth(gm.getPlayer().getCurrHealth());
                 userHealthBar.setProgress(player.getCurrHealth());
-                userHealthText.setText(hPString(player.getCurrHealth(), player.getMaxHealth()));
+                userHealthText.setText(getString(R.string.health_amount, player.getCurrHealth(), player.getMaxHealth()));
                 showText();
-                dialogueText.setText(player.getName() + " used " + item.getName() + ".");
+                dialogueText.setText(getString(R.string.used_item, player.getName(), item.getName()));
             }
         }
     }
 
     private int calculateTypes(String attType, String defType, int damage) {
-        if (attType.equals("GRASS")) {
-            if (defType.equals("WATER")) {
+        if (attType.equals(getString(R.string.grass_type))) {
+            if (defType.equals(getString(R.string.water_type))) {
                 damage = (int) (damage * 1.5f);
-            } else if (defType.equals("FIRE")) {
+            } else if (defType.equals(getString(R.string.fire_type))) {
                 damage = (int) (damage / 1.5f);
             }
-        } else if (attType.equals("WATER")) {
-            if (defType.equals("FIRE")) {
+        } else if (attType.equals(getString(R.string.water_type))) {
+            if (defType.equals(getString(R.string.fire_type))) {
                 damage = (int) (damage * 1.5f);
-            } else if (defType.equals("GRASS")) {
+            } else if (defType.equals(getString(R.string.grass_type))) {
                 damage = (int) (damage / 1.5f);
             }
-        } else if (attType.equals("FIRE")) {
-            if (defType.equals("GRASS")) {
+        } else if (attType.equals(getString(R.string.fire_type))) {
+            if (defType.equals(getString(R.string.grass_type))) {
                 damage = (int) (damage * 1.5f);
-            } else if (defType.equals("WATER")) {
+            } else if (defType.equals(getString(R.string.water_type))) {
                 damage = (int) (damage / 1.5f);
             }
         }
@@ -303,7 +292,7 @@ public class BattleActivity extends AndroidApplication implements LibGdxInterfac
 
         private StartState() {
             showText();
-            dialogueText.setText("A wild " + enemy.getName() + " has appeared.");
+            dialogueText.setText(getString(R.string.enemy_appeared, enemy.getName()));
         }
 
         public void advance(Context context) {
@@ -331,7 +320,7 @@ public class BattleActivity extends AndroidApplication implements LibGdxInterfac
                 } else {
                     context.setState(new FinishState(FinishState.WON));
                 }
-            } else if (!hasUsableWeapon()) {
+            } else if (!gm.getInventory().hasUsableWeapons()) {
                 context.setState(new FinishState(FinishState.OUT_OF_WEAPONS));
             } else {
                 context.setState(new EnemyTurnState());
@@ -344,9 +333,9 @@ public class BattleActivity extends AndroidApplication implements LibGdxInterfac
         private EnemyTurnState() { //AI TURN TO ATTACK
             showText();
 
-            String playerType = "GRASS";
+            String playerType = getString(R.string.grass_type);
             if (weaponUUID != null) {
-                playerType = GameManager.getInstance().getInventory().getWeapon(weaponUUID).getType();
+                playerType = gm.getInventory().getWeapon(weaponUUID).getType();
             }
 
             int level = enemy.getLevel();
@@ -360,7 +349,7 @@ public class BattleActivity extends AndroidApplication implements LibGdxInterfac
             int random = (int) (Math.random() * 15);
 
             if (random == 0 || (player.getCurrHealth() < 5 && random < 5)) {
-                dialogueText.setText(enemy.getName() + " tried to attack but missed!");
+                dialogueText.setText(getString(R.string.attack_missed, enemy.getName()));
             } else if (random == 1) {
                 dialogueText.setText(enemy.getName() + " throws a CRITICAL punch dealing " + damage + " damage.");
                 hitPlayer(damage);
@@ -382,8 +371,8 @@ public class BattleActivity extends AndroidApplication implements LibGdxInterfac
     private void hitPlayer(int damage) {
         player.setCurrHealth(player.getCurrHealth() - damage);
         userHealthBar.setProgress(player.getCurrHealth());
-        userHealthText.setText(hPString(player.getCurrHealth(), player.getMaxHealth()));
-        GameManager.getInstance().updatePlayerInDatabase(player);
+        userHealthText.setText(getString(R.string.health_amount, player.getCurrHealth(), player.getMaxHealth()));
+        gm.updatePlayerInDatabase(player);
     }
 
     private class FinishState implements BattleState {
@@ -395,23 +384,21 @@ public class BattleActivity extends AndroidApplication implements LibGdxInterfac
         private FinishState(String state) {
             showText();
             if (state.equals(LOST)) {
-                dialogueText.setText(player.getName() + " has lost the battle. " + player.getName() + " has passed out.");
+                dialogueText.setText(getString(R.string.pass_out, player.getName()));
             } else if (state.equals(WON)) {
-                dialogueText.setText(player.getName() + " has won the battle. " + player.getName() + " gained " + rewardedXP + "XP! " + player.getName() + " recieved $" + rewardMoney + ".");
-                GameManager.getInstance().awardXP(getApplicationContext(), rewardedXP);
-                GameManager.getInstance().awardMoney(rewardMoney);
+                dialogueText.setText(player.getName() + " has won the battle. " + player.getName() + " gained " + rewardedXP + "XP! " + player.getName() + " received $" + rewardMoney + ".");
+                gm.awardXP(getApplicationContext(), rewardedXP);
+                gm.awardMoney(rewardMoney);
+                gm.addWin();
+                AchievementManager.checkBattleAchievements(getApplicationContext());
             } else if (state.equals(OUT_OF_WEAPONS)) {
-                dialogueText.setText(player.getName() + " is out of weapons. " + player.getName() + " has lost.");
+                dialogueText.setText(getString(R.string.out_of_weapons, player.getName()));
             }
         }
 
         public void advance(Context context) {
             finish();
         }
-    }
-
-    private String hPString(int curr, int max) {
-        return "HP: " + curr + "/" + max;
     }
 
     private class Context {
@@ -452,12 +439,16 @@ public class BattleActivity extends AndroidApplication implements LibGdxInterfac
 
     @Override
     public Avatar getAvatar() {
-        return GameManager.getInstance().getAvatar();
+        try {
+            return gm.getAvatar();
+        } catch (Exception e) {
+            return new Avatar(1, 1, 1, 1);
+        }
     }
 
     @Override
     public int getNPCId() {
-        return 1;
+        return 0;
     }
 
     @Override

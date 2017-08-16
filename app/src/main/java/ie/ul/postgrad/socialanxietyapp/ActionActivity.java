@@ -123,7 +123,7 @@ public class ActionActivity extends AppCompatActivity implements View.OnClickLis
             if (resultCode == RESULT_OK) {
 
                 // The user picked a weapon.
-                int result = data.getIntExtra("result", 0);
+                int result = data.getIntExtra(getString(R.string.result), 0);
                 player.setWeapon(result);
                 updateWeapon();
             }

@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/bg_color"
+    android:orientation="vertical"
+    android:padding="@dimen/text_margin"
+    tools:context="ie.ul.postgrad.socialanxietyapp.screens.InputNameActvity">
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/what_is_your_name"
+        android:textColor="@color/white"
+        android:textSize="@dimen/text_size_header"
+        android:textStyle="bold" />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/field_height"
+        android:layout_marginBottom="@dimen/view_margin_normal"
+        android:layout_marginTop="@dimen/view_margin_normal"
+        android:background="@drawable/edit_text_custom"
+        android:orientation="horizontal">
+
+
+        <TextView
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:layout_gravity="center"
+            android:layout_marginLeft="10dp"
+            android:layout_marginRight="10dp"
+            android:gravity="center"
+            android:text="@string/fa_icon_name"
+            android:textColor="#fff"
+            android:textSize="22sp" />
+
+        <EditText
+            android:id="@+id/name_field"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_gravity="center"
+            android:layout_marginEnd="@dimen/view_margin_normal"
+            android:background="@color/transparent"
+            android:hint="@string/name"
+            android:inputType="textPersonName"
+            android:maxLength="18"
+            android:maxLines="1"
+            android:textColor="@color/white"
+            android:textColorHint="@color/white" />
+
+    </LinearLayout>
+
+    <Button
+        android:id="@+id/continue_button"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:textAllCaps="false"
+        android:padding="@dimen/text_margin"
+        android:textSize="18sp"
+        android:background="@drawable/button_custom"
+        android:text="@string/proceed"
+        android:textColor="@color/white" />
+
+</LinearLayout>

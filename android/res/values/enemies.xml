@@ -2,19 +2,67 @@
 <resources>
     <array name="enemy_null">
         <item name="name">Null Enemy</item>
-        <item name="Description">Nothing to see here.</item>
         <item name="base_level">Nothing to see here.</item>
         <item name="type">Nothing to see here.</item>
         <item name="can_poison">Nothing to see here.</item>
         <item name="can_heal">Nothing to see here.</item>
     </array>
 
+    <array name="enemy_1">
+        <item name="name">Giant Spider</item>
+        <item name="base_level">1</item>
+        <item name="type">GRASS</item>
+        <item name="can_poison">1</item>
+        <item name="can_heal">0</item>
+    </array>
 
+    <array name="enemy_2">
+        <item name="name">Skeleton</item>
+        <item name="base_level">2</item>
+        <item name="type">GRASS</item>
+        <item name="can_poison">1</item>
+        <item name="can_heal">0</item>
+    </array>
+
+    <array name="enemy_3">
+        <item name="name">Fire Demon</item>
+        <item name="base_level">1</item>
+        <item name="type">FIRE</item>
+        <item name="can_poison">1</item>
+        <item name="can_heal">0</item>
+    </array>
+
+    <array name="enemy_4">
+        <item name="name">Flame Bot</item>
+        <item name="base_level">2</item>
+        <item name="type">GRASS</item>
+        <item name="can_poison">1</item>
+        <item name="can_heal">0</item>
+    </array>
+
+    <array name="enemy_5">
+        <item name="name">Shark Knight</item>
+        <item name="base_level">3</item>
+        <item name="type">WATER</item>
+        <item name="can_poison">1</item>
+        <item name="can_heal">0</item>
+    </array>
+
+    <array name="enemy_6">
+        <item name="name">Evil Crab</item>
+        <item name="base_level">1</item>
+        <item name="type">WATER</item>
+        <item name="can_poison">1</item>
+        <item name="can_heal">0</item>
+    </array>
 
     <array name="enemy_array_refs">
         <item>@array/enemy_null</item>
+        <item>@array/enemy_1</item>
+        <item>@array/enemy_2</item>
+        <item>@array/enemy_3</item>
+        <item>@array/enemy_4</item>
+        <item>@array/enemy_5</item>
+        <item>@array/enemy_6</item>
     </array>
-
-
-
 </resources>

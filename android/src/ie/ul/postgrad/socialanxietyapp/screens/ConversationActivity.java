@@ -27,7 +27,7 @@ public class ConversationActivity extends AndroidApplication implements LibGdxIn
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_conversation);
 
-        quest = GameManager.getInstance().getActiveQuest();
+        //quest = GameManager.getInstance().getActiveQuest();
 
         updateUI();
 
@@ -61,20 +61,9 @@ public class ConversationActivity extends AndroidApplication implements LibGdxIn
                 name = dialogue.getSpeaker();
                 text = dialogue.getSentence();
 
-                game.updateConvo(quest.getCharacterId());
+                game.updateConvo(quest.getCharacterId(), "");
             } else {
 
-                SparseIntArray rewardItems = quest.getRewardItems();
-
-                for (int i = 0; i < rewardItems.size(); i++) {
-                    GameManager.getInstance().givePlayer(this, rewardItems.keyAt(i), rewardItems.valueAt(i));
-                }
-                quest.setStage(quest.getStage() + 1);
-                quest.updateQuest();
-
-                if (quest.isCompleted()) {
-                    GameManager.getInstance().setActiveQuest(null);
-                }
                 finish();
             }
         }

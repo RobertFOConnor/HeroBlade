@@ -30,12 +30,12 @@ public class ItemFactory {
         int resId = ta.getResourceId(id, 0);
         TypedArray itemValues = context.getResources().obtainTypedArray(resId);
 
-
         String name = itemValues.getString(NAME);
         String description = itemValues.getString(DESCRIPTION);
         int imageId = context.getResources().getIdentifier("item_" + String.format("%04d", id), "drawable", context.getPackageName());
         int damage = Integer.parseInt(itemValues.getString(DAMAGE));
         int energy = Integer.parseInt(itemValues.getString(ENERGY));
+        int worth = Integer.parseInt(itemValues.getString(WORTH));
 
         SparseIntArray ingredients = new SparseIntArray();
 
@@ -53,13 +53,12 @@ public class ItemFactory {
         ta.recycle();
         itemValues.recycle();
 
-
         if (id >= 74) {
             return new ChestItem(id, name, description, imageId, energy);
         } else if (energy > 0) {
-            return new FoodItem(id, name, description, imageId, ingredients, energy);
+            return new FoodItem(id, name, description, worth, imageId, ingredients, energy);
         } else {
-            return new Item(id, name, description, imageId, ingredients);
+            return new Item(id, name, description, worth, imageId, ingredients);
         }
     }
 }

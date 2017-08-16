@@ -33,7 +33,7 @@
                 android:id="@+id/player_name"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Health" />
+                android:text="@string/health" />
 
             <ProgressBar
                 android:id="@+id/user_bar"
@@ -45,7 +45,7 @@
                 android:id="@+id/player_health"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Health" />
+                android:text="@string/health" />
 
             <ImageView
                 android:layout_marginTop="10dp"
@@ -81,7 +81,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="end"
-                android:text="Health" />
+                android:text="@string/health" />
 
             <ImageView
                 android:layout_marginTop="10dp"
@@ -94,8 +94,7 @@
                 android:id="@+id/enemy_count"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_gravity="end"
-                android:text="Health" />
+                android:layout_gravity="end"/>
 
         </LinearLayout>
 
@@ -106,9 +105,11 @@
         android:id="@+id/container"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_marginLeft="10dp"
+        android:layout_marginRight="10dp"
+        android:layout_marginBottom="14dp"
         android:layout_alignParentBottom="true"
-        android:layout_alignParentStart="true"
-        android:layout_margin="10dp">
+        android:layout_centerHorizontal="true">
 
         <LinearLayout
             android:id="@+id/text_display"
@@ -139,40 +140,41 @@
             android:id="@+id/battle_menu"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
+            android:rowCount="2"
             android:columnCount="2">
 
             <Button
                 android:id="@+id/attack_button"
-                android:layout_width="0dp"
-                android:layout_height="0dp"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
                 android:layout_columnWeight=".5"
                 android:layout_rowWeight=".5"
-                android:text="ATTACK" />
+                android:text="@string/attack" />
 
             <Button
                 android:id="@+id/change_weapon_button"
-                android:layout_width="0dp"
-                android:layout_height="0dp"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
                 android:layout_columnWeight=".5"
                 android:layout_rowWeight=".5"
-                android:text="CHANGE WEAPON" />
+                android:text="@string/change_weapon" />
 
             <Button
                 android:id="@+id/item_button"
-                android:layout_width="0dp"
-                android:layout_height="0dp"
-                android:layout_columnWeight=".33"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_columnWeight=".5"
                 android:layout_rowWeight=".5"
-                android:text="USE ITEM" />
+                android:text="@string/use_item" />
 
 
             <Button
                 android:id="@+id/run_button"
-                android:layout_width="0dp"
-                android:layout_height="0dp"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
                 android:layout_columnWeight=".5"
                 android:layout_rowWeight=".5"
-                android:text="RUN" />
+                android:text="@string/run" />
         </GridLayout>
     </FrameLayout>
 </RelativeLayout>

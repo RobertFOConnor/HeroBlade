@@ -1,6 +1,5 @@
 package ie.ul.postgrad.socialanxietyapp.screens;
 
-import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.v4.content.ContextCompat;
@@ -10,16 +9,15 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ListView;
-
-import com.google.firebase.auth.FirebaseAuth;
+import android.widget.Toast;
 
 import ie.ul.postgrad.socialanxietyapp.R;
-import ie.ul.postgrad.socialanxietyapp.account.WelcomeActivity;
 import ie.ul.postgrad.socialanxietyapp.adapter.SettingsListAdapter;
 
 public class SettingsActivity extends AppCompatActivity {
 
     private static final int LOG_OUT = 0;
+    private static final int UNLCOK_CHEST = 1;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -28,33 +26,29 @@ public class SettingsActivity extends AppCompatActivity {
 
 
         ActionBar actionBar = getSupportActionBar();
-        actionBar.setTitle("Settings");
-        actionBar.setDisplayHomeAsUpEnabled(true);
-
+        if (actionBar != null) {
+            actionBar.setTitle(getString(R.string.settings));
+            actionBar.setDisplayHomeAsUpEnabled(true);
+        }
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             getWindow().setStatusBarColor(ContextCompat.getColor(this, R.color.bg_color));
         }
 
         ListView settingsList = (ListView) findViewById(R.id.settings_list);
-
         SettingsListAdapter settingsAdapter = new SettingsListAdapter(this);
+        settingsList.setAdapter(settingsAdapter);
 
-        AdapterView.OnItemClickListener itemClickListener = new AdapterView.OnItemClickListener() {
+        settingsList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 if (position == LOG_OUT) {
-                    FirebaseAuth.getInstance().signOut();
-                    Intent intent = new Intent(getApplicationContext(), WelcomeActivity.class);
-                    intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-                    startActivity(intent);
-                    finish();
+
+                } else if (position == UNLCOK_CHEST) {
+
                 }
             }
-        };
-
-        settingsList.setAdapter(settingsAdapter);
-        settingsList.setOnItemClickListener(itemClickListener);
+        });
     }
 
     @Override

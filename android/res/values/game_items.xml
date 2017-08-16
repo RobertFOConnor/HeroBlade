@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <array name="null_game_item">
+        <item name="name">Bagel</item>
+    </array>
+
+    <array name="game_item_1">
+        <item name="name">Health Potion</item>
+        <item name="desc">Restores +10 health.</item>
+        <item name="worth">50</item>
+        <item name="damage">0</item>
+        <item name="energy">10</item>
+    </array>
+
+    <array name="game_item_2">
+        <item name="name">Great Potion</item>
+        <item name="desc">Restores +20 health.</item>
+        <item name="worth">100</item>
+        <item name="damage">0</item>
+        <item name="energy">20</item>
+    </array>
+
+    <array name="game_item_3">
+        <item name="name">Super Potion</item>
+        <item name="desc">Restores +50 health.</item>
+        <item name="worth">150</item>
+        <item name="damage">0</item>
+        <item name="energy">50</item>
+    </array>
+
+    <array name="game_item_4">
+        <item name="name">Full Restore Potion</item>
+        <item name="desc">Restores all health.</item>
+        <item name="worth">200</item>
+        <item name="damage">0</item>
+        <item name="energy">100000</item>
+    </array>
+
+    <array name="game_item_5">
+        <item name="name">Poison Potion</item>
+        <item name="desc">Poisons an enemy in battle.</item>
+        <item name="worth">70</item>
+        <item name="damage">0</item>
+        <item name="energy">5</item>
+    </array>
+
+    <array name="game_item_6">
+        <item name="name">Damage Boost Potion</item>
+        <item name="desc">Increases sword damage.</item>
+        <item name="worth">70</item>
+        <item name="damage">0</item>
+        <item name="energy">5</item>
+    </array>
+
+    <array name="game_item_array_refs">
+        <item>@array/null_game_item</item>
+        <item>@array/game_item_1</item>
+        <item>@array/game_item_2</item>
+        <item>@array/game_item_3</item>
+        <item>@array/game_item_4</item>
+        <item>@array/game_item_5</item>
+        <item>@array/game_item_6</item>
+    </array>
+
+</resources>

@@ -45,27 +45,29 @@
             android:layout_height="@dimen/field_height"
             android:layout_marginBottom="10dp"
             android:background="@drawable/button_custom"
-            android:text="Guest"
+            android:text="Test Account"
             android:textAllCaps="false"
             android:textColor="@color/white" />
 
         <Button
-            android:id="@+id/sign_in"
+            android:id="@+id/sign_in_button"
             android:layout_width="match_parent"
             android:layout_height="@dimen/field_height"
-            android:layout_marginBottom="10dp"
-            android:background="@drawable/button_custom"
-            android:text="Log In"
+            android:background="@drawable/google_sign_in_button"
+            android:drawableStart="@drawable/google_icon"
+            android:text="Sign in with Google             "
+            android:textAlignment="center"
             android:textAllCaps="false"
-            android:textColor="@color/white" />
+            android:textColor="@color/black" />
 
+        <!-- sign-out button -->
         <Button
-            android:id="@+id/register"
+            android:id="@+id/sign_out_button"
             android:layout_width="match_parent"
-            android:layout_height="@dimen/field_height"
+            android:layout_height="wrap_content"
             android:background="@drawable/button_custom"
-            android:text="Sign Up"
-            android:textAllCaps="false"
-            android:textColor="@color/white" />
+            android:text="Sign Out"
+            android:visibility="gone" />
+
     </LinearLayout>
 </LinearLayout>

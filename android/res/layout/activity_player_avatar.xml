@@ -124,12 +124,12 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="CASH"
+                android:text="SWORDS"
                 android:textColor="@color/white"
                 android:textSize="14sp" />
 
             <TextView
-                android:id="@+id/gold_field"
+                android:id="@+id/sword_field"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="0"
@@ -154,12 +154,12 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="QUESTS"
+                android:text="VILLAGES"
                 android:textColor="@color/white"
                 android:textSize="14sp" />
 
             <TextView
-                android:id="@+id/quests_field"
+                android:id="@+id/villages_field"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="0"
@@ -180,12 +180,12 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="KILLS"
+                android:text="CASH"
                 android:textColor="@color/white"
                 android:textSize="14sp" />
 
             <TextView
-                android:id="@+id/enemiy_kills_field"
+                android:id="@+id/cash_field"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="0"

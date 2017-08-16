@@ -93,17 +93,17 @@ public class LogInActivity extends AppCompatActivity implements View.OnClickList
                     JSONObject obj = new JSONObject(result);
                     String id = obj.getString("id");
                     String name = obj.getString("name");
-                    GameManager.getInstance().startGame(getApplicationContext(), id, name, email, password);
+                    //GameManager.getInstance().initDatabaseHelper(getApplicationContext(), id, name, email, password);
                 } catch (JSONException e) {
                     e.printStackTrace();
-                    GameManager.getInstance().startGame(getApplicationContext(), "getidfromwebservice", "GetNameFromWebService", email, password);
+                    //GameManager.getInstance().initDatabaseHelper(getApplicationContext(), "getidfromwebservice", "GetNameFromWebService", email, password);
                 }
 
                 Intent intent = new Intent(getApplicationContext(), MapsActivity.class);
                 startActivity(intent);
                 finish();
             } else {
-                Toast.makeText(getApplicationContext(), "Login failed. Please make sure you are connected to the internet and that all your information is correct.", Toast.LENGTH_SHORT).show();
+                Toast.makeText(getApplicationContext(), getString(R.string.login_failed), Toast.LENGTH_SHORT).show();
             }
             progressBar.setVisibility(View.INVISIBLE);
             Toast.makeText(getApplicationContext(), result, Toast.LENGTH_SHORT).show();

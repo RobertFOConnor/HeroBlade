@@ -26,6 +26,7 @@ public class Avatar {
     private static float[][] skinColorArray = new float[][]{PEACH, TAN, BROWN};
     static float[][] hairColorArray = new float[][]{BLOND, BLACK, GRAY, DARK_BROWN, GINGER, WHITE};
     static float[][] shirtColorArray = new float[][]{BLOND, GREEN, RED, BLACK, WHITE};
+    private int hairTypes = 9;
 
     private int shirtColor;
     private int skinColor;
@@ -37,6 +38,13 @@ public class Avatar {
         this.skinColor = skinColor;
         this.hairtype = hairType;
         this.hairColor = hairColor;
+    }
+
+    public Avatar() {
+        this.shirtColor = (int) (Math.random() * shirtColorArray.length);
+        this.skinColor = (int) (Math.random() * skinColorArray.length);
+        this.hairtype = (int) (Math.random() * hairTypes - 1) + 1;
+        this.hairColor = (int) (Math.random() * hairColorArray.length);
     }
 
     public int getShirtColor() {
@@ -55,8 +63,8 @@ public class Avatar {
     }
 
     public void setHairtype(int hairtype) {
-        if (hairtype >= 9) { //No. of hairstyles
-            hairtype = 0;
+        if (hairtype >= hairTypes) { //No. of hairstyles
+            hairtype = 1;
         }
         this.hairtype = hairtype;
     }

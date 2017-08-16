@@ -1,12 +1,8 @@
 package ie.ul.postgrad.socialanxietyapp.game;
 
-import android.content.Context;
-
 import java.util.ArrayList;
 
 import ie.ul.postgrad.socialanxietyapp.game.item.ChestItem;
-import ie.ul.postgrad.socialanxietyapp.game.item.Item;
-import ie.ul.postgrad.socialanxietyapp.game.item.ItemFactory;
 import ie.ul.postgrad.socialanxietyapp.game.item.WeaponItem;
 
 /**
@@ -17,61 +13,60 @@ import ie.ul.postgrad.socialanxietyapp.game.item.WeaponItem;
 
 public class Inventory {
 
-    private Context context;
     private InventoryItemArray items;
     private ArrayList<WeaponItem> weapons;
     private ArrayList<ChestItem> chests;
 
-    public Inventory() {
-        items = new InventoryItemArray();
-        weapons = new ArrayList<>();
-        chests = new ArrayList<>();
-    }
+    private static final int GET_EQUIPED_WEAPONS = 1;
+    private static final int GET_UNEQUIPED_WEAPONS = 2;
+    private static final int GET_HP_WEAPONS = 3;
 
-    public Inventory(InventoryItemArray items, ArrayList<WeaponItem> weapons, ArrayList<ChestItem> chests, Context context) {
+
+    public Inventory(InventoryItemArray items, ArrayList<WeaponItem> weapons, ArrayList<ChestItem> chests) {
         this.items = items;
         this.weapons = weapons;
         this.chests = chests;
-        this.context = context;
     }
 
-    public void addItem(int itemID, int amount) {
-        Item item = ItemFactory.buildItem(context, itemID);
-        if (item instanceof WeaponItem) {
-            weapons.add((WeaponItem) item);
-        } else {
-            items.put(itemID, items.get(itemID) + amount);
-        }
-    }
-
-    public void removeItem(int itemID, int amount) {
-        if (!(ItemFactory.buildItem(context, itemID) instanceof WeaponItem)) {
-            if ((items.get(itemID) - amount) <= 0) {
-                items.delete(itemID);
-            } else {
-                items.put(itemID, items.get(itemID) - amount);
+    public boolean hasUsableWeapons() {
+        for (WeaponItem weapon : getEquippedWeapons()) {
+            if (weapon.getCurrHealth() > 0) {
+                return true;
             }
         }
+        return false;
     }
 
     public ArrayList<WeaponItem> getEquippedWeapons() {
-        ArrayList<WeaponItem> equippedWeapons = new ArrayList<>();
-        for (WeaponItem weaponItem : weapons) {
-            if (weaponItem.isEquipped()) {
-                equippedWeapons.add(weaponItem);
-            }
-        }
-        return equippedWeapons;
+        return getWeaponList(GET_EQUIPED_WEAPONS);
     }
 
     public ArrayList<WeaponItem> getUnequippedWeapons() {
-        ArrayList<WeaponItem> unequippedWeapons = new ArrayList<>();
+        return getWeaponList(GET_UNEQUIPED_WEAPONS);
+    }
+
+    public ArrayList<WeaponItem> getWeaponList(int listCode) {
+        ArrayList<WeaponItem> weaponItems = new ArrayList<>();
         for (WeaponItem weaponItem : weapons) {
-            if (!weaponItem.isEquipped()) {
-                unequippedWeapons.add(weaponItem);
+            switch (listCode) {
+                case GET_EQUIPED_WEAPONS:
+                if (weaponItem.isEquipped()) {
+                    weaponItems.add(weaponItem);
+                }
+                break;
+                case GET_UNEQUIPED_WEAPONS:
+                    if (!weaponItem.isEquipped()) {
+                        weaponItems.add(weaponItem);
+                    }
+                    break;
+                case GET_HP_WEAPONS:
+                    if (weaponItem.getCurrHealth() > 0) {
+                        weaponItems.add(weaponItem);
+                    }
+                    break;
             }
         }
-        return unequippedWeapons;
+        return weaponItems;
     }
 
     public InventoryItemArray getItems() {

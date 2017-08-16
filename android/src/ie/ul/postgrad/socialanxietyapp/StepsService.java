@@ -20,7 +20,7 @@ import java.util.ArrayList;
 import ie.ul.postgrad.socialanxietyapp.database.DBHelper;
 import ie.ul.postgrad.socialanxietyapp.game.GameManager;
 import ie.ul.postgrad.socialanxietyapp.game.item.ChestItem;
-import ie.ul.postgrad.socialanxietyapp.game.item.ItemFactory;
+import ie.ul.postgrad.socialanxietyapp.game.item.WeaponItem;
 import ie.ul.postgrad.socialanxietyapp.screens.ChestOpenActivity;
 import ie.ul.postgrad.socialanxietyapp.screens.MapsActivity;
 
@@ -37,6 +37,7 @@ public class StepsService extends Service implements SensorEventListener {
     private DBHelper dbHelper;
     private float totalDistance;
     private ArrayList<ChestItem> chests;
+    private GameManager gm;
 
     @Override
     public void onCreate() {
@@ -48,10 +49,10 @@ public class StepsService extends Service implements SensorEventListener {
             mStepDetectorSensor = mSensorManager.getDefaultSensor(Sensor.TYPE_STEP_DETECTOR);
             mSensorManager.registerListener(this, mStepDetectorSensor, SensorManager.SENSOR_DELAY_NORMAL);
         }
-        dbHelper = new DBHelper(this);
+        gm = GameManager.getInstance();
+        dbHelper = gm.initDatabaseHelper(this);
         totalDistance = dbHelper.getDistance();
-
-        chests = GameManager.getInstance().getInventory().getChests();
+        chests = gm.getInventory().getChests();
     }
 
     @Override
@@ -68,23 +69,34 @@ public class StepsService extends Service implements SensorEventListener {
     @Override
     public void onSensorChanged(SensorEvent event) {
 
+        System.out.println(":STEP:");
+
         totalDistance += 0.8f;
         dbHelper.insertStepsEntry(totalDistance);
 
+        int removals = 0;
+
         for (ChestItem chest : chests) {
             chest.setCurrDistance(chest.getCurrDistance() - 0.8f);
-            GameManager.getInstance().updateChest(chest);
+            gm.updateChest(chest);
 
             if (chest.getCurrDistance() < 0) {
+                gm.addChestOpened();
+                WeaponItem weaponItem = gm.unlockWeapon(this, chest.getRarity());
+                Intent result = chestOpenIntent(chest.getId(), weaponItem.getId());
+                removals++;
+
                 if (!MapsActivity.active) {
-                    notifyOpenedChest(chest);
+                    notifyOpenedChest(result, chest);
                 } else {
-                    Intent intent = new Intent(getApplicationContext(), ChestOpenActivity.class);
-                    startActivity(intent);
+                    startActivity(result);
                 }
-                chests.remove(chest);
-                GameManager.getInstance().removeChest();
             }
+        }
+
+        for (int i = 0; i < removals; i++) {
+            chests.remove(0);
+            gm.removeChest();
         }
     }
 
@@ -93,9 +105,15 @@ public class StepsService extends Service implements SensorEventListener {
 
     }
 
-    /* Example method for what chest open notification might look like.. */
-    private void notifyOpenedChest(ChestItem chest) {
+    private Intent chestOpenIntent(int chestId, int swordId) {
         Intent resultIntent = new Intent(this, ChestOpenActivity.class);
+        resultIntent.putExtra(ChestOpenActivity.CHEST_ID_KEY, chestId);
+        resultIntent.putExtra(ChestOpenActivity.SWORD_ID_KEY, swordId);
+        return resultIntent;
+    }
+
+    /* Example method for what chest open notification might look like.. */
+    private void notifyOpenedChest(Intent resultIntent, ChestItem chest) {
         // Because clicking the notification opens a new ("special") activity, there's
         // no need to create an artificial back stack.
         PendingIntent resultPendingIntent =
@@ -109,15 +127,15 @@ public class StepsService extends Service implements SensorEventListener {
         NotificationCompat.Builder mBuilder =
                 new NotificationCompat.Builder(this)
                         .setSmallIcon(R.drawable.ic_chest_open)
-                        .setContentTitle("Your " + chest.getName() + " has been unlocked!")
-                        .setContentText("You walked " + (int) (chest.getMaxDistance() / 1000) + "km. The " + chest.getName() + " has been opened.")
+                        .setContentTitle(getString(R.string.notify_chest, chest.getName()))
+                        .setContentText(getString(R.string.notify_chest_body, (int) (chest.getMaxDistance() / 1000), chest.getName()))
                         .setVibrate(new long[]{1000, 1000})
                         .setLights(Color.BLUE, 3000, 3000)
                         .setAutoCancel(true)
                         .setSound(RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION));
         mBuilder.setContentIntent(resultPendingIntent);
 
-        int mNotificationId = 1234;// Set an ID for the notification
+        int mNotificationId = (int) (Math.random() * 1000);// Set an ID for the notification
         NotificationManager notificationManager = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);// Get an instance of NotificationManager service
         notificationManager.notify(mNotificationId, mBuilder.build()); // Build the notification and issue it.
     }

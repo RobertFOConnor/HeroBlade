@@ -1,5 +1,5 @@
 android {
-    buildToolsVersion "25.0.2"
+    buildToolsVersion '25.0.3'
     compileSdkVersion 25
     sourceSets {
         main {
@@ -129,7 +129,8 @@ idea {
 }
 
 dependencies {
-    compile 'com.google.android.gms:play-services:10.2.4'
+    compile project(':BaseGameUtils')
+    compile 'com.google.android.gms:play-services:11.0.4'
     compile 'com.jjoe64:graphview:4.2.1'
     compile 'org.jbundle.util.osgi.wrapped:org.jbundle.util.osgi.wrapped.org.apache.http.client:4.1.2'
     compile 'com.android.support.constraint:constraint-layout:1.0.0-beta4'

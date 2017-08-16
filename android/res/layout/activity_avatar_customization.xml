@@ -8,44 +8,67 @@
     android:padding="10dp"
     tools:context="ie.ul.postgrad.socialanxietyapp.screens.AvatarCustomizationActivity">
 
+
     <LinearLayout
         android:id="@+id/style_menu"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="10dp"
-        android:orientation="horizontal">
+        android:background="@drawable/google_sign_in_button"
+        android:gravity="center"
+        android:orientation="horizontal"
+        android:paddingEnd="15dp"
+        android:paddingStart="15dp">
 
         <Button
             android:id="@+id/hair_style_button"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="0.25"
-            android:background="@drawable/google_sign_in_button"
-            android:text="Hair Style" />
+            android:background="@color/transparent"
+            android:text="@string/hair_style" />
+
+        <View
+            android:layout_width="1dp"
+            android:layout_height="match_parent"
+            android:layout_margin="5dp"
+            android:background="@color/black" />
 
         <Button
             android:id="@+id/hair_color_button"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="0.25"
-            android:background="@drawable/google_sign_in_button"
-            android:text="Hair Color" />
+            android:background="@color/transparent"
+            android:text="@string/hair_color" />
+
+        <View
+            android:layout_width="1dp"
+            android:layout_height="match_parent"
+            android:layout_margin="5dp"
+            android:background="@color/black" />
 
         <Button
             android:id="@+id/skin_color_button"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="0.25"
-            android:background="@drawable/google_sign_in_button"
-            android:text="Skin Color" />
+            android:background="@color/transparent"
+            android:text="@string/skin_tone" />
+
+        <View
+            android:layout_width="1dp"
+            android:layout_height="match_parent"
+            android:layout_margin="5dp"
+            android:background="@color/black" />
 
         <Button
             android:id="@+id/shirt_color_button"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="0.25"
-            android:background="@drawable/google_sign_in_button"
-            android:text="Shirt Color" />
+            android:background="@color/transparent"
+            android:text="@string/shirt_color" />
 
     </LinearLayout>
 

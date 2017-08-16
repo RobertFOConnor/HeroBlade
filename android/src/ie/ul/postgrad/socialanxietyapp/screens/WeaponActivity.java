@@ -6,37 +6,32 @@ import android.os.Bundle;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
-import android.util.SparseIntArray;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ListView;
 import android.widget.TextView;
 
-import java.util.ArrayList;
-
 import ie.ul.postgrad.socialanxietyapp.R;
 import ie.ul.postgrad.socialanxietyapp.WeaponDetailActivity;
 import ie.ul.postgrad.socialanxietyapp.adapter.WeaponListAdapter;
 import ie.ul.postgrad.socialanxietyapp.game.GameManager;
 import ie.ul.postgrad.socialanxietyapp.game.Inventory;
-import ie.ul.postgrad.socialanxietyapp.game.item.Item;
-import ie.ul.postgrad.socialanxietyapp.game.item.ItemFactory;
 import ie.ul.postgrad.socialanxietyapp.game.item.WeaponItem;
 
 public class WeaponActivity extends AppCompatActivity implements View.OnClickListener {
 
     private static final int UNEQUIP_WEAPON_REQUEST = 1;
     private static final int EQUIP_WEAPON_REQUEST = 2;
-
     private ListView itemList;
     private AdapterView.OnItemClickListener itemClickListener;
     private WeaponListAdapter equippedWeaponAdapter, allWeaponAdapter;
     private TextView emptyMessage;
-    private int pos;
     private ActionBar actionBar;
 
     private enum VIEW {EQUIPPED_WEAPONS, ALL_WEAPONS}
+
+    private Inventory inventory;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -53,15 +48,7 @@ public class WeaponActivity extends AppCompatActivity implements View.OnClickLis
 
         itemList = (ListView) findViewById(R.id.item_list);
         emptyMessage = (TextView) findViewById(R.id.empty_message);
-
-        Inventory inventory = GameManager.getInstance().getInventory();
-        SparseIntArray itemArray = inventory.getItems();
-        ArrayList<Item> items = new ArrayList<>();
-
-        for (int i = 0; i < itemArray.size(); i++) {
-            items.add(ItemFactory.buildItem(this, itemArray.keyAt(i)));
-        }
-
+        inventory = GameManager.getInstance().getInventory();
         equippedWeaponAdapter = new WeaponListAdapter(this, inventory.getEquippedWeapons(), "");
         allWeaponAdapter = new WeaponListAdapter(this, inventory.getUnequippedWeapons(), "");
 
@@ -71,9 +58,7 @@ public class WeaponActivity extends AppCompatActivity implements View.OnClickLis
         itemClickListener = new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                pos = position;
                 WeaponItem clickedWeapon = (WeaponItem) itemList.getAdapter().getItem(position);
-
                 Intent intent = new Intent(getApplicationContext(), WeaponDetailActivity.class);
                 intent.putExtra(WeaponDetailActivity.WEAPON_UID, clickedWeapon.getUUID());
                 if (clickedWeapon.isEquipped()) {
@@ -83,8 +68,6 @@ public class WeaponActivity extends AppCompatActivity implements View.OnClickLis
                 }
             }
         };
-
-
         switchView(VIEW.EQUIPPED_WEAPONS);
     }
 
@@ -104,18 +87,18 @@ public class WeaponActivity extends AppCompatActivity implements View.OnClickLis
         if (v.equals(VIEW.EQUIPPED_WEAPONS)) {
             itemList.setAdapter(equippedWeaponAdapter);
             itemList.setOnItemClickListener(itemClickListener);
-            setEmptyText("You have no weapons equipped.");
+            setEmptyText(getString(R.string.no_weapon_equipped));
             if (actionBar != null) {
-                actionBar.setTitle("Equipped Weapons");
-                actionBar.setSubtitle("You can equip up to 6 weapons.");
+                actionBar.setTitle(getString(R.string.equipped_weapons));
+                actionBar.setSubtitle(getString(R.string.weapons_limit));
             }
         } else if (v.equals(VIEW.ALL_WEAPONS)) {
             itemList.setAdapter(allWeaponAdapter);
             itemList.setOnItemClickListener(itemClickListener);
-            setEmptyText("You have no weapons in storage.");
+            setEmptyText(getString(R.string.no_weapon_stored));
             if (actionBar != null) {
-                actionBar.setTitle("Stored Weapons");
-                actionBar.setSubtitle("These weapons are in storage.");
+                actionBar.setTitle(getString(R.string.stored_weapons));
+                actionBar.setSubtitle(getString(R.string.stored_weapons_subtitle));
             }
         }
     }
@@ -142,19 +125,12 @@ public class WeaponActivity extends AppCompatActivity implements View.OnClickLis
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         // Check request to which we're responding
-        if (requestCode == UNEQUIP_WEAPON_REQUEST) {
-            // Make sure the request was successful
-            if (resultCode == RESULT_OK) {
-                // The user picked a weapon.
-                WeaponItem weaponItem = GameManager.getInstance().getInventory().getWeapon(data.getStringExtra("result"));
+        if (resultCode == RESULT_OK) {
+            WeaponItem weaponItem = inventory.getWeapon(data.getStringExtra(getString(R.string.result)));
+            if (requestCode == UNEQUIP_WEAPON_REQUEST) {
                 equippedWeaponAdapter.remove(weaponItem);
                 allWeaponAdapter.add(weaponItem);
-            }
-        } else if (requestCode == EQUIP_WEAPON_REQUEST) {
-            // Make sure the request was successful
-            if (resultCode == RESULT_OK) {
-                // The user picked a weapon.
-                WeaponItem weaponItem = GameManager.getInstance().getInventory().getWeapon(data.getStringExtra("result"));
+            } else if (requestCode == EQUIP_WEAPON_REQUEST) {
                 allWeaponAdapter.remove(weaponItem);
                 equippedWeaponAdapter.add(weaponItem);
             }

@@ -12,8 +12,6 @@
         <file id="8" name="item_0064.png" width="200" height="200" pivot_x="0" pivot_y="1"/>
         <file id="9" name="eyes_shut.png" width="290" height="65" pivot_x="0" pivot_y="1"/>
         <file id="10" name="item_0068.png" width="200" height="200" pivot_x="0" pivot_y="1"/>
-        <file id="11" name="hair" width="280" height="173" pivot_x="0" pivot_y="1"/>
-        <file id="12" name="head3.png" width="240" height="197" pivot_x="0" pivot_y="1"/>
     </folder>
     <folder id="1" name="hair">
         <file id="0" name="hair/hair_dreads.png" width="294" height="340" pivot_x="0.5" pivot_y="1"/>

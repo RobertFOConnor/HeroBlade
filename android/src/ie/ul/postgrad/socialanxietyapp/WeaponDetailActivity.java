@@ -62,7 +62,7 @@ public class WeaponDetailActivity extends AppCompatActivity {
                         weapon.setEquipped(true);
                         updateWeaponsMenu();
                     } else {
-                        Toast.makeText(getApplicationContext(), "You must first unequip a weapon before this weapon can be equipped.", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(getApplicationContext(), getString(R.string.err_unequip_weapon), Toast.LENGTH_SHORT).show();
                     }
                 }
 
@@ -73,16 +73,16 @@ public class WeaponDetailActivity extends AppCompatActivity {
     private void updateWeaponsMenu() {
         GameManager.getInstance().updateWeaponInDatabase(weapon.getUUID(), weapon.getId(), weapon.getCurrHealth(), weapon.isEquipped());
         Intent returnIntent = new Intent();
-        returnIntent.putExtra("result", weapon.getUUID());
+        returnIntent.putExtra(getString(R.string.result), weapon.getUUID());
         setResult(Activity.RESULT_OK, returnIntent);
         finish();
     }
 
     private void setEquipButtonText() {
         if (weapon.isEquipped()) {
-            equipButton.setText("Unequip Weapon");
+            equipButton.setText(getString(R.string.unequip_weapon));
         } else {
-            equipButton.setText("Equip Weapon");
+            equipButton.setText(getString(R.string.equip_weapon));
         }
     }
 

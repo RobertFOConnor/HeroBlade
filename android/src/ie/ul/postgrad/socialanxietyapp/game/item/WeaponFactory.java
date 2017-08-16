@@ -14,6 +14,8 @@ import ie.ul.postgrad.socialanxietyapp.R;
 
 public class WeaponFactory {
 
+    public static final int SWORD_COUNT = 57;
+
     private static final int NAME = 0;
     private static final int DESCRIPTION = 1;
     private static final int TYPE = 2;
@@ -39,7 +41,6 @@ public class WeaponFactory {
             int damage = Integer.parseInt(itemValues.getString(DAMAGE));
             int health = Integer.parseInt(itemValues.getString(HEALTH));
             int rarity = Integer.parseInt(itemValues.getString(RARITY));
-            //int imageId = context.getResources().getIdentifier("item_" + String.format("%04d", id), "drawable", context.getPackageName());
 
             SparseIntArray ingredients = new SparseIntArray();
 
@@ -59,7 +60,7 @@ public class WeaponFactory {
 
             return new WeaponItem(id, name, description, type, 0, worth, damage, health, rarity, ingredients);
         } catch (Exception e) {
-            return new WeaponItem(2, "Fire Sword", "A sword coated in a bright flame.", "FIRE", 0, 300, 5, 12, 2, new SparseIntArray());
+            return new WeaponItem(2, "Fire Sword", "A sword coated in a bright flame.", "FIRE", 0, 300, 5, 12, 2, new SparseIntArray()); //return default weapon.
         }
     }
 

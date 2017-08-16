@@ -65,11 +65,16 @@ public class ConversationScreen implements Screen {
     }
 
     //For now, toggle characters during convo.
-    public void updateConvo(int charId) {
+    public void updateConvo(int charId, String type) {
         if (charId == 0) {
             currPlayer = player;
         } else {
             currPlayer = npcPlayer;
+        }
+
+        if(type.equals("SMITH")) {
+            bg = new Texture("blacksmith.png");
+
         }
     }
 
@@ -106,7 +111,7 @@ public class ConversationScreen implements Screen {
         Player player = new Player(entity);
         player.setScale((HEIGHT / 1920f) * 2f);
         player.setAnimation("idle");
-        player.setPosition(WIDTH / 2, HEIGHT / 2 - 150);
+        player.setPosition(WIDTH / 2, HEIGHT / 3);
         return player;
     }
 

@@ -22,14 +22,8 @@ import ie.ul.postgrad.socialanxietyapp.game.item.Item;
 
 public class InventoryListAdapter extends ArrayAdapter<Item> {
 
-    private ArrayList<Item> inventoryItems;
-    private Context context;
-
-
     public InventoryListAdapter(Context context, ArrayList<Item> items) {
         super(context, R.layout.fragment_inventory_item, items);
-        inventoryItems = items;
-        this.context = context;
     }
 
     @Override
@@ -45,6 +39,7 @@ public class InventoryListAdapter extends ArrayAdapter<Item> {
             convertView = inflater.inflate(R.layout.fragment_inventory_item, parent, false);
             viewHolder.nameText = (TextView) convertView.findViewById(R.id.item_title);
             viewHolder.quantityText = (TextView) convertView.findViewById(R.id.item_count);
+            viewHolder.costText = (TextView) convertView.findViewById(R.id.item_cost);
             viewHolder.image = (ImageView) convertView.findViewById(R.id.item_image);
             convertView.setTag(viewHolder);
         } else {
@@ -52,10 +47,12 @@ public class InventoryListAdapter extends ArrayAdapter<Item> {
         }
 
         String name = item.getName();
-        String quantity = "x" + GameManager.getInstance().getInventory().getItems().get(item.getId());
+        String quantity = getContext().getString(R.string.quantity_string, GameManager.getInstance().getInventory().getItems().get(item.getId()));
+        String cost = "$" + item.getWorth();
 
         viewHolder.nameText.setText(name);
         viewHolder.quantityText.setText(quantity);
+        viewHolder.costText.setText(cost);
         viewHolder.image.setImageResource(item.getImageID());
         // Return the completed view to render on screen
         return convertView;
@@ -65,6 +62,7 @@ public class InventoryListAdapter extends ArrayAdapter<Item> {
     private static class ViewHolder {
         TextView nameText;
         TextView quantityText;
+        TextView costText;
         ImageView image;
     }
 }

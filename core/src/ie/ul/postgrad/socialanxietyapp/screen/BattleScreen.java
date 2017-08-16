@@ -2,7 +2,6 @@ package ie.ul.postgrad.socialanxietyapp.screen;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.files.FileHandle;
-import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
@@ -32,12 +31,11 @@ public class BattleScreen implements Screen {
     private Drawer drawer;
     private Player player, npcPlayer;
     private SpriteBatch sb;
-    private Avatar avatar;
-    private LibGdxInterface libGdxInterface;
+    private Avatar avatar, enemyAvatar;
 
     public BattleScreen(LibGdxInterface libGdxInterface, SpriteBatch sb) {
-        this.libGdxInterface = libGdxInterface;
         avatar = libGdxInterface.getAvatar();
+        enemyAvatar = new Avatar();
         this.sb = sb;
     }
 
@@ -52,10 +50,10 @@ public class BattleScreen implements Screen {
 
         //initialize spriter characters.
         player = initCharacter(data.getEntity(0));
-        player.setPosition(WIDTH / 4, HEIGHT/3);
-        npcPlayer = initCharacter(data.getEntity(libGdxInterface.getNPCId()));
+        player.setPosition(WIDTH / 4, HEIGHT / 3);
+        npcPlayer = initCharacter(data.getEntity(0));
         npcPlayer.flip(true, false); //flip NPC sprite
-        npcPlayer.setPosition(WIDTH - (WIDTH / 4), HEIGHT/3);
+        npcPlayer.setPosition(WIDTH - (WIDTH / 4), HEIGHT / 3);
 
         Loader<Sprite> loader = new LibGdxLoader(data);
         loader.load(handle.file()); //Load all sprites
@@ -66,6 +64,7 @@ public class BattleScreen implements Screen {
         player.update();
         npcPlayer.update();
 
+        npcPlayer.setObject("hair", 1f, 1, enemyAvatar.getHairtype());
         player.setObject("hair", 1f, 1, avatar.getHairtype()); //set correct hair style for player avatar
     }
 
@@ -76,8 +75,7 @@ public class BattleScreen implements Screen {
         drawer.setColor(1, 1, 1, 1);
         sb.draw(bg, 0, 0, WIDTH, HEIGHT);
         avatar.drawAvatar(drawer, player);
-
-        drawer.draw(npcPlayer);
+        enemyAvatar.drawAvatar(drawer, npcPlayer);
         sb.end();
     }
 

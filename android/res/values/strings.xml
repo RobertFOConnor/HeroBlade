@@ -25,22 +25,183 @@
 
     <string name="create_account_success">Account created successfully!</string>
 
-    <string name="authentication_failed">Authentication failed!</string>
-    <string name="login_success">Log in successful!</string>
 
+    <string name="create_avatar">Create your avatar</string>
+    <string name="create_avatar_instructions">It\'s time to create your avatar.\nUse the settings on the top of the screen to\nmake your avatar look like you.</string>
+
+    <string name="authentication_failed">Authentication failed!</string>
+    <string name="login_success">Login successful!</string>
+    <string name="login_failed">Login failed. Please make sure you are connected to the internet and that all your information is correct.</string>
+    <string name="enter_email">Enter your registered email.</string>
     <string name="title_activity_maps">Map</string>
+
 
     <string name="play_services_failed_connection">Play services connection failed: ConnectionResult.getErrorCode() = </string>
     <string name="play_services_suspended_connection">Play services connection suspended</string>
     <string name="title_activity_settings">Settings</string>
 
+    <string name="craft_success">You crafted a new %1$s</string>
+    <string name="craft_fail">You can\'t craft a %1$s</string>
+    <string name="quantity_string">x%1$d</string>
+    <string name="level">Level: %1$d</string>
+    <string name="name_with_level">%1$s LVL: %2$d</string>
+    <string name="requires">Requires: </string>
+    <string name="enemies_left">Enemies Left: %1$d</string>
+    <string name="enemy_appeared">A wild %1$s has appeared.</string>
+    <string name="attack_missed">%1$s tried to attack but missed!</string>
+    <string name="pass_out">%1$s has lost the battle. %1$s has passed out.</string>
+    <string name="out_of_weapons">%1$s is out of weapons. %1$s has lost.</string>
+    <string name="chest_unlocked">%1$s Unlocked!</string>
+    <string name="chest_unlocked_distance">"Unlocks in: %1$skm</string>
+    <string name="notify_chest">Your %1$s has been unlocked!</string>
+    <string name="notify_chest_body">You walked %1$dkm. The %2$s has been opened.</string>
 
+
+    <string name="name_with_damage">%1$s\'s %2$s did %3$d damage!</string>
+    <string name="name_with_crit_damage">%1$s\'s %2$s did %3$d critical damage!</string>
+    <string name="broken_weapon"> %1$s\'s %2$s is broken!</string>
+    <string name="broke_weapon">%1$s is broken and cannot be used.</string>
+
+    <string name="grass_type">GRASS</string>
+    <string name="water_type">WATER</string>
+    <string name="fire_type">FIRE</string>
+
+    <string name="web_service_url">http://192.168.0.87:8080/AnxietyWebApp/servlet/</string>
+
+    <string name="crafting">Crafting</string>
+    <string name="inventory">Inventory</string>
+    <string name="inventory_subtitle">"Click on a food item to consume."</string>
     <string name="items">Items</string>
     <string name="tools">Tools</string>
+    <string name="settings">Settings</string>
+    <string name="choose_item">Choose an item</string>
 
     <string name="empty_inventory">Your inventory is empty.</string>
     <string name="empty_weapons">You have no weapons.</string>
     <string name="choose_weapon">Choose your weapon</string>
+    <string name="weapon_index">Weapons found</string>
+    <string name="null_location">Current location is null. Using defaults.</string>
+    <string name="but_item">Choose an item to purchase</string>
+    <string name="empty_list">There are no items in this list.</string>
+
+    <string name="stored_weapons">Stored Weapons</string>
+    <string name="equipped_weapons">Equipped Weapons</string>
+    <string name="equip_weapon">Equip Weapon</string>
+    <string name="unequip_weapon">Unequip Weapon</string>
+    <string name="err_unequip_weapon">You must first unequip a weapon before this weapon can be equipped.</string>
+    <string name="no_weapon_equipped">You have no weapons equipped.</string>
+    <string name="no_weapon_stored">You have no weapons in storage.</string>
+    <string name="weapons_limit">You can equip up to 6 weapons.</string>
+    <string name="stored_weapons_subtitle">These weapons are in storage.</string>
+    <string name="result">result</string>
+    <string name="used_item">%1$s used %2$s.</string>
+    <string name="weapon_change">%1$s changed weapon to %2$s.</string>
+    <string name="health_amount">HP: %1$d/%2$d</string>
+
+    <string name="anxiety_question_1">I feel more nervous and anxious than usual.</string>
+    <string name="anxiety_question_2">I feel afraid for no reason at all.</string>
+    <string name="anxiety_question_3">I get upset easily or feel panicky.</string>
+    <string name="anxiety_question_4">I feel like I’m falling apart and going to pieces.</string>
+    <string name="anxiety_question_5">I feel that everything is all right and nothing bad will happen.</string>
+    <string name="anxiety_question_6">My arms and legs shake and tremble.</string>
+    <string name="anxiety_question_7">I am bothered by headaches neck and back pain.</string>
+    <string name="anxiety_question_8">I feel weak and get tired easily.</string>
+    <string name="anxiety_question_9">I feel calm and can sit still easily.</string>
+    <string name="anxiety_question_10"> I can feel my heart beating fast.</string>
+    <string name="anxiety_question_11"> I am bothered by dizzy spells.</string>
+    <string name="anxiety_question_12"> I have fainting spells or feel like it.</string>
+    <string name="anxiety_question_13"> I can breathe in and out easily.</string>
+    <string name="anxiety_question_14"> I get numbness and tingling in my fingers and toes.</string>
+    <string name="anxiety_question_15"> I am bothered by stomach aches or indigestion.</string>
+    <string name="anxiety_question_16"> I have to empty my bladder often.</string>
+    <string name="anxiety_question_17"> My hands are usually dry and warm.</string>
+    <string name="anxiety_question_18"> My face gets hot and blushes.</string>
+    <string name="anxiety_question_19"> I fall asleep easily and get a good night’s rest.</string>
+    <string name="anxiety_question_20"> I have nightmares.</string>
+
+    <string-array name="anxiety_questions">
+        <item>@string/anxiety_question_1</item>
+        <item>@string/anxiety_question_2</item>
+        <item>@string/anxiety_question_3</item>
+        <item>@string/anxiety_question_4</item>
+        <item>@string/anxiety_question_5</item>
+        <item>@string/anxiety_question_6</item>
+        <item>@string/anxiety_question_7</item>
+        <item>@string/anxiety_question_8</item>
+        <item>@string/anxiety_question_9</item>
+        <item>@string/anxiety_question_10</item>
+        <item>@string/anxiety_question_11</item>
+        <item>@string/anxiety_question_12</item>
+        <item>@string/anxiety_question_13</item>
+        <item>@string/anxiety_question_14</item>
+        <item>@string/anxiety_question_15</item>
+        <item>@string/anxiety_question_16</item>
+        <item>@string/anxiety_question_17</item>
+        <item>@string/anxiety_question_18</item>
+        <item>@string/anxiety_question_19</item>
+        <item>@string/anxiety_question_20</item>
+    </string-array>
+
+    <string name="question_part_2">Do you ever get that?</string>
+
+    <string name="hair_style">Hair Style</string>
+    <string name="hair_color">Hair Colour</string>
+    <string name="skin_tone">Skin Tone</string>
+    <string name="shirt_color">Shirt Colour</string>
+
+    <string name="no_battle">You are not prepared for battle.</string>
+    <string name="already_visited">Already visited. Come back later.</string>
+    <string name="too_far_away">You are too far away. Try walking closer.</string>
+
+    <string name="sign_in_other_error">Error signing in.</string>
+
+    <string name="what_is_your_name">Your journey is about to begin.\nWhat is your name?</string>
+    <string name="health">Health</string>
+
+    <string name="time_to_walk">Time to walk!</string>
+    <string name="move_avatar">Move in the real world to move your avatar.</string>
+
+    <string name="no_google_play_achievements">Move in the real world to move your avatar.</string>
+
+    <string name="attack">Attack</string>
+    <string name="use_item">Use\nItem</string>
+    <string name="change_weapon">Change\nWeapon</string>
+    <string name="run">Run</string>
+
+    <string name="talk">Talk</string>
+    <string name="buy_items">Buy Items</string>
+    <string name="sell_items">Sell Items</string>
+    <string name="buy_swords">Buy Swords</string>
+    <string name="sell_swords">Sell Swords</string>
+    <string name="leave">Leave</string>
+
+    <string name="go_back">Back</string>
+    <string name="ans_1">A little of the time.</string>
+    <string name="ans_2">Some of the time.</string>
+    <string name="ans_3">Good part of the time.</string>
+    <string name="ans_4">Most of the time.</string>
+
+
+    <string name="not_enough_money">You don\'t have enough money to buy that.</string>
+
+    <string name="village_welcome">Welcome to our village! Your health has been restored.  (+%1$dXP)</string>
+    <string name="village_goodbye">Goodbye traveller, stay safe.</string>
+    <string name="village_reaction">You\'re a good listener, thanks for talking to me!  (+%1$dXP)</string>
+    <string name="village_done_talking">We talked already, come back later.</string>
+    <string name="villager">Villager</string>
+
+    <string name="blacksmith_welcome">Welcome to my shop. Your weapons have been repaired.  (+%1$dXP)</string>
+    <string name="blacksmith_goodbye">Use your swords wisely. Come back soon.</string>
+    <string name="blacksmith">Blacksmith</string>
+
+    <string name="chest_unlock_title">Your treasure chest has been unlocked!</string>
+    <string name="scroll_for_rewards">Scroll down to see rewards!</string>
+    <string name="active_chests">Active Chests</string>
+    <string name="active_chests_subtitle">Chests contain treasures which can be unlocked by walking certain distances.</string>
+    <string name="level_up_title">Congratulations! You reached level</string>
+    <string name="nearby_locations">Nearby Locations:</string>
+
+    <string name="alphabet_half">abcdefghijklm</string>
 
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>

@@ -18,7 +18,6 @@ public class WeaponItem extends Item {
     private int maxHealth; //How many hits the weapon can last.
     private int currHealth; //How much health does the weapon have left.
     private int rarity;
-    private int worth;
     private SparseIntArray ingredients;
     private boolean equipped = false;
 
@@ -27,9 +26,8 @@ public class WeaponItem extends Item {
     public static final String FIRE_TYPE = "FIRE";
 
     protected WeaponItem(int id, String name, String description, String type, int imageID, int worth, int damage, int maxHealth, int rarity, SparseIntArray ingredients) {
-        super(id, name, description, imageID, ingredients);
+        super(id, name, description, worth, imageID, ingredients);
         this.type = type;
-        this.worth = worth;
         this.damage = damage;
         this.maxHealth = maxHealth;
         this.currHealth = this.maxHealth;
@@ -71,10 +69,6 @@ public class WeaponItem extends Item {
 
     public int getRarity() {
         return rarity;
-    }
-
-    public int getWorth() {
-        return worth;
     }
 
     public boolean isEquipped() {

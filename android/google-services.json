@@ -1,35 +1,33 @@
 {
   "project_info": {
-    "project_number": "886041782213",
-    "firebase_url": "https://socialanxietyapp.firebaseio.com",
-    "project_id": "socialanxietyapp",
-    "storage_bucket": "socialanxietyapp.appspot.com"
+    "project_number": "671511226110",
+    "project_id": "journey-of-blades-50107171"
   },
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:886041782213:android:a0584e29663be314",
+        "mobilesdk_app_id": "1:671511226110:android:a0584e29663be314",
         "android_client_info": {
           "package_name": "ie.ul.postgrad.socialanxietyapp"
         }
       },
       "oauth_client": [
         {
-          "client_id": "886041782213-g6jth7c9a7k5i0bshhml7oeqjregcmqc.apps.googleusercontent.com",
+          "client_id": "671511226110-58irt9a32acgske9ge1qlunur8nts2vh.apps.googleusercontent.com",
+          "client_type": 3
+        },
+        {
+          "client_id": "671511226110-ujheq87o7oej638g01506hdli6eks9q5.apps.googleusercontent.com",
           "client_type": 1,
           "android_info": {
             "package_name": "ie.ul.postgrad.socialanxietyapp",
-            "certificate_hash": "ed325feee854f2930b3872e94a8079de91109fb0"
+            "certificate_hash": "f5be54671a19462e63f8e70ec568fa79471b8e03"
           }
-        },
-        {
-          "client_id": "886041782213-ch2c9rtjqmgp9an65hcragcjr77596p1.apps.googleusercontent.com",
-          "client_type": 3
         }
       ],
       "api_key": [
         {
-          "current_key": "AIzaSyB1GyrNBPEFC2vCatQp1HIaBrI0PDY7Mko"
+          "current_key": "AIzaSyDUO0JYUKNnKz5NKuwYE2U_CKclojpo0aE"
         }
       ],
       "services": {
@@ -37,16 +35,11 @@
           "status": 1
         },
         "appinvite_service": {
-          "status": 2,
-          "other_platform_oauth_client": [
-            {
-              "client_id": "886041782213-ch2c9rtjqmgp9an65hcragcjr77596p1.apps.googleusercontent.com",
-              "client_type": 3
-            }
-          ]
+          "status": 1,
+          "other_platform_oauth_client": []
         },
         "ads_service": {
-          "status": 2
+          "status": 1
         }
       }
     }

@@ -5,6 +5,8 @@ import android.content.Intent;
 import android.os.AsyncTask;
 import android.widget.Toast;
 
+import com.google.android.gms.maps.model.LatLng;
+
 import org.apache.http.HttpResponse;
 import org.apache.http.NameValuePair;
 import org.apache.http.client.HttpClient;
@@ -17,16 +19,17 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
+import ie.ul.postgrad.socialanxietyapp.App;
 import ie.ul.postgrad.socialanxietyapp.Avatar;
+import ie.ul.postgrad.socialanxietyapp.R;
 import ie.ul.postgrad.socialanxietyapp.database.DBHelper;
 import ie.ul.postgrad.socialanxietyapp.database.WebDBHelper;
 import ie.ul.postgrad.socialanxietyapp.game.item.ChestItem;
 import ie.ul.postgrad.socialanxietyapp.game.item.FoodItem;
-import ie.ul.postgrad.socialanxietyapp.game.item.Item;
 import ie.ul.postgrad.socialanxietyapp.game.item.ItemFactory;
+import ie.ul.postgrad.socialanxietyapp.game.item.MarkerFactory;
 import ie.ul.postgrad.socialanxietyapp.game.item.WeaponFactory;
 import ie.ul.postgrad.socialanxietyapp.game.item.WeaponItem;
-import ie.ul.postgrad.socialanxietyapp.game.quest.Quest;
 import ie.ul.postgrad.socialanxietyapp.screens.LevelUpActivity;
 
 /**
@@ -38,135 +41,133 @@ import ie.ul.postgrad.socialanxietyapp.screens.LevelUpActivity;
 
 public class GameManager {
 
-    //Game objects
-    private Player player;
-    private Inventory inventory;
-    private ArrayList<ConsumedLocation> visitedLocations;
-
     //SQLLite objects
-    private static DBHelper databaseHelper;
-
-    private Quest activeQuest;
-
+    private static DBHelper dbHelper;
     private static final GameManager ourInstance = new GameManager();
+
+    //Game stats (XP)
+    public static final int playerStartHP = 100;
+    public static final int villageXP = 50;
+    public static final int blacksmithXP = 50;
+    public static final int villagerTalkXP = 25;
+    public static final boolean TESTING = true;
+
+    private static final boolean REMOTE_DATABASE_ENABLED = true;
+    private static final String REMOTE_PLAYER_INSERT = "remote_player";
+    private static final String REMOTE_ITEM_INSERT = "remote_item";
+    private static final String REMOTE_WEAPON_INSERT = "remote_weapon";
 
     public static GameManager getInstance() {
         return ourInstance;
     }
 
-    private GameManager() {
-        player = new Player();
-        inventory = new Inventory();
-        visitedLocations = new ArrayList<>();
-    }
-
-    public void startGame(Context context, String id, String name, String email, String password) {
+    public boolean initDatabaseHelper(Context context, String id, String name, String email, String password) { //returns true if user is already in database
         //Initialize database helper
-        databaseHelper = new DBHelper(context);
+        initDatabaseHelper(context);
 
-        if (!databaseHelper.userExists()) {
-            player = new Player(id, name, 0, 1, 0, 150, 150);
-            inventory = new Inventory();
-            databaseHelper.insertUser(id, name, email, password);
-            databaseHelper.insertPlayer(player);
-            databaseHelper.insertAvatar(new Avatar(0, 0, 0, 0));
-            awardChest(context);
-        } else {
-            player = databaseHelper.getPlayer();
-            inventory = new Inventory(databaseHelper.getItems(), databaseHelper.getWeapons(), databaseHelper.getChests(), context);
+        if (!dbHelper.userExists(id)) { //If player doesn't exist, create a new one.
+            dbHelper.insertUser(id, name, email, password);
+            dbHelper.insertPlayer(new Player(id, name, 0, 1, 0, playerStartHP, playerStartHP));
+            dbHelper.insertAvatar(new Avatar(1, 1, 1, 1));
+            dbHelper.insertStats(id);
+            giveWeapon(context, WeaponFactory.buildWeapon(context, 43));
+            printTables();
+            return false;
         }
+        printTables();
+        return true;
     }
 
-    public void startGame(Context context) {
-        databaseHelper = new DBHelper(context);
+    public DBHelper initDatabaseHelper(Context context) {
+        if (dbHelper == null) {
+            dbHelper = new DBHelper(context);
+        }
+        return dbHelper;
     }
 
     public Player getPlayer() {
-        return databaseHelper.getPlayer();
+        return dbHelper.getPlayer();
     }
 
     public Avatar getAvatar() {
-        return databaseHelper.getAvatar(player.getId());
+        return dbHelper.getAvatar(getPlayer().getId());
     }
 
     public Inventory getInventory() {
-        return inventory;
+        return new Inventory(dbHelper.getItems(), dbHelper.getWeapons(), dbHelper.getChests());
     }
 
     public ArrayList<ChestItem> getChests() {
-        return databaseHelper.getChests();
+        return dbHelper.getChests();
     }
 
-    public void updateItemInDatabase(int itemId) {
-        int quantity = getInventory().getItems().get(itemId);
+    public void giveItem(int itemId, int amount) {
+        int quantity = getInventory().getItems().get(itemId) + amount;
+        String playerId = getPlayer().getId();
 
-        if (databaseHelper.getInventoryData(itemId).moveToFirst()) {
+        if (dbHelper.getInventoryData(itemId).moveToFirst()) {
             if (quantity > 0) {
-                databaseHelper.updateItem(player.getId(), itemId, quantity);
+                dbHelper.updateItem(playerId, itemId, quantity);
             } else {
-                databaseHelper.deleteItem(itemId);
+                dbHelper.deleteItem(itemId);
             }
         } else {
-            databaseHelper.insertItem(player.getId(), itemId, quantity);
+            dbHelper.insertItem(playerId, itemId, quantity);
+        }
+
+        if (REMOTE_DATABASE_ENABLED) {
+            new addItemTask().execute(REMOTE_ITEM_INSERT, playerId, Integer.toString(itemId), Integer.toString(getInventory().getItems().get(itemId)));
         }
     }
 
-    public void updateWeaponInDatabase(String UUID, int itemId, int currHealth, boolean equipped) {
+    public void updateWeaponInDatabase(String UUID, int weaponId, int currHealth, boolean equipped) {
+        String playerId = getPlayer().getId();
 
-        if (databaseHelper.getWeaponsData(UUID).moveToFirst()) {
-            databaseHelper.updateWeapon(player.getId(), UUID, itemId, currHealth, equipped);
+        if (dbHelper.getWeaponsData(UUID).moveToFirst()) {
+            dbHelper.updateWeapon(playerId, UUID, weaponId, currHealth, equipped);
         } else {
-            databaseHelper.insertWeapon(player.getId(), UUID, itemId, currHealth, equipped);
+            dbHelper.insertWeapon(playerId, UUID, weaponId, currHealth, equipped);
+        }
+
+        int equip = 0;
+        if (equipped) {
+            equip = 1;
+        }
+
+        if (REMOTE_DATABASE_ENABLED) {
+            new addItemTask().execute(REMOTE_WEAPON_INSERT, playerId, Integer.toString(weaponId), Integer.toString(currHealth), UUID, Integer.toString(equip));
         }
     }
 
     public void printTables() {
-        databaseHelper.printAllTables();
+        dbHelper.printAllTables();
     }
 
     public void updatePlayerInDatabase(Player player) {
-        databaseHelper.updatePlayer(player);
+        dbHelper.updatePlayer(player);
     }
 
     public void closeDatabase() {
-        databaseHelper.close();
+        dbHelper.close();
     }
 
-    public static DBHelper getDatabaseHelper() {
-        return databaseHelper;
+    public static DBHelper getDbHelper() {
+        return dbHelper;
     }
 
-    public void givePlayer(Context context, int itemId, int quantity) {
-        Item item = ItemFactory.buildItem(context, itemId);
-        if (item instanceof WeaponItem) {
-            WeaponItem weaponItem = (WeaponItem) item;
-            weaponItem.setUUID(UUID.randomUUID().toString());
-            boolean equipped = false;
-            if (inventory.getEquippedWeapons().size() < 6) {
-                equipped = true;
-            }
-            weaponItem.setEquipped(equipped);
-            inventory.getWeapons().add(weaponItem);
-            updateWeaponInDatabase(weaponItem.getUUID(), weaponItem.getId(), weaponItem.getCurrHealth(), equipped);
-        } else {
-            getInventory().addItem(itemId, quantity);
-            updateItemInDatabase(itemId);
-            //new addItemTask().execute(player.getId(), Integer.toString(itemId), Integer.toString(getInventory().getItems().get(itemId)));
+    public void giveWeapon(Context context, WeaponItem weaponItem) {
+        weaponItem.setUUID(UUID.randomUUID().toString());
+        boolean equipped = false;
+        if (getInventory().getEquippedWeapons().size() < 6) {
+            equipped = true;
         }
-
-        //Toast.makeText(context, "You received " + quantity + " " + ItemFactory.buildItem(context, itemId).getName(), Toast.LENGTH_SHORT).show();
-    }
-
-    public Quest getActiveQuest() {
-        return activeQuest;
-    }
-
-    public void setActiveQuest(Quest activeQuest) {
-        this.activeQuest = activeQuest;
+        updateWeaponInDatabase(weaponItem.getUUID(), weaponItem.getId(), weaponItem.getCurrHealth(), equipped);
+        AchievementManager.checkSwordAchievements(context);
     }
 
     public void awardXP(Context context, int xp) {
-        if (player.setXp(player.getXp() + xp)) {
+        Player player = getPlayer();
+        if (player.setXp(player.getXp() + xp)) { //Level up player.
             awardChest(context);
 
             Intent intent = new Intent(context, LevelUpActivity.class);
@@ -175,12 +176,21 @@ public class GameManager {
         updatePlayerInDatabase(player);
     }
 
+    public void answerSurveyQuestion(int question, int answer) {
+        dbHelper.insertSurveyAnswer(getPlayer().getId(), question, answer);
+    }
+
+    public int getSurveyQuestion() {
+        return dbHelper.getSurveyData(getPlayer().getId()).getCount();
+    }
+
     public void awardMoney(int money) {
-        player.setMoney(player.getMoney()+ money);
+        Player player = getPlayer();
+        player.setMoney(player.getMoney() + money);
         updatePlayerInDatabase(player);
     }
 
-    public void awardChest(Context context) {
+    private void awardChest(Context context) {
         int random = (int) (Math.random() * 10);
         int chestId = ChestItem.NORMAL_CHEST; // normal chest default.
 
@@ -191,45 +201,62 @@ public class GameManager {
         }
         ChestItem chest = (ChestItem) ItemFactory.buildItem(context, chestId);
         chest.setUID(UUID.randomUUID().toString());
-        inventory.getChests().add(chest);
-        databaseHelper.insertChest(player.getId(), chest.getUID(), chest.getId(), chest.getCurrDistance());
+        dbHelper.insertChest(getPlayer().getId(), chest.getUID(), chest.getId(), chest.getCurrDistance());
+    }
+
+    public int getVillageCount() {
+        return countPMarkerTypes(MarkerFactory.ID_VILLAGE);
+    }
+
+    public int getBlacksmithCount() {
+        return countPMarkerTypes(MarkerFactory.ID_BLACKSMITH);
+    }
+
+    public int countPMarkerTypes(int type) {
+        ArrayList<ConsumedLocation> locations = getLocations();
+        int typeCount = 0;
+        for (ConsumedLocation l : locations) {
+            if (l.getType() == type) {
+                typeCount++;
+            }
+        }
+        return typeCount;
     }
 
     public void updateChest(ChestItem chest) {
-        databaseHelper.updateChest(player.getId(), chest.getUID(), chest.getId(), chest.getCurrDistance());
+        dbHelper.updateChest(getPlayer().getId(), chest.getUID(), chest.getId(), chest.getCurrDistance());
     }
 
     public void removeChest() {
         ChestItem chest = getChests().get(0);
-        databaseHelper.removeChest(chest.getUID());
+        dbHelper.removeChest(chest.getUID());
     }
 
-    private void openChest(int chestId) {
-        if (chestId == ChestItem.NORMAL_CHEST) {
+    public ArrayList<Integer> getFoundWeapons() {
+        ArrayList<Integer> foundWeapons = new ArrayList<>();
+        ArrayList<WeaponItem> weapons = dbHelper.getWeapons();
 
+        for (WeaponItem weaponItem : weapons) {
+            if (!foundWeapons.contains(weaponItem.getId())) {
+                foundWeapons.add(weaponItem.getId());
+            }
         }
+        return foundWeapons;
     }
 
     public WeaponItem unlockWeapon(Context context, int rarity) {
         WeaponItem weaponReward = WeaponFactory.getRandomWeaponByRarity(context, rarity);
-        weaponReward.setUUID(UUID.randomUUID().toString());
-        boolean equipped = false;
-        if (inventory.getEquippedWeapons().size() < 6) {
-            equipped = true;
-        }
-        weaponReward.setEquipped(equipped);
-        inventory.getWeapons().add(weaponReward);
-        databaseHelper.insertWeapon(player.getId(), weaponReward.getUUID(), weaponReward.getId(), weaponReward.getCurrHealth(), weaponReward.isEquipped());
+        giveWeapon(context, weaponReward);
         return weaponReward;
     }
 
     public void consumeFoodItem(Context context, int id) {
+        Player player = getPlayer();
 
         if (player.getCurrHealth() < player.getMaxHealth()) {
             FoodItem food = ((FoodItem) ItemFactory.buildItem(context, id));
             player.setCurrHealth(player.getCurrHealth() + food.getEnergy());
-            inventory.removeItem(id, 1);
-            updateItemInDatabase(id);
+            giveItem(id, -1);
             updatePlayerInDatabase(player);
             Toast.makeText(context, player.getName() + " ate a " + food.getName() + " and restored +" + food.getEnergy() + " health.", Toast.LENGTH_SHORT).show();
         } else {
@@ -238,16 +265,16 @@ public class GameManager {
     }
 
     public void removeWeapon(String UUID) {
-        WeaponItem weaponItem = inventory.getWeapon(UUID);
-        inventory.getWeapons().remove(weaponItem);
-        databaseHelper.deleteWeapon(UUID);
+        dbHelper.deleteWeapon(UUID);
+        if (REMOTE_DATABASE_ENABLED) {
+            new addItemTask().execute(REMOTE_WEAPON_INSERT, getPlayer().getId(), "-1", "-1", UUID, "0");
+        }
     }
 
     private class addItemTask extends AsyncTask<String, Integer, String> {
 
         @Override
         protected String doInBackground(String... params) {
-
             return PostData(params);
         }
 
@@ -257,19 +284,36 @@ public class GameManager {
         }
     }
 
-
-    private String PostData(String[] valuse) {
+    private String PostData(String[] values) {
+        final int INSERT_TYPE = 0;//String specifying the type of remote call.
+        final int PLAYER_ID = 1;
+        final int ITEM_ID = 2;
+        final int QUANTITY = 3;
+        final int UID = 4;//For weapons.
+        final int EQUIPPED = 5;//For weapons.
         String response = "";
+
+        //android.os.Debug.waitForDebugger();
         try {
             HttpClient httpClient = new DefaultHttpClient();
-            HttpPost httpPost = new HttpPost(WebDBHelper.URL + "AddItem");
             List<NameValuePair> list = new ArrayList<>();
-            list.add(new BasicNameValuePair("player_id", valuse[0]));
-            list.add(new BasicNameValuePair("item_id", valuse[1]));
-            list.add(new BasicNameValuePair("quantity", valuse[2]));
+            String servletName = WebDBHelper.URL;
+            String type = values[INSERT_TYPE];
+
+            if (type.equals(REMOTE_ITEM_INSERT)) {
+                servletName += "AddItem";
+            } else if (type.equals(REMOTE_WEAPON_INSERT)) {
+                servletName += "AddWeapon";
+                list.add(new BasicNameValuePair("uid", values[UID]));
+                list.add(new BasicNameValuePair("equipped", values[EQUIPPED]));
+            }
+            list.add(new BasicNameValuePair("player_id", values[PLAYER_ID]));
+            list.add(new BasicNameValuePair("item_id", values[ITEM_ID]));
+            list.add(new BasicNameValuePair("quantity", values[QUANTITY]));
+
+            HttpPost httpPost = new HttpPost(servletName);
             httpPost.setEntity(new UrlEncodedFormEntity(list));
             HttpResponse httpResponse = httpClient.execute(httpPost);
-
             httpResponse.getEntity();
             response = WebDBHelper.readResponse(httpResponse);
         } catch (Exception e) {
@@ -278,4 +322,36 @@ public class GameManager {
         return response;
     }
 
+    public void addUsedLocation(LatLng latLng, int type) {
+        String id = getPlayer().getId();
+        if (dbHelper.getLocationData(latLng.latitude, latLng.longitude).moveToFirst()) {
+            dbHelper.updateLocation(id, latLng.latitude, latLng.longitude, type, System.nanoTime());
+        } else {
+            dbHelper.insertLocation(id, latLng.latitude, latLng.longitude, type, System.nanoTime());
+        }
+    }
+
+    public ConsumedLocation hasUsedLocation(LatLng latLng) {
+        return dbHelper.getLocation(latLng.latitude, latLng.longitude);
+    }
+
+    public ArrayList<ConsumedLocation> getLocations() {
+        return dbHelper.getLocations();
+    }
+
+    public void addChestOpened() {
+        Stats stats = dbHelper.getStats();
+        stats.addChestsOpened();
+        dbHelper.updateStats(getPlayer().getId(), stats);
+    }
+
+    public void addWin() {
+        Stats stats = dbHelper.getStats();
+        stats.addWin();
+        dbHelper.updateStats(getPlayer().getId(), stats);
+    }
+
+    public Stats getStats() {
+        return dbHelper.getStats();
+    }
 }

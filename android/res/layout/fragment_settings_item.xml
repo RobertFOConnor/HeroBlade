@@ -11,9 +11,8 @@
 
     <ImageView
         android:id="@+id/item_image"
-        android:layout_width="70dp"
-        android:layout_height="70dp"
-        android:src="@mipmap/ic_launcher" />
+        android:layout_width="10dp"
+        android:layout_height="70dp"/>
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -30,7 +29,7 @@
             android:textStyle="bold" />
 
         <TextView
-            android:id="@+id/item_req"
+            android:id="@+id/item_desc"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:textSize="12sp" />

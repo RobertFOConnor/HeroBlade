@@ -33,7 +33,9 @@ public class PlayerAvatarActivity extends AndroidApplication implements LibGdxIn
         ((TextView) findViewById(R.id.level_num)).setText(player.getLevel() + "");
         ((TextView) findViewById(R.id.xp_text)).setText("XP: " + player.getXp() + "/" + player.getXPNeeded());
         ((TextView) findViewById(R.id.health_field)).setText(player.getCurrHealth() + "/" + player.getMaxHealth());
-        ((TextView) findViewById(R.id.gold_field)).setText(player.getMoney() + "");
+        //((TextView) findViewById(R.id.gold_field)).setText(player.getMoney() + "");
+        ((TextView) findViewById(R.id.sword_field)).setText(GameManager.getInstance().getFoundWeapons().size() + "");
+        ((TextView) findViewById(R.id.cash_field)).setText("$" + player.getMoney());
 
         AndroidApplicationConfiguration config = new AndroidApplicationConfiguration();
         MainGame game = new MainGame(this, MainGame.AVATAR_SCREEN);

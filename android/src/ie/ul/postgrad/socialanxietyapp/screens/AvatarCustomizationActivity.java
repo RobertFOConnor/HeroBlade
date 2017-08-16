@@ -64,12 +64,16 @@ public class AvatarCustomizationActivity extends AndroidApplication implements L
 
     @Override
     public void saveAvatar(Avatar avatar) {
-        GameManager.getDatabaseHelper().updateAvatar(avatar);
+        GameManager.getDbHelper().updateAvatar(avatar);
     }
 
     @Override
     public Avatar getAvatar() {
-        return GameManager.getInstance().getAvatar();
+        try {
+            return GameManager.getInstance().getAvatar();
+        } catch (Exception e) {
+            return new Avatar(1, 1, 1, 1);
+        }
     }
 
     @Override

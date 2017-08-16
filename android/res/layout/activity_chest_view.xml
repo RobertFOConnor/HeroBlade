@@ -4,8 +4,8 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:layout_marginBottom="35dp"
-    android:layout_marginLeft="10dp"
-    android:layout_marginRight="10dp"
+    android:layout_marginStart="@dimen/activity_horizontal_margin"
+    android:layout_marginEnd="@dimen/activity_horizontal_margin"
     android:layout_marginTop="35dp"
     android:background="@drawable/google_sign_in_button"
     android:gravity="center"
@@ -27,11 +27,20 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:gravity="center"
-                android:paddingBottom="15dp"
-                android:text="Active Chests:"
-                android:textColor="#404040"
-                android:textSize="22sp"
+                android:paddingBottom="@dimen/fab_margin"
+                android:text="@string/active_chests"
+                android:textColor="@color/gray"
+                android:textSize="@dimen/text_size_header"
                 android:textStyle="bold" />
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                android:paddingBottom="@dimen/fab_margin"
+                android:text="@string/active_chests_subtitle"
+                android:textColor="@color/gray"
+                android:textSize="16sp"/>
 
 
             <LinearLayout
@@ -48,7 +57,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="30dp"
-                android:text="Got it" />
+                android:text="@string/proceed" />
 
         </LinearLayout>
     </ScrollView>

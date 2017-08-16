@@ -23,7 +23,7 @@ import ie.ul.postgrad.socialanxietyapp.game.item.FoodItem;
 import ie.ul.postgrad.socialanxietyapp.game.item.Item;
 import ie.ul.postgrad.socialanxietyapp.game.item.ItemFactory;
 
-public class InventoryActivity extends AppCompatActivity implements View.OnClickListener {
+public class InventoryActivity extends AppCompatActivity {
 
     private ListView itemList;
     private AdapterView.OnItemClickListener itemClickListener;
@@ -52,9 +52,6 @@ public class InventoryActivity extends AppCompatActivity implements View.OnClick
         itemAdapter = new InventoryListAdapter(this, items);
         weaponAdapter = new WeaponListAdapter(this, inventory.getWeapons(), "");
 
-        findViewById(R.id.item_button).setOnClickListener(this);
-        findViewById(R.id.weapon_button).setOnClickListener(this);
-
         itemClickListener = new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
@@ -67,7 +64,7 @@ public class InventoryActivity extends AppCompatActivity implements View.OnClick
                     if (quantity <= 0) {
                         itemAdapter.remove(itemAdapter.getItem(position));
                     } else {
-                        String quantityString = "x" + quantity;
+                        String quantityString = getString(R.string.quantity_string, quantity);
                         ((TextView) view.findViewById(R.id.item_count)).setText(quantityString);
                     }
                 }
@@ -76,7 +73,8 @@ public class InventoryActivity extends AppCompatActivity implements View.OnClick
 
         ActionBar actionBar = getSupportActionBar();
         if (actionBar != null) {
-            actionBar.setTitle("Inventory");
+            actionBar.setTitle(getString(R.string.inventory));
+            actionBar.setSubtitle(getString(R.string.inventory_subtitle));
             actionBar.setDisplayHomeAsUpEnabled(true);
         }
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
@@ -84,18 +82,6 @@ public class InventoryActivity extends AppCompatActivity implements View.OnClick
         }
 
         switchView(VIEW.ITEM_VIEW);
-    }
-
-    @Override
-    public void onClick(View v) {
-        switch (v.getId()) {
-            case R.id.item_button:
-                switchView(VIEW.ITEM_VIEW);
-                break;
-            case R.id.weapon_button:
-                switchView(VIEW.WEAPON_VIEW);
-                break;
-        }
     }
 
     private void switchView(VIEW v) {

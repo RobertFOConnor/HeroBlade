@@ -28,7 +28,7 @@
             android:layout_height="wrap_content"
             android:layout_centerHorizontal="true"
             android:layout_centerVertical="true"
-            android:text="There are no items you can use!"
+            android:text="@string/empty_list"
             android:visibility="invisible" />
     </RelativeLayout>
 </FrameLayout>

@@ -80,9 +80,9 @@ public class MainGame extends ApplicationAdapter {
         batch.dispose();
     }
 
-    public void updateConvo(int charId) {
+    public void updateConvo(int charId, String type) {
         if (ScreenManager.getCurrentScreen() instanceof ConversationScreen) {
-            ((ConversationScreen) (ScreenManager.getCurrentScreen())).updateConvo(charId);
+            ((ConversationScreen) (ScreenManager.getCurrentScreen())).updateConvo(charId, type);
         }
     }
 

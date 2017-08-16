@@ -72,7 +72,7 @@ public class AvatarScreen implements Screen {
         player.update();
         if (Gdx.input.justTouched()) {
             player.setAnimation("scratch");
-            //changeShirtColor(); //testing
+            //changeHairStyle(); //testing
         }
         player.setObject("hair", 1f, 1, avatar.getHairtype());
     }

@@ -57,7 +57,7 @@ public class ResourceResultActivity extends AppCompatActivity {
             tv.setTextColor(Color.BLACK);
             resourceList.addView(tv);
 
-            GameManager.getInstance().givePlayer(this, itemId, 1);
+            //GameManager.getInstance().giveItem(this, itemId, 1);
 
         }
 
