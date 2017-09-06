@@ -10,6 +10,7 @@ import android.widget.EditText;
 import android.widget.ProgressBar;
 import android.widget.Toast;
 
+import ie.ul.postgrad.socialanxietyapp.App;
 import ie.ul.postgrad.socialanxietyapp.FontManager;
 import ie.ul.postgrad.socialanxietyapp.R;
 
@@ -39,7 +40,7 @@ public class ResetPasswordActivity extends AppCompatActivity {
                 String email = inputEmail.getText().toString().trim();
 
                 if (TextUtils.isEmpty(email)) {
-                    Toast.makeText(getApplication(), getString(R.string.enter_email), Toast.LENGTH_SHORT).show();
+                    App.showToast(getApplication(), getString(R.string.enter_email));
                     return;
                 }
 

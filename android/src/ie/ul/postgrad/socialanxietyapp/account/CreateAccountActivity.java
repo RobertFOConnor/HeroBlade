@@ -22,6 +22,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
+import ie.ul.postgrad.socialanxietyapp.App;
 import ie.ul.postgrad.socialanxietyapp.FontManager;
 import ie.ul.postgrad.socialanxietyapp.R;
 import ie.ul.postgrad.socialanxietyapp.database.WebDBHelper;
@@ -60,7 +61,7 @@ public class CreateAccountActivity extends AppCompatActivity {
                     new RegisterUserTask().execute(id, name, email, password);
 
                 } else {
-                    Toast.makeText(CreateAccountActivity.this, getString(R.string.error_empty), Toast.LENGTH_SHORT).show();
+                    App.showToast(CreateAccountActivity.this, getString(R.string.error_empty));
                 }
             }
         });
@@ -84,7 +85,7 @@ public class CreateAccountActivity extends AppCompatActivity {
                 finish();
             }
             progressBar.setVisibility(View.INVISIBLE);
-            Toast.makeText(CreateAccountActivity.this, result, Toast.LENGTH_SHORT).show();
+            App.showToast(CreateAccountActivity.this, result);
         }
     }
 

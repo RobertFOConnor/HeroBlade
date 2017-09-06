@@ -2,8 +2,8 @@ package ie.ul.postgrad.socialanxietyapp.game;
 
 import android.content.Context;
 import android.content.Intent;
+import android.location.Location;
 import android.os.AsyncTask;
-import android.widget.Toast;
 
 import com.google.android.gms.maps.model.LatLng;
 
@@ -15,13 +15,12 @@ import org.apache.http.client.methods.HttpPost;
 import org.apache.http.impl.client.DefaultHttpClient;
 import org.apache.http.message.BasicNameValuePair;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
-import ie.ul.postgrad.socialanxietyapp.App;
 import ie.ul.postgrad.socialanxietyapp.Avatar;
-import ie.ul.postgrad.socialanxietyapp.R;
 import ie.ul.postgrad.socialanxietyapp.database.DBHelper;
 import ie.ul.postgrad.socialanxietyapp.database.WebDBHelper;
 import ie.ul.postgrad.socialanxietyapp.game.item.ChestItem;
@@ -47,15 +46,12 @@ public class GameManager {
 
     //Game stats (XP)
     public static final int playerStartHP = 100;
-    public static final int villageXP = 50;
-    public static final int blacksmithXP = 50;
+    public static final int playerLevelUpHP = 25;
+    public static final int villageXP = 150;
+    public static final int blacksmithXP = 150;
     public static final int villagerTalkXP = 25;
-    public static final boolean TESTING = true;
-
-    private static final boolean REMOTE_DATABASE_ENABLED = true;
-    private static final String REMOTE_PLAYER_INSERT = "remote_player";
-    private static final String REMOTE_ITEM_INSERT = "remote_item";
-    private static final String REMOTE_WEAPON_INSERT = "remote_weapon";
+    public static final int craftingXP = 250;
+    public static boolean TESTING = false;
 
     public static GameManager getInstance() {
         return ourInstance;
@@ -66,11 +62,12 @@ public class GameManager {
         initDatabaseHelper(context);
 
         if (!dbHelper.userExists(id)) { //If player doesn't exist, create a new one.
+            WeaponItem weaponItem = generateStartingWeapon(context);
             dbHelper.insertUser(id, name, email, password);
-            dbHelper.insertPlayer(new Player(id, name, 0, 1, 0, playerStartHP, playerStartHP));
+            dbHelper.insertPlayer(new Player(id, name, 0, 1, 0, playerStartHP, playerStartHP, weaponItem.getUUID()));
             dbHelper.insertAvatar(new Avatar(1, 1, 1, 1));
             dbHelper.insertStats(id);
-            giveWeapon(context, WeaponFactory.buildWeapon(context, 43));
+            updateWeaponInDatabase(weaponItem);
             printTables();
             return false;
         }
@@ -114,28 +111,19 @@ public class GameManager {
         } else {
             dbHelper.insertItem(playerId, itemId, quantity);
         }
-
-        if (REMOTE_DATABASE_ENABLED) {
-            new addItemTask().execute(REMOTE_ITEM_INSERT, playerId, Integer.toString(itemId), Integer.toString(getInventory().getItems().get(itemId)));
-        }
     }
 
-    public void updateWeaponInDatabase(String UUID, int weaponId, int currHealth, boolean equipped) {
+    public void testRemoteServer() {
+        new RemoteServerTask().execute();
+    }
+
+    public void updateWeaponInDatabase(WeaponItem weapon) {
         String playerId = getPlayer().getId();
 
-        if (dbHelper.getWeaponsData(UUID).moveToFirst()) {
-            dbHelper.updateWeapon(playerId, UUID, weaponId, currHealth, equipped);
+        if (dbHelper.getWeaponsData(weapon.getUUID()).moveToFirst()) {
+            dbHelper.updateWeapon(playerId, weapon.getUUID(), weapon.getId(), weapon.getCurrHealth(), weapon.isEquipped());
         } else {
-            dbHelper.insertWeapon(playerId, UUID, weaponId, currHealth, equipped);
-        }
-
-        int equip = 0;
-        if (equipped) {
-            equip = 1;
-        }
-
-        if (REMOTE_DATABASE_ENABLED) {
-            new addItemTask().execute(REMOTE_WEAPON_INSERT, playerId, Integer.toString(weaponId), Integer.toString(currHealth), UUID, Integer.toString(equip));
+            dbHelper.insertWeapon(playerId, weapon.getUUID(), weapon.getId(), weapon.getCurrHealth(), weapon.isEquipped());
         }
     }
 
@@ -157,23 +145,37 @@ public class GameManager {
 
     public void giveWeapon(Context context, WeaponItem weaponItem) {
         weaponItem.setUUID(UUID.randomUUID().toString());
-        boolean equipped = false;
+        weaponItem.setEquipped(false);
         if (getInventory().getEquippedWeapons().size() < 6) {
-            equipped = true;
+            weaponItem.setEquipped(true);
         }
-        updateWeaponInDatabase(weaponItem.getUUID(), weaponItem.getId(), weaponItem.getCurrHealth(), equipped);
+        updateWeaponInDatabase(weaponItem);
         AchievementManager.checkSwordAchievements(context);
+    }
+
+    private WeaponItem generateStartingWeapon(Context context) {
+        WeaponItem weaponItem = WeaponFactory.buildWeapon(context, 43);
+        weaponItem.setUUID(UUID.randomUUID().toString());
+        weaponItem.setEquipped(true);
+        return weaponItem;
     }
 
     public void awardXP(Context context, int xp) {
         Player player = getPlayer();
         if (player.setXp(player.getXp() + xp)) { //Level up player.
-            awardChest(context);
-
-            Intent intent = new Intent(context, LevelUpActivity.class);
-            context.startActivity(intent);
+            levelUp(player, context);
         }
         updatePlayerInDatabase(player);
+    }
+
+    private void levelUp(Player player, Context context) {
+        player.setXp(player.getXp() - XPLevels.XP_LEVELS[player.getLevel()]);
+        player.setLevel(player.getLevel() + 1);
+        player.setMaxHealth(player.getMaxHealth() + GameManager.playerLevelUpHP);
+        player.setCurrHealth(player.getMaxHealth());
+        awardChest(context);
+        Intent intent = new Intent(context, LevelUpActivity.class);
+        context.startActivity(intent);
     }
 
     public void answerSurveyQuestion(int question, int answer) {
@@ -181,7 +183,7 @@ public class GameManager {
     }
 
     public int getSurveyQuestion() {
-        return dbHelper.getSurveyData(getPlayer().getId()).getCount();
+        return dbHelper.getSurveyData(getPlayer().getId()).getCount() % 12;
     }
 
     public void awardMoney(int money) {
@@ -204,6 +206,20 @@ public class GameManager {
         dbHelper.insertChest(getPlayer().getId(), chest.getUID(), chest.getId(), chest.getCurrDistance());
     }
 
+    public void awardTestChest(Context context) {
+        int random = (int) (Math.random() * 10);
+        int chestId = ChestItem.NORMAL_CHEST; // normal chest default.
+
+        if (random == 9) {
+            chestId = ChestItem.RARE_CHEST; // 1 in 10 chance of rare chest.
+        } else if (random > 5) {
+            chestId = ChestItem.GOLD_CHEST; // 4 in 10 chance of gold chest.
+        }
+        ChestItem chest = (ChestItem) ItemFactory.buildItem(context, chestId);
+        chest.setUID(UUID.randomUUID().toString());
+        dbHelper.insertChest(getPlayer().getId(), chest.getUID(), chest.getId(), 10);
+    }
+
     public int getVillageCount() {
         return countPMarkerTypes(MarkerFactory.ID_VILLAGE);
     }
@@ -212,7 +228,7 @@ public class GameManager {
         return countPMarkerTypes(MarkerFactory.ID_BLACKSMITH);
     }
 
-    public int countPMarkerTypes(int type) {
+    private int countPMarkerTypes(int type) {
         ArrayList<ConsumedLocation> locations = getLocations();
         int typeCount = 0;
         for (ConsumedLocation l : locations) {
@@ -227,8 +243,7 @@ public class GameManager {
         dbHelper.updateChest(getPlayer().getId(), chest.getUID(), chest.getId(), chest.getCurrDistance());
     }
 
-    public void removeChest() {
-        ChestItem chest = getChests().get(0);
+    public void removeChest(ChestItem chest) {
         dbHelper.removeChest(chest.getUID());
     }
 
@@ -258,20 +273,14 @@ public class GameManager {
             player.setCurrHealth(player.getCurrHealth() + food.getEnergy());
             giveItem(id, -1);
             updatePlayerInDatabase(player);
-            Toast.makeText(context, player.getName() + " ate a " + food.getName() + " and restored +" + food.getEnergy() + " health.", Toast.LENGTH_SHORT).show();
-        } else {
-            Toast.makeText(context, player.getName() + " already has full health.", Toast.LENGTH_SHORT).show();
         }
     }
 
     public void removeWeapon(String UUID) {
         dbHelper.deleteWeapon(UUID);
-        if (REMOTE_DATABASE_ENABLED) {
-            new addItemTask().execute(REMOTE_WEAPON_INSERT, getPlayer().getId(), "-1", "-1", UUID, "0");
-        }
     }
 
-    private class addItemTask extends AsyncTask<String, Integer, String> {
+    private class RemoteServerTask extends AsyncTask<String, Integer, String> {
 
         @Override
         protected String doInBackground(String... params) {
@@ -284,42 +293,78 @@ public class GameManager {
         }
     }
 
+    private List<NameValuePair> list;
+
     private String PostData(String[] values) {
-        final int INSERT_TYPE = 0;//String specifying the type of remote call.
-        final int PLAYER_ID = 1;
-        final int ITEM_ID = 2;
-        final int QUANTITY = 3;
-        final int UID = 4;//For weapons.
-        final int EQUIPPED = 5;//For weapons.
         String response = "";
 
         //android.os.Debug.waitForDebugger();
         try {
             HttpClient httpClient = new DefaultHttpClient();
-            List<NameValuePair> list = new ArrayList<>();
-            String servletName = WebDBHelper.URL;
-            String type = values[INSERT_TYPE];
+            String servletName = WebDBHelper.URL + "UpdateTables";
+            list = new ArrayList<>();
 
-            if (type.equals(REMOTE_ITEM_INSERT)) {
-                servletName += "AddItem";
-            } else if (type.equals(REMOTE_WEAPON_INSERT)) {
-                servletName += "AddWeapon";
-                list.add(new BasicNameValuePair("uid", values[UID]));
-                list.add(new BasicNameValuePair("equipped", values[EQUIPPED]));
+            Player player = getPlayer();
+            keyValuePair("id", player.getId());
+            keyValuePair("name", player.getName());
+            keyValuePair("level", String.valueOf(player.getLevel()));
+            keyValuePair("xp", String.valueOf(player.getXp()));
+            keyValuePair("money", String.valueOf(player.getMoney()));
+            keyValuePair("max_health", String.valueOf(player.getMaxHealth()));
+            keyValuePair("curr_health", String.valueOf(player.getCurrHealth()));
+            keyValuePair("sword_id", player.getBaseSword());
+
+            Inventory inventory = getInventory();
+            for (int i = 0; i < inventory.getItems().size(); i++) {
+                keyValuePair("item_id_" + i, String.valueOf(inventory.getItems().keyAt(i)));
+                keyValuePair("quantity_" + i, String.valueOf(inventory.getItems().valueAt(i)));
             }
-            list.add(new BasicNameValuePair("player_id", values[PLAYER_ID]));
-            list.add(new BasicNameValuePair("item_id", values[ITEM_ID]));
-            list.add(new BasicNameValuePair("quantity", values[QUANTITY]));
+
+            for (int i = 0; i < inventory.getWeapons().size(); i++) {
+                WeaponItem w = inventory.getWeapons().get(i);
+                keyValuePair("weapon_uid_" + i, w.getUUID());
+                keyValuePair("weapon_id_" + i, String.valueOf(w.getId()));
+                keyValuePair("weapon_curr_health_" + i, String.valueOf(w.getCurrHealth()));
+                keyValuePair("weapon_equipped_" + i, w.getEquippedAsString());
+            }
+
+            ArrayList<ConsumedLocation> locations = getLocations();
+            for (int i = 0; i < locations.size(); i++) {
+                ConsumedLocation l = locations.get(i);
+                keyValuePair("location_lat_" + i, String.valueOf(l.getLat()));
+                keyValuePair("location_lng_" + i, String.valueOf(l.getLng()));
+                keyValuePair("location_type_" + i, String.valueOf(l.getType()));
+                keyValuePair("location_time_" + i, String.valueOf(l.getTimeUsed()));
+            }
+
+            ArrayList<ChestItem> chests = getChests();
+            for (int i = 0; i < chests.size(); i++) {
+                keyValuePair("chest_uid_" + i, chests.get(i).getUID());
+                keyValuePair("chest_id_" + i, String.valueOf(chests.get(i).getId()));
+                keyValuePair("chest_distance_left_" + i, String.valueOf(chests.get(i).getCurrDistance()));
+            }
+
+            ArrayList<SurveyAnswer> surveyAnswers = dbHelper.getSurveyAnswers();
+            for (int i = 0; i < surveyAnswers.size(); i++) {
+                SurveyAnswer ans = surveyAnswers.get(i);
+                keyValuePair("survey_question_" + i, String.valueOf(ans.getQuestion()));
+                keyValuePair("survey_answer_" + i, String.valueOf(ans.getAnswer()));
+                keyValuePair("survey_date_" + i, ans.getDate());
+            }
 
             HttpPost httpPost = new HttpPost(servletName);
             httpPost.setEntity(new UrlEncodedFormEntity(list));
             HttpResponse httpResponse = httpClient.execute(httpPost);
             httpResponse.getEntity();
             response = WebDBHelper.readResponse(httpResponse);
-        } catch (Exception e) {
+        } catch (IOException e) {
             e.printStackTrace();
         }
         return response;
+    }
+
+    private void keyValuePair(String key, String value) {
+        list.add(new BasicNameValuePair(key, value));
     }
 
     public void addUsedLocation(LatLng latLng, int type) {
@@ -351,7 +396,25 @@ public class GameManager {
         dbHelper.updateStats(getPlayer().getId(), stats);
     }
 
+    public void addSteps(int steps) {
+        Stats stats = dbHelper.getStats();
+        stats.setTotalSteps(steps);
+        dbHelper.updateStats(getPlayer().getId(), stats);
+    }
+
     public Stats getStats() {
         return dbHelper.getStats();
+    }
+
+    public void eraseData() {
+        dbHelper.clearTables();
+    }
+
+    public float getDistance(Context context) {
+        return initDatabaseHelper(context).getDistance();
+    }
+
+    public void recordStep(Context context, float totalDistance) {
+        initDatabaseHelper(context).insertStepsEntry(totalDistance);
     }
 }

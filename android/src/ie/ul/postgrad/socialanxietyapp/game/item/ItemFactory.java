@@ -20,6 +20,7 @@ public class ItemFactory {
     private static final int DAMAGE = 3;
     private static final int ENERGY = 4;
 
+    public static final int[] CRAFTABLES = {11, 12, 13, 14, 15};
     private static final int INGREDIENT_1_ID = 5; //Index of first ingredient. (if item can be crafted)
     //INFO: Ingredients refer to items which are combined in recipes to craft other items (e.g. string and sticks make a bow etc.)
 
@@ -49,13 +50,12 @@ public class ItemFactory {
                 ingredients.put(ingredient_1_id, ingredient_1_quantity);
             }
         }
-
         ta.recycle();
         itemValues.recycle();
 
         if (id >= 74) {
             return new ChestItem(id, name, description, imageId, energy);
-        } else if (energy > 0) {
+        } else if (energy != 0) {
             return new FoodItem(id, name, description, worth, imageId, ingredients, energy);
         } else {
             return new Item(id, name, description, worth, imageId, ingredients);

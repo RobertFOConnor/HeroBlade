@@ -144,6 +144,14 @@
             android:columnCount="2">
 
             <Button
+                android:id="@+id/change_weapon_button"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_columnWeight=".5"
+                android:layout_rowWeight=".5"
+                android:text="@string/change_weapon" />
+
+            <Button
                 android:id="@+id/attack_button"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -152,12 +160,12 @@
                 android:text="@string/attack" />
 
             <Button
-                android:id="@+id/change_weapon_button"
+                android:id="@+id/run_button"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_columnWeight=".5"
                 android:layout_rowWeight=".5"
-                android:text="@string/change_weapon" />
+                android:text="@string/run" />
 
             <Button
                 android:id="@+id/item_button"
@@ -167,14 +175,6 @@
                 android:layout_rowWeight=".5"
                 android:text="@string/use_item" />
 
-
-            <Button
-                android:id="@+id/run_button"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_columnWeight=".5"
-                android:layout_rowWeight=".5"
-                android:text="@string/run" />
         </GridLayout>
     </FrameLayout>
 </RelativeLayout>

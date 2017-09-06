@@ -8,10 +8,12 @@ public class Stats {
 
     private int wins;
     private int chestsOpened;
+    private int totalSteps;
 
-    public Stats(int wins, int chestsOpened) {
+    public Stats(int wins, int chestsOpened, int totalSteps) {
         this.wins = wins;
         this.chestsOpened = chestsOpened;
+        this.totalSteps = totalSteps;
     }
 
     public Stats() {
@@ -32,5 +34,13 @@ public class Stats {
 
     public int getChestsOpened() {
         return chestsOpened;
+    }
+
+    public int getTotalSteps() {
+        return totalSteps;
+    }
+
+    public void setTotalSteps(int totalSteps) {
+        this.totalSteps = totalSteps;
     }
 }

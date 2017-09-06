@@ -19,7 +19,6 @@ public class Inventory {
 
     private static final int GET_EQUIPED_WEAPONS = 1;
     private static final int GET_UNEQUIPED_WEAPONS = 2;
-    private static final int GET_HP_WEAPONS = 3;
 
 
     public Inventory(InventoryItemArray items, ArrayList<WeaponItem> weapons, ArrayList<ChestItem> chests) {
@@ -56,11 +55,6 @@ public class Inventory {
                 break;
                 case GET_UNEQUIPED_WEAPONS:
                     if (!weaponItem.isEquipped()) {
-                        weaponItems.add(weaponItem);
-                    }
-                    break;
-                case GET_HP_WEAPONS:
-                    if (weaponItem.getCurrHealth() > 0) {
                         weaponItems.add(weaponItem);
                     }
                     break;

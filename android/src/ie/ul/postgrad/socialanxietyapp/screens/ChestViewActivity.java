@@ -28,11 +28,13 @@ public class ChestViewActivity extends AppCompatActivity {
         LayoutInflater inflater = LayoutInflater.from(this);
 
         ArrayList<ChestItem> chests = GameManager.getInstance().getInventory().getChests();
+        if(chests.size() == 0) {
+            ((TextView) findViewById(R.id.subtitle)).setText(getString(R.string.no_chests));
+        }
 
         for (ChestItem chest : chests) {
 
             LinearLayout chestView = (LinearLayout) inflater.inflate(R.layout.chest_view, null);
-
             ProgressBar progressBar = (ProgressBar) chestView.findViewById(R.id.progressBar);
             progressBar.setMax((int) chest.getMaxDistance());
             progressBar.setProgress((int) chest.getCurrDistance());
@@ -42,7 +44,6 @@ public class ChestViewActivity extends AppCompatActivity {
 
             ImageView image = (ImageView) chestView.findViewById(R.id.image);
             image.setImageResource(chest.getImageID());
-
             chestList.addView(chestView);
         }
 

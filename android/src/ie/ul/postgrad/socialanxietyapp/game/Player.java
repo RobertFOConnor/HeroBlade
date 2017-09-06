@@ -15,8 +15,9 @@ public class Player {
     private int money;
     private int maxHealth;
     private int currHealth;
+    private String baseSword;
 
-    public Player(String id, String name, int xp, int level, int money, int maxHealth, int currHealth) {
+    public Player(String id, String name, int xp, int level, int money, int maxHealth, int currHealth, String baseSword) {
         this.id = id;
         this.name = name;
         this.xp = xp;
@@ -24,6 +25,7 @@ public class Player {
         this.money = money;
         this.maxHealth = maxHealth;
         this.currHealth = currHealth;
+        this.baseSword = baseSword;
     }
 
     public Player() {
@@ -34,6 +36,10 @@ public class Player {
         money = 0;
         maxHealth = 30;
         currHealth = maxHealth;
+    }
+
+    public String getBaseSword() {
+        return baseSword;
     }
 
     public String getId() {
@@ -58,22 +64,7 @@ public class Player {
 
     public boolean setXp(int xp) {
         this.xp = xp;
-
-        if (xp >= getXPNeeded()) { //Check for level up
-            setLevel(getLevel() + 1);
-            setMaxHealth(getMaxHealth() + 5);
-            setCurrHealth(getMaxHealth());
-            return true;
-        }
-        return false;
-    }
-
-    public int getXPNeeded() {
-        int xpNeeded = 0;
-        for (int i = 0; i <= level; i++) {
-            xpNeeded += XPLevels.XP_LEVELS[i];
-        }
-        return xpNeeded;
+        return (this.xp >= XPLevels.XP_LEVELS[level]);//Check for level up
     }
 
     public int getLevel() {

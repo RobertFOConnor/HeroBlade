@@ -436,7 +436,7 @@
         <item name="type">GRASS</item>
         <item name="worth">50</item>
         <item name="damage">2</item>
-        <item name="health">15</item>
+        <item name="health">25</item>
         <item name="rarity">1</item>
     </array>
 

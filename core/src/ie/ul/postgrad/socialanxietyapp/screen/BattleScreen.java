@@ -27,6 +27,9 @@ import static ie.ul.postgrad.socialanxietyapp.MainGame.WIDTH;
 
 public class BattleScreen implements Screen {
 
+    private Texture background1;
+    private int pos = 0;
+
     private Texture bg;
     private Drawer drawer;
     private Player player, npcPlayer;
@@ -43,6 +46,8 @@ public class BattleScreen implements Screen {
     public void create() {
         ShapeRenderer renderer = new ShapeRenderer();
         bg = new Texture("convo_bg.png");
+
+        background1 = new Texture("battle_bg.png");
 
         FileHandle handle = Gdx.files.internal("avatar/avatar.scml");
         SCMLReader reader = new SCMLReader(handle.read());
@@ -66,6 +71,13 @@ public class BattleScreen implements Screen {
 
         npcPlayer.setObject("hair", 1f, 1, enemyAvatar.getHairtype());
         player.setObject("hair", 1f, 1, avatar.getHairtype()); //set correct hair style for player avatar
+        //player.setObject("sword", 1f, 7, 1);
+
+        //pos-=100;
+
+        if (pos < -WIDTH) {
+            pos = 0;
+        }
     }
 
     public void render() {
@@ -74,6 +86,8 @@ public class BattleScreen implements Screen {
         sb.begin();
         drawer.setColor(1, 1, 1, 1);
         sb.draw(bg, 0, 0, WIDTH, HEIGHT);
+        //sb.draw(background1, pos, 0, WIDTH, HEIGHT);
+        //sb.draw(background1, pos + WIDTH, 0, WIDTH, HEIGHT);
         avatar.drawAvatar(drawer, player);
         enemyAvatar.drawAvatar(drawer, npcPlayer);
         sb.end();
@@ -87,7 +101,7 @@ public class BattleScreen implements Screen {
     private Player initCharacter(Entity entity) {
         Player player = new Player(entity);
         player.setScale((HEIGHT / 1920f) * 1.5f);
-        player.setAnimation("idle");
+        player.setAnimation("sword_idle");
 
         return player;
     }

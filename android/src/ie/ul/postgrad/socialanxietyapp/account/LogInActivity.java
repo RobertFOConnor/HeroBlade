@@ -23,6 +23,7 @@ import org.json.JSONObject;
 import java.util.ArrayList;
 import java.util.List;
 
+import ie.ul.postgrad.socialanxietyapp.App;
 import ie.ul.postgrad.socialanxietyapp.FontManager;
 import ie.ul.postgrad.socialanxietyapp.R;
 import ie.ul.postgrad.socialanxietyapp.database.WebDBHelper;
@@ -58,7 +59,7 @@ public class LogInActivity extends AppCompatActivity implements View.OnClickList
         if (!email.isEmpty() && !password.isEmpty()) {
             new LoginUserTask().execute(email, password);
         } else {
-            Toast.makeText(LogInActivity.this, getString(R.string.error_empty), Toast.LENGTH_SHORT).show();
+            App.showToast(LogInActivity.this, getString(R.string.error_empty));
         }
     }
 
@@ -103,10 +104,10 @@ public class LogInActivity extends AppCompatActivity implements View.OnClickList
                 startActivity(intent);
                 finish();
             } else {
-                Toast.makeText(getApplicationContext(), getString(R.string.login_failed), Toast.LENGTH_SHORT).show();
+                App.showToast(getApplicationContext(), getString(R.string.login_failed));
             }
             progressBar.setVisibility(View.INVISIBLE);
-            Toast.makeText(getApplicationContext(), result, Toast.LENGTH_SHORT).show();
+            App.showToast(getApplicationContext(), result);
         }
     }
 

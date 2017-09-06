@@ -38,6 +38,7 @@ public class InventoryListAdapter extends ArrayAdapter<Item> {
             LayoutInflater inflater = LayoutInflater.from(getContext());
             convertView = inflater.inflate(R.layout.fragment_inventory_item, parent, false);
             viewHolder.nameText = (TextView) convertView.findViewById(R.id.item_title);
+            viewHolder.descText = (TextView) convertView.findViewById(R.id.item_desc);
             viewHolder.quantityText = (TextView) convertView.findViewById(R.id.item_count);
             viewHolder.costText = (TextView) convertView.findViewById(R.id.item_cost);
             viewHolder.image = (ImageView) convertView.findViewById(R.id.item_image);
@@ -47,10 +48,12 @@ public class InventoryListAdapter extends ArrayAdapter<Item> {
         }
 
         String name = item.getName();
+        String desc = item.getDescription();
         String quantity = getContext().getString(R.string.quantity_string, GameManager.getInstance().getInventory().getItems().get(item.getId()));
         String cost = "$" + item.getWorth();
 
         viewHolder.nameText.setText(name);
+        viewHolder.descText.setText(desc);
         viewHolder.quantityText.setText(quantity);
         viewHolder.costText.setText(cost);
         viewHolder.image.setImageResource(item.getImageID());
@@ -61,6 +64,7 @@ public class InventoryListAdapter extends ArrayAdapter<Item> {
     // View lookup cache
     private static class ViewHolder {
         TextView nameText;
+        TextView descText;
         TextView quantityText;
         TextView costText;
         ImageView image;

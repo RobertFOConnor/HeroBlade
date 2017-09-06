@@ -1,6 +1,10 @@
 package ie.ul.postgrad.socialanxietyapp.game;
 
 import android.content.Context;
+import android.support.v4.app.FragmentActivity;
+
+import com.google.android.gms.common.api.GoogleApiClient;
+import com.google.android.gms.games.Games;
 
 import ie.ul.postgrad.socialanxietyapp.App;
 import ie.ul.postgrad.socialanxietyapp.R;
@@ -11,6 +15,7 @@ import ie.ul.postgrad.socialanxietyapp.game.item.WeaponFactory;
  */
 
 public class AchievementManager {
+    private static final int REQUEST_ACHIEVEMENTS = 101;
 
     public static void checkSwordAchievements(Context context) {
         GameManager gm = GameManager.getInstance();
@@ -79,6 +84,17 @@ public class AchievementManager {
     }
 
     private static void unlockAchievement(String s) {
-        App.getInstance().getGoogleApiHelperInstance().unlockAchievement(s);
+        GoogleApiClient mGoogleApiClient = App.getInstance().getmGoogleApiClient();
+        if (mGoogleApiClient.isConnected()) {
+            Games.Achievements.unlock(mGoogleApiClient, s);
+        }
+    }
+
+    public static void showAchievements(Context context, GoogleApiClient mGoogleApiClient) {
+        if (mGoogleApiClient != null && mGoogleApiClient.isConnected()) {
+            ((FragmentActivity) context).startActivityForResult(Games.Achievements.getAchievementsIntent(mGoogleApiClient), REQUEST_ACHIEVEMENTS);
+        } else {
+            App.showToast(context, context.getString(R.string.no_google_play_achievements));
+        }
     }
 }

@@ -25,6 +25,10 @@
                 android:text="Equipped Weapons"
                 android:textColor="@color/white" />
 
+            <View
+                android:layout_width="2dp"
+                android:layout_height="match_parent"/>
+
             <Button
                 android:id="@+id/weapon_button"
                 android:layout_width="0dp"

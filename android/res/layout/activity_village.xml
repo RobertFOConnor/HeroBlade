@@ -25,7 +25,7 @@
             android:layout_gravity="end"
             android:gravity="end"
             android:visibility="gone"
-            android:columnCount="5"
+            android:columnCount="6"
             android:orientation="vertical"
             android:rowCount="1">
 
@@ -60,6 +60,14 @@
                 android:layout_height="wrap_content"
                 android:layout_weight=".2"
                 android:text="@string/ans_1" />
+
+            <Button
+                android:id="@+id/ans_0"
+                android:textAllCaps="false"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight=".2"
+                android:text="@string/ans_0" />
 
             <Button
                 android:id="@+id/go_back"

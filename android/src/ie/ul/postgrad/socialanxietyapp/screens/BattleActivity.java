@@ -28,6 +28,9 @@ import ie.ul.postgrad.socialanxietyapp.game.item.FoodItem;
 import ie.ul.postgrad.socialanxietyapp.game.item.ItemFactory;
 import ie.ul.postgrad.socialanxietyapp.game.item.WeaponItem;
 
+import static ie.ul.postgrad.socialanxietyapp.screens.ItemSelectActivity.SELECT_ITEM;
+import static ie.ul.postgrad.socialanxietyapp.screens.ItemSelectActivity.SELECT_WEAPON;
+
 public class BattleActivity extends AndroidApplication implements LibGdxInterface, View.OnClickListener {
 
     private static final int WEAPON_REQUEST = 1;
@@ -49,8 +52,8 @@ public class BattleActivity extends AndroidApplication implements LibGdxInterfac
     private TextView enemiesLeft;
     private ImageView weaponType, enemyType;
     private int turnCount = 0;
-    private int rewardedXP = 150;
-    private int rewardMoney = 30;
+    private int rewardedXP = 800;
+    private int rewardMoney = 200;
     final Context context = new Context();
     DialogInterface.OnClickListener dialogClickListener;
 
@@ -81,10 +84,14 @@ public class BattleActivity extends AndroidApplication implements LibGdxInterfac
         enemies = new ArrayList<>();
 
         int enemyCount;
-        if (player.getLevel() < 3) {
+        if (player.getLevel() < 4) {
             enemyCount = 1;
+        } else if (player.getLevel() < 8) {
+            enemyCount = 2;
+        } else if (player.getLevel() < 12) {
+            enemyCount = 3;
         } else {
-            enemyCount = ((int) (Math.random() * 6)) + 1;
+            enemyCount = ((int) (Math.random() * 5)) + 1;
         }
         for (int i = 0; i < enemyCount; i++) {
             enemies.add(EnemyFactory.buildEnemy(this, player, (int) (Math.random() * EnemyFactory.ENEMY_COUNT) + 1));
@@ -179,12 +186,14 @@ public class BattleActivity extends AndroidApplication implements LibGdxInterfac
     }
 
     private void useItem() {
-        Intent intent = new Intent(this, ItemSelectionActivity.class);
+        Intent intent = new Intent(this, ItemSelectActivity.class);
+        intent.putExtra(ItemSelectActivity.SELECT_TYPE, SELECT_ITEM);
         startActivityForResult(intent, ITEM_REQUEST);
     }
 
     private void changeWeapon() {
         Intent intent = new Intent(this, ItemSelectActivity.class);
+        intent.putExtra(ItemSelectActivity.SELECT_TYPE, SELECT_WEAPON);
         intent.putExtra(ItemSelectActivity.CURR_WEAPON, weaponUUID);
         startActivityForResult(intent, WEAPON_REQUEST);
     }
@@ -201,10 +210,11 @@ public class BattleActivity extends AndroidApplication implements LibGdxInterfac
         damage = calculateTypes(weaponItem.getType(), enemy.getType(), damage);//Calculate type damage (fire, water, grass)
 
         boolean crit = false;
-        if ((int) (Math.random() * 15) == 0) { //Critical hit chance
-            damage = damage * 2;
+        if ((int) (Math.random() * 12) == 0) { //Critical hit chance
+            damage += damage;
             crit = true;
         }
+        damage += damage;
 
         enemy.setCurrHealth(enemy.getCurrHealth() - damage);
         enemyHealthBar.setProgress(enemy.getCurrHealth());
@@ -219,11 +229,11 @@ public class BattleActivity extends AndroidApplication implements LibGdxInterfac
 
         if (weaponItem.getCurrHealth() <= 0) {
             //GameManager.getInstance().removeWeapon(weaponItem.getUUID());
-            attackMessage += getString(R.string.broken_weapon);
+            attackMessage += " "+ getString(R.string.broken_weapon);
             weaponUUID = null;
             v.setEnabled(false);
         }
-        gm.updateWeaponInDatabase(weaponItem.getUUID(), weaponItem.getId(), weaponItem.getCurrHealth(), weaponItem.isEquipped());
+        gm.updateWeaponInDatabase(weaponItem);
 
         turnCount++;
         showText();
@@ -248,11 +258,19 @@ public class BattleActivity extends AndroidApplication implements LibGdxInterfac
             if (resultCode == RESULT_OK) {
                 // The user used an item.
                 FoodItem item = (FoodItem) ItemFactory.buildItem(this, data.getIntExtra(getString(R.string.result), 0));
-                player.setCurrHealth(gm.getPlayer().getCurrHealth());
-                userHealthBar.setProgress(player.getCurrHealth());
-                userHealthText.setText(getString(R.string.health_amount, player.getCurrHealth(), player.getMaxHealth()));
-                showText();
-                dialogueText.setText(getString(R.string.used_item, player.getName(), item.getName()));
+                if (item.getEnergy() > 0) {
+                    player.setCurrHealth(gm.getPlayer().getCurrHealth());
+                    userHealthBar.setProgress(player.getCurrHealth());
+                    userHealthText.setText(getString(R.string.health_amount, player.getCurrHealth(), player.getMaxHealth()));
+                    showText();
+                    dialogueText.setText(getString(R.string.used_item, player.getName(), item.getName()));
+                } else if (item.getEnergy() < 0) {
+                    enemy.setCurrHealth(enemy.getCurrHealth() + item.getEnergy());
+                    enemyHealthBar.setProgress(enemy.getCurrHealth());
+                    enemyHealthText.setText(getString(R.string.health_amount, enemy.getCurrHealth(), enemy.getMaxHealth()));
+                    showText();
+                    dialogueText.setText(getString(R.string.used_item, player.getName(), item.getName()));
+                }
             }
         }
     }
@@ -386,7 +404,7 @@ public class BattleActivity extends AndroidApplication implements LibGdxInterfac
             if (state.equals(LOST)) {
                 dialogueText.setText(getString(R.string.pass_out, player.getName()));
             } else if (state.equals(WON)) {
-                dialogueText.setText(player.getName() + " has won the battle. " + player.getName() + " gained " + rewardedXP + "XP! " + player.getName() + " received $" + rewardMoney + ".");
+                dialogueText.setText(player.getName() + " has won the battle. (" + rewardedXP + "XP) " + player.getName() + " received $" + rewardMoney + ".");
                 gm.awardXP(getApplicationContext(), rewardedXP);
                 gm.awardMoney(rewardMoney);
                 gm.addWin();

@@ -1,8 +1,6 @@
 package ie.ul.postgrad.socialanxietyapp.screens;
 
-import android.os.Build;
 import android.os.Bundle;
-import android.support.v4.content.ContextCompat;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.view.MenuItem;
@@ -10,6 +8,7 @@ import android.widget.ListView;
 
 import java.util.ArrayList;
 
+import ie.ul.postgrad.socialanxietyapp.App;
 import ie.ul.postgrad.socialanxietyapp.R;
 import ie.ul.postgrad.socialanxietyapp.adapter.WeaponIndexAdapter;
 import ie.ul.postgrad.socialanxietyapp.game.GameManager;
@@ -38,7 +37,6 @@ public class IndexActivity extends AppCompatActivity {
             }
         }
 
-
         WeaponIndexAdapter adapter = new WeaponIndexAdapter(this, weapons);
         itemList.setAdapter(adapter);
 
@@ -48,9 +46,7 @@ public class IndexActivity extends AppCompatActivity {
             actionBar.setDisplayHomeAsUpEnabled(true);
         }
 
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-            getWindow().setStatusBarColor(ContextCompat.getColor(this, R.color.bg_color));
-        }
+        App.setStatusBarColor(this);
     }
 
     @Override

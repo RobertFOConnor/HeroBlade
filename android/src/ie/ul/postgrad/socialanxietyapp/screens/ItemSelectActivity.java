@@ -2,9 +2,7 @@ package ie.ul.postgrad.socialanxietyapp.screens;
 
 import android.app.Activity;
 import android.content.Intent;
-import android.os.Build;
 import android.os.Bundle;
-import android.support.v4.content.ContextCompat;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.util.SparseIntArray;
@@ -14,37 +12,38 @@ import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import java.util.ArrayList;
 
+import ie.ul.postgrad.socialanxietyapp.App;
 import ie.ul.postgrad.socialanxietyapp.R;
 import ie.ul.postgrad.socialanxietyapp.adapter.InventoryListAdapter;
 import ie.ul.postgrad.socialanxietyapp.adapter.ItemListAdapter;
 import ie.ul.postgrad.socialanxietyapp.adapter.WeaponListAdapter;
 import ie.ul.postgrad.socialanxietyapp.game.GameManager;
+import ie.ul.postgrad.socialanxietyapp.game.Inventory;
 import ie.ul.postgrad.socialanxietyapp.game.Player;
+import ie.ul.postgrad.socialanxietyapp.game.item.FoodItem;
 import ie.ul.postgrad.socialanxietyapp.game.item.Item;
 import ie.ul.postgrad.socialanxietyapp.game.item.ItemFactory;
 import ie.ul.postgrad.socialanxietyapp.game.item.WeaponFactory;
 import ie.ul.postgrad.socialanxietyapp.game.item.WeaponItem;
 
-import static ie.ul.postgrad.socialanxietyapp.screens.BlacksmithActivity.BUY_WEAPON_KEY;
-import static ie.ul.postgrad.socialanxietyapp.screens.BlacksmithActivity.SELL_WEAPON_KEY;
-import static ie.ul.postgrad.socialanxietyapp.screens.VillageActivity.BUY_KEY;
-import static ie.ul.postgrad.socialanxietyapp.screens.VillageActivity.SELL_KEY;
-
 public class ItemSelectActivity extends AppCompatActivity {
 
     public static final String SELECT_TYPE = "select_type"; //specifies what content to show in the list
     public static final String CURR_WEAPON = "curr_weapon";
+    public static final String SELECT_WEAPON = "choose_weapon";
+    public static final String SELECT_ITEM = "choose_item";
+    public static final String SELL_KEY = "sell_items";
+    public static final String BUY_KEY = "buy_items";
+    public static final String SELL_WEAPON_KEY = "sell_weapons";
+    public static final String BUY_WEAPON_KEY = "buy_weapons";
     private ListView itemList;
-
     private String title;
     private GameManager gm;
     private Player player;
-    private ArrayAdapter adapter;
-
+    private Inventory inventory;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -52,159 +51,196 @@ public class ItemSelectActivity extends AppCompatActivity {
         setContentView(R.layout.activity_weapon_selection);
         itemList = (ListView) findViewById(R.id.item_list);
         Bundle bundle = getIntent().getExtras();
-        final String selectType = bundle.getString(SELECT_TYPE);
+        final String selectType = bundle.getString(SELECT_TYPE, SELECT_WEAPON);
         gm = GameManager.getInstance();
         gm.initDatabaseHelper(getApplicationContext());
         player = gm.getPlayer();
+        inventory = gm.getInventory();
+        final ArrayAdapter adapter;
 
-        if (selectType == null) {
-            title = getString(R.string.choose_weapon);
+        switch (selectType) {
 
-            final String currWeaponUUID = bundle.getString(CURR_WEAPON);
+            case SELECT_WEAPON:
+                title = getString(R.string.choose_weapon);
 
-            adapter = new WeaponListAdapter(this, GameManager.getInstance().getInventory().getEquippedWeapons(), currWeaponUUID);
-            itemList.setAdapter(adapter);
+                final String currWeaponUUID = bundle.getString(CURR_WEAPON);
 
-            itemList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-                @Override
-                public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                    WeaponItem selectedWeapon = ((WeaponItem) itemList.getItemAtPosition(position));
+                adapter = new WeaponListAdapter(this, inventory.getEquippedWeapons(), currWeaponUUID);
+                itemList.setAdapter(adapter);
 
-                    Intent returnIntent = new Intent();
-                    returnIntent.putExtra(getString(R.string.result), selectedWeapon.getUUID());
+                itemList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+                    @Override
+                    public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                        WeaponItem selectedWeapon = ((WeaponItem) itemList.getItemAtPosition(position));
 
-                    if (currWeaponUUID != null) {
-                        if (currWeaponUUID.equals(selectedWeapon.getUUID())) { //Check if they already equipped this weapon.
-                            setResult(Activity.RESULT_CANCELED, returnIntent);
-                            finish();
-                        } else if (selectedWeapon.getCurrHealth() < 0) {
-                            Toast.makeText(getApplicationContext(), getString(R.string.broke_weapon, selectedWeapon.getName()), Toast.LENGTH_SHORT).show();
+                        Intent returnIntent = new Intent();
+                        returnIntent.putExtra(getString(R.string.result), selectedWeapon.getUUID());
+
+                        if (currWeaponUUID != null) {
+                            if (currWeaponUUID.equals(selectedWeapon.getUUID())) { //Check if they already equipped this weapon.
+                                setResult(Activity.RESULT_CANCELED, returnIntent);
+                                finish();
+                            } else if (selectedWeapon.getCurrHealth() < 0) {
+                                App.showToast(getApplicationContext(), getString(R.string.broke_weapon, selectedWeapon.getName()));
+                            } else {
+                                setResult(Activity.RESULT_OK, returnIntent);
+                                finish();
+                            }
                         } else {
                             setResult(Activity.RESULT_OK, returnIntent);
                             finish();
                         }
-                    } else {
-                        setResult(Activity.RESULT_OK, returnIntent);
-                        finish();
+
                     }
+                });
+                break;
 
-                }
-            });
+            case SELECT_ITEM:
+                title = getString(R.string.choose_item);
+                adapter = new InventoryListAdapter(this, getItemList());
+                itemList.setAdapter(adapter);
 
-        } else if (selectType.equals(BUY_KEY)) {
-            title = getString(R.string.buy_items);
+                itemList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+                    @Override
+                    public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                        Item clickedItem = (Item) adapter.getItem(position);
 
-            ArrayList<Item> items = new ArrayList<>();
-            for (int i = 0; i < VillageActivity.itemIdsForSale.size(); i++) {
-                items.add(ItemFactory.buildItem(getApplicationContext(), VillageActivity.itemIdsForSale.get(i))); //Populate 'for sale' item list
-            }
+                        if (clickedItem instanceof FoodItem) {
+                            int itemId = clickedItem.getId();
+                            if (((FoodItem) clickedItem).getEnergy() > 0) {
+                                gm.consumeFoodItem(getApplicationContext(), itemId);
 
-            if (items.size() <= 0) {
-                findViewById(R.id.empty_message).setVisibility(View.VISIBLE);
-            }
+                                int quantity = gm.getInventory().getItems().get(itemId);
+                                if (quantity <= 0) {
+                                    adapter.remove(adapter.getItem(position));
+                                } else {
+                                    String quantityString = getString(R.string.quantity_string, quantity);
+                                    ((TextView) view.findViewById(R.id.item_count)).setText(quantityString);
+                                }
+                            } else {
+                                gm.giveItem(itemId, -1); //For poison.
+                            }
 
-            adapter = new ItemListAdapter(this, items);
-            itemList.setAdapter(adapter);
-
-            itemList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-                @Override
-                public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                    buyItem(((Item) itemList.getItemAtPosition(position)), position);
-                }
-            });
-
-        } else if (selectType.equals(SELL_KEY)) {
-            title = getString(R.string.sell_items);
-
-            SparseIntArray itemArray = gm.getInventory().getItems();
-            ArrayList<Item> items = new ArrayList<>();
-
-            for (int i = 0; i < itemArray.size(); i++) {
-                items.add(ItemFactory.buildItem(this, itemArray.keyAt(i)));
-            }
-
-            if (items.size() <= 0) {
-                findViewById(R.id.empty_message).setVisibility(View.VISIBLE);
-            }
-
-            final InventoryListAdapter adapter = new InventoryListAdapter(this, items);
-            itemList.setAdapter(adapter);
-
-            itemList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-                @Override
-                public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                    Item clickedItem = adapter.getItem(position);
-                    gm.giveItem(clickedItem.getId(), -1);
-                    player.setMoney(player.getMoney() + clickedItem.getWorth());
-                    gm.updatePlayerInDatabase(player);
-                    setListTitle();
-                    int quantity = GameManager.getInstance().getInventory().getItems().get(clickedItem.getId());
-                    if (quantity <= 0) {
-                        adapter.remove(adapter.getItem(position));
-                    } else {
-                        String quantityString = getString(R.string.quantity_string, quantity);
-                        ((TextView) view.findViewById(R.id.item_count)).setText(quantityString);
+                            Intent returnIntent = new Intent();
+                            returnIntent.putExtra(getString(R.string.result), itemId);
+                            setResult(Activity.RESULT_OK, returnIntent);
+                            finish();
+                        }
                     }
+                });
+                break;
+
+
+            case BUY_KEY:
+                title = getString(R.string.buy_items);
+
+                ArrayList<Item> items = new ArrayList<>();
+                for (int i = 0; i < VillageActivity.itemIdsForSale.size(); i++) {
+                    items.add(ItemFactory.buildItem(getApplicationContext(), VillageActivity.itemIdsForSale.get(i))); //Populate 'for sale' item list
                 }
-            });
-        } else if (selectType.equals(BUY_WEAPON_KEY)) {
-            title = getString(R.string.buy_swords);
 
-            ArrayList<Item> weapons = new ArrayList<>();
-            for (int i = 0; i < BlacksmithActivity.itemIdsForSale.size(); i++) {
-                weapons.add(WeaponFactory.buildWeapon(getApplicationContext(), BlacksmithActivity.itemIdsForSale.get(i))); //Populate 'for sale' item list
-            }
+                if (items.size() <= 0) {
+                    findViewById(R.id.empty_message).setVisibility(View.VISIBLE);
+                }
 
-            if (weapons.size() <= 0) {
-                findViewById(R.id.empty_message).setVisibility(View.VISIBLE);
-            }
+                adapter = new ItemListAdapter(this, items);
+                itemList.setAdapter(adapter);
 
-            adapter = new ItemListAdapter(this, weapons);
-            itemList.setAdapter(adapter);
+                itemList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+                    @Override
+                    public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                        buyItem(adapter, ((Item) itemList.getItemAtPosition(position)), position);
+                    }
+                });
+                break;
 
-            itemList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-                @Override
-                public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                    WeaponItem weaponItem = (WeaponItem) adapter.getItem(position);
-                    if (player.getMoney() >= weaponItem.getWorth()) {
-                        gm.giveWeapon(getApplicationContext(), weaponItem);
-                        player.setMoney(player.getMoney() - weaponItem.getWorth());
+            case SELL_KEY:
+                title = getString(R.string.sell_items);
+                adapter = new InventoryListAdapter(this, getItemList());
+                itemList.setAdapter(adapter);
+
+                itemList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+                    @Override
+                    public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                        Item clickedItem = (Item) adapter.getItem(position);
+                        gm.giveItem(clickedItem.getId(), -1);
+                        player.setMoney(player.getMoney() + clickedItem.getWorth());
                         gm.updatePlayerInDatabase(player);
                         setListTitle();
-                        adapter.remove(weaponItem);
-                        BlacksmithActivity.itemIdsForSale.remove(position);
-                    } else {
-                        Toast.makeText(getApplicationContext(), getString(R.string.not_enough_money), Toast.LENGTH_SHORT).show();
+                        int quantity = gm.getInventory().getItems().get(clickedItem.getId());
+                        if (quantity <= 0) {
+                            adapter.remove(adapter.getItem(position));
+                        } else {
+                            String quantityString = getString(R.string.quantity_string, quantity);
+                            ((TextView) view.findViewById(R.id.item_count)).setText(quantityString);
+                        }
                     }
+                });
+                break;
+            case BUY_WEAPON_KEY:
+                title = getString(R.string.buy_swords);
+
+                ArrayList<Item> weapons = new ArrayList<>();
+                for (int i = 0; i < BlacksmithActivity.itemIdsForSale.size(); i++) {
+                    weapons.add(WeaponFactory.buildWeapon(getApplicationContext(), BlacksmithActivity.itemIdsForSale.get(i))); //Populate 'for sale' item list
                 }
-            });
-        } else if (selectType.equals(SELL_WEAPON_KEY)) {
-            title = getString(R.string.sell_swords);
 
-            ArrayList<Item> items = new ArrayList<>();
-
-            for (int i = 0; i < gm.getInventory().getWeapons().size(); i++) {
-                items.add(gm.getInventory().getWeapons().get(i));
-            }
-
-            if (items.size() <= 0) {
-                findViewById(R.id.empty_message).setVisibility(View.VISIBLE);
-            }
-
-            final ItemListAdapter adapter = new ItemListAdapter(this, items);
-            itemList.setAdapter(adapter);
-
-            itemList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-                @Override
-                public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                    WeaponItem clickedItem = (WeaponItem) adapter.getItem(position);
-                    gm.removeWeapon(clickedItem.getUUID());
-                    player.setMoney(player.getMoney() + clickedItem.getWorth());
-                    gm.updatePlayerInDatabase(player);
-                    setListTitle();
-                    adapter.remove(clickedItem);
+                if (weapons.size() <= 0) {
+                    findViewById(R.id.empty_message).setVisibility(View.VISIBLE);
                 }
-            });
+
+                adapter = new ItemListAdapter(this, weapons);
+                itemList.setAdapter(adapter);
+
+                itemList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+                    @Override
+                    public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                        WeaponItem weaponItem = (WeaponItem) adapter.getItem(position);
+                        if (player.getMoney() >= weaponItem.getWorth()) {
+                            gm.giveWeapon(getApplicationContext(), weaponItem);
+                            player.setMoney(player.getMoney() - weaponItem.getWorth());
+                            gm.updatePlayerInDatabase(player);
+                            setListTitle();
+                            adapter.remove(weaponItem);
+                            BlacksmithActivity.itemIdsForSale.remove(position);
+                        } else {
+                            App.showToast(getApplicationContext(), getString(R.string.not_enough_money));
+                        }
+                    }
+                });
+                break;
+            case SELL_WEAPON_KEY:
+                title = getString(R.string.sell_swords);
+
+                items = new ArrayList<>();
+
+                for (int i = 0; i < inventory.getWeapons().size(); i++) {
+                    items.add(inventory.getWeapons().get(i));
+                }
+
+                if (items.size() <= 0) {
+                    findViewById(R.id.empty_message).setVisibility(View.VISIBLE);
+                }
+
+                adapter = new ItemListAdapter(this, items);
+                itemList.setAdapter(adapter);
+
+                itemList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+                    @Override
+                    public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                        WeaponItem clickedItem = (WeaponItem) adapter.getItem(position);
+                        if (!clickedItem.getUUID().equals(player.getBaseSword())) {
+                            gm.removeWeapon(clickedItem.getUUID());
+                            player.setMoney(player.getMoney() + clickedItem.getWorth());
+                            gm.updatePlayerInDatabase(player);
+                            setListTitle();
+                            adapter.remove(clickedItem);
+                        } else {
+                            App.showToast(getApplicationContext(), getString(R.string.no_sale_base_sword));
+                        }
+                    }
+                });
+                break;
         }
 
 
@@ -214,12 +250,24 @@ public class ItemSelectActivity extends AppCompatActivity {
             actionBar.setDisplayHomeAsUpEnabled(true);
         }
 
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-            getWindow().setStatusBarColor(ContextCompat.getColor(this, R.color.bg_color));
-        }
+        App.setStatusBarColor(this);
     }
 
-    private void buyItem(Item item, int pos) {
+    private ArrayList<Item> getItemList() {
+        SparseIntArray itemArray = inventory.getItems();
+        ArrayList<Item> items = new ArrayList<>();
+
+        for (int i = 0; i < itemArray.size(); i++) {
+            items.add(ItemFactory.buildItem(this, itemArray.keyAt(i)));
+        }
+
+        if (items.size() <= 0) {
+            findViewById(R.id.empty_message).setVisibility(View.VISIBLE);
+        }
+        return items;
+    }
+
+    private void buyItem(final ArrayAdapter adapter, Item item, int pos) {
         if (player.getMoney() >= item.getWorth()) {
             gm.giveItem(item.getId(), 1);
             player.setMoney(player.getMoney() - item.getWorth());
@@ -228,7 +276,7 @@ public class ItemSelectActivity extends AppCompatActivity {
             adapter.remove(item);
             VillageActivity.itemIdsForSale.remove(pos);
         } else {
-            Toast.makeText(getApplicationContext(), getString(R.string.not_enough_money), Toast.LENGTH_SHORT).show();
+            App.showToast(getApplicationContext(), getString(R.string.not_enough_money));
         }
     }
 

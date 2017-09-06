@@ -1,9 +1,7 @@
 package ie.ul.postgrad.socialanxietyapp.screens;
 
 import android.content.Intent;
-import android.os.Build;
 import android.os.Bundle;
-import android.support.v4.content.ContextCompat;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.view.MenuItem;
@@ -12,6 +10,7 @@ import android.widget.AdapterView;
 import android.widget.ListView;
 import android.widget.TextView;
 
+import ie.ul.postgrad.socialanxietyapp.App;
 import ie.ul.postgrad.socialanxietyapp.R;
 import ie.ul.postgrad.socialanxietyapp.WeaponDetailActivity;
 import ie.ul.postgrad.socialanxietyapp.adapter.WeaponListAdapter;
@@ -42,9 +41,7 @@ public class WeaponActivity extends AppCompatActivity implements View.OnClickLis
             actionBar.setDisplayHomeAsUpEnabled(true);
         }
 
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-            getWindow().setStatusBarColor(ContextCompat.getColor(this, R.color.bg_color));
-        }
+        App.setStatusBarColor(this);
 
         itemList = (ListView) findViewById(R.id.item_list);
         emptyMessage = (TextView) findViewById(R.id.empty_message);
@@ -59,12 +56,12 @@ public class WeaponActivity extends AppCompatActivity implements View.OnClickLis
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 WeaponItem clickedWeapon = (WeaponItem) itemList.getAdapter().getItem(position);
-                Intent intent = new Intent(getApplicationContext(), WeaponDetailActivity.class);
+                Intent intent = new Intent(WeaponActivity.this, WeaponDetailActivity.class);
                 intent.putExtra(WeaponDetailActivity.WEAPON_UID, clickedWeapon.getUUID());
                 if (clickedWeapon.isEquipped()) {
-                    startActivityForResult(intent, UNEQUIP_WEAPON_REQUEST);
+                    WeaponActivity.this.startActivityForResult(intent, UNEQUIP_WEAPON_REQUEST);
                 } else {
-                    startActivityForResult(intent, EQUIP_WEAPON_REQUEST);
+                    WeaponActivity.this.startActivityForResult(intent, EQUIP_WEAPON_REQUEST);
                 }
             }
         };
@@ -128,11 +125,15 @@ public class WeaponActivity extends AppCompatActivity implements View.OnClickLis
         if (resultCode == RESULT_OK) {
             WeaponItem weaponItem = inventory.getWeapon(data.getStringExtra(getString(R.string.result)));
             if (requestCode == UNEQUIP_WEAPON_REQUEST) {
+                weaponItem.setEquipped(false);
                 equippedWeaponAdapter.remove(weaponItem);
                 allWeaponAdapter.add(weaponItem);
+                App.showToast(getApplicationContext(), "Unequipped " + weaponItem.getName());
             } else if (requestCode == EQUIP_WEAPON_REQUEST) {
+                weaponItem.setEquipped(true);
                 allWeaponAdapter.remove(weaponItem);
                 equippedWeaponAdapter.add(weaponItem);
+                App.showToast(getApplicationContext(), "Equipped " + weaponItem.getName());
             }
         }
     }

@@ -49,7 +49,7 @@ public class AndroidLauncher extends AndroidApplication implements LibGdxInterfa
 
     @Override
     public void finishGame() {
-        GameManager.getInstance().awardXP(getApplicationContext(), 100);
+        //GameManager.getInstance().awardXP(getApplicationContext(), 100);
         finish();
     }
 }

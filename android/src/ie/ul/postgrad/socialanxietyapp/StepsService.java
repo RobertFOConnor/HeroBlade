@@ -5,19 +5,20 @@ import android.app.PendingIntent;
 import android.app.Service;
 import android.content.Context;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.graphics.Color;
 import android.hardware.Sensor;
 import android.hardware.SensorEvent;
 import android.hardware.SensorEventListener;
 import android.hardware.SensorManager;
 import android.media.RingtoneManager;
+import android.os.Build;
 import android.os.IBinder;
 import android.support.annotation.Nullable;
 import android.support.v4.app.NotificationCompat;
 
 import java.util.ArrayList;
 
-import ie.ul.postgrad.socialanxietyapp.database.DBHelper;
 import ie.ul.postgrad.socialanxietyapp.game.GameManager;
 import ie.ul.postgrad.socialanxietyapp.game.item.ChestItem;
 import ie.ul.postgrad.socialanxietyapp.game.item.WeaponItem;
@@ -34,10 +35,11 @@ public class StepsService extends Service implements SensorEventListener {
 
     private SensorManager mSensorManager;
     private Sensor mStepDetectorSensor;
-    private DBHelper dbHelper;
-    private float totalDistance;
     private ArrayList<ChestItem> chests;
     private GameManager gm;
+    private boolean usingDetector = true;
+    boolean firstReading = true;
+    private int totalSteps;
 
     @Override
     public void onCreate() {
@@ -45,14 +47,20 @@ public class StepsService extends Service implements SensorEventListener {
 
         mSensorManager = (SensorManager) this.getSystemService(Context.SENSOR_SERVICE);
 
-        if (mSensorManager.getDefaultSensor(Sensor.TYPE_STEP_DETECTOR) != null) {
-            mStepDetectorSensor = mSensorManager.getDefaultSensor(Sensor.TYPE_STEP_DETECTOR);
-            mSensorManager.registerListener(this, mStepDetectorSensor, SensorManager.SENSOR_DELAY_NORMAL);
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
+            if (getPackageManager().hasSystemFeature(PackageManager.FEATURE_SENSOR_STEP_DETECTOR)) {
+                mStepDetectorSensor = mSensorManager.getDefaultSensor(Sensor.TYPE_STEP_DETECTOR);
+                mSensorManager.registerListener(this, mStepDetectorSensor, SensorManager.SENSOR_DELAY_NORMAL);
+            } else if (getPackageManager().hasSystemFeature(PackageManager.FEATURE_SENSOR_STEP_COUNTER)) {
+                mStepDetectorSensor = mSensorManager.getDefaultSensor(Sensor.TYPE_STEP_COUNTER);
+                mSensorManager.registerListener(this, mStepDetectorSensor, SensorManager.SENSOR_DELAY_NORMAL);
+                usingDetector = false;
+            } else {
+                App.showToast(getApplicationContext(), getString(R.string.no_steps));
+            }
         }
-        gm = GameManager.getInstance();
-        dbHelper = gm.initDatabaseHelper(this);
-        totalDistance = dbHelper.getDistance();
-        chests = gm.getInventory().getChests();
+
+        firstReading = true;
     }
 
     @Override
@@ -69,22 +77,41 @@ public class StepsService extends Service implements SensorEventListener {
     @Override
     public void onSensorChanged(SensorEvent event) {
 
-        System.out.println(":STEP:");
 
-        totalDistance += 0.8f;
-        dbHelper.insertStepsEntry(totalDistance);
+        System.out.println(":STEP: " + event.values[0]);
+        gm = GameManager.getInstance();
+        float totalDistance;
+        float dist;
+        if (usingDetector) {
+            dist = 0.8f;
+        } else {
+            int steps;
+            if (firstReading) {
+                totalSteps = (int) event.values[0];
+                firstReading = false;
+                dist = 0;
+            } else {
+                steps = (int) (event.values[0] - totalSteps);
+                System.out.println(":MM_STEP: " + steps);
+                dist = 0.8f * steps;
+                totalSteps += steps;
+            }
+        }
+        totalDistance = gm.getDistance(getApplicationContext()) + dist;
+        gm.recordStep(getApplicationContext(), totalDistance);
 
-        int removals = 0;
-
+        ArrayList<ChestItem> removals = new ArrayList<>();
+        chests = gm.getInventory().getChests();
         for (ChestItem chest : chests) {
-            chest.setCurrDistance(chest.getCurrDistance() - 0.8f);
+            chest.setCurrDistance(chest.getCurrDistance() - dist);
             gm.updateChest(chest);
 
-            if (chest.getCurrDistance() < 0) {
+            if (chest.getCurrDistance() <= 0) {
                 gm.addChestOpened();
+                gm.awardMoney(chest.getRarity() * 500);
                 WeaponItem weaponItem = gm.unlockWeapon(this, chest.getRarity());
                 Intent result = chestOpenIntent(chest.getId(), weaponItem.getId());
-                removals++;
+                removals.add(chest);
 
                 if (!MapsActivity.active) {
                     notifyOpenedChest(result, chest);
@@ -94,9 +121,9 @@ public class StepsService extends Service implements SensorEventListener {
             }
         }
 
-        for (int i = 0; i < removals; i++) {
-            chests.remove(0);
-            gm.removeChest();
+        for (ChestItem chest : removals) {
+            chests.remove(chest);
+            gm.removeChest(chest);
         }
     }
 
