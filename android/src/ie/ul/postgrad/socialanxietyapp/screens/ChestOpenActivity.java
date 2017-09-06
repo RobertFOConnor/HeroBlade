@@ -41,6 +41,7 @@ public class ChestOpenActivity extends AppCompatActivity {
         gm = GameManager.getInstance();
         gm.initDatabaseHelper(this);
         ((TextView) findViewById(R.id.title)).setText(getString(R.string.chest_unlocked, chestItem.getName()));
+        ((TextView) findViewById(R.id.cash_text)).setText(getString(R.string.cash_display, chestItem.getRarity() * 500));
         ((ImageView) findViewById(R.id.chest_image)).setImageResource(chestItem.getImageID());
 
         LayoutInflater inflater = LayoutInflater.from(this);

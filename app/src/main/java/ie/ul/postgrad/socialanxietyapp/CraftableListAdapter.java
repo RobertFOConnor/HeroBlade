@@ -116,9 +116,9 @@ public class CraftableListAdapter extends BaseAdapter {
                     GameManager.getInstance().getInventory().addItem(selectedItem.getId(), 1);
                     GameManager.getInstance().updateItemInDatabase(selectedItem.getId());
 
-                    Toast.makeText(context, "You crafted a new "+selectedItem.getName(), Toast.LENGTH_SHORT).show();
+                    App.showToast(context, "You crafted a new "+selectedItem.getName());
                 } else {
-                    Toast.makeText(context, "You can't craft a "+selectedItem.getName(), Toast.LENGTH_SHORT).show();
+                    App.showToast(context, "You can't craft a "+selectedItem.getName());
                 }
             }
         });

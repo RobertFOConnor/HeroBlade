@@ -7,83 +7,144 @@
 
     <array name="item_1">
         <item name="name">Fish</item>
-        <item name="desc">Its dead. RIP in peace.</item>
-        <item name="worth">20</item>
+        <item name="desc">Restores +20HP.</item>
+        <item name="worth">15</item>
         <item name="damage">0</item>
-        <item name="energy">5</item>
+        <item name="energy">20</item>
     </array>
 
     <array name="item_2">
-        <item name="name">Berries</item>
-        <item name="desc">A juicy snack.</item>
-        <item name="worth">10</item>
-        <item name="damage">0</item>
-        <item name="energy">5</item>
-    </array>
-
-    <array name="item_3">
-        <item name="name">Coffee Beans</item>
-        <item name="desc">They sure smell good!</item>
-        <item name="worth">10</item>
-        <item name="damage">0</item>
-        <item name="energy">2</item>
-    </array>
-
-    <array name="item_4">
-        <item name="name">Watermelon Slice</item>
-        <item name="desc">It tastes like happiness.</item>
-        <item name="worth">10</item>
+        <item name="name">Berry Bunch</item>
+        <item name="desc">Restores +10HP.</item>
+        <item name="worth">5</item>
         <item name="damage">0</item>
         <item name="energy">10</item>
     </array>
 
+    <array name="item_3">
+        <item name="name">Coffee Bean Pile</item>
+        <item name="desc">Used in crafting potions.</item>
+        <item name="worth">8</item>
+        <item name="damage">0</item>
+        <item name="energy">0</item>
+    </array>
+
+    <array name="item_4">
+        <item name="name">Watermelon Slice</item>
+        <item name="desc">Restores +15HP.</item>
+        <item name="worth">10</item>
+        <item name="damage">0</item>
+        <item name="energy">15</item>
+    </array>
+
     <array name="item_5">
-        <item name="name">Hemp Seeds</item>
-        <item name="desc">These are used to make oil.</item>
-        <item name="worth">20</item>
+        <item name="name">Hemp Seed Pile</item>
+        <item name="desc">Used in crafting potions.</item>
+        <item name="worth">10</item>
         <item name="damage">0</item>
         <item name="energy">0</item>
     </array>
     <array name="item_6">
         <item name="name">Apple</item>
-        <item name="desc">A tasty red apple. An ideal snack.</item>
-        <item name="worth">20</item>
+        <item name="desc">Restores +10HP.</item>
+        <item name="worth">6</item>
         <item name="damage">0</item>
-        <item name="energy">5</item>
+        <item name="energy">10</item>
     </array>
     <array name="item_7">
         <item name="name">Carrot</item>
-        <item name="desc">Tasty when raw but goes well in a stew too.</item>
-        <item name="worth">20</item>
+        <item name="desc">Restores +20HP.</item>
+        <item name="worth">5</item>
         <item name="damage">0</item>
-        <item name="energy">3</item>
+        <item name="energy">20</item>
     </array>
 
     <array name="item_8">
         <item name="name">Mushroom</item>
-        <item name="desc"></item>
-        <item name="worth">20</item>
+        <item name="desc">Used in crafting potions.</item>
+        <item name="worth">13</item>
         <item name="damage">0</item>
-        <item name="energy">3</item>
+        <item name="energy">0</item>
     </array>
 
     <array name="item_9">
         <item name="name">Red Tulip</item>
-        <item name="desc"></item>
-        <item name="worth">20</item>
+        <item name="desc">Used in crafting potions.</item>
+        <item name="worth">3</item>
         <item name="damage">0</item>
         <item name="energy">0</item>
     </array>
 
     <array name="item_10">
         <item name="name">Yellow Dandelion</item>
-        <item name="desc"></item>
-        <item name="worth">20</item>
+        <item name="desc">Used in crafting potions.</item>
+        <item name="worth">3</item>
         <item name="damage">0</item>
         <item name="energy">0</item>
     </array>
 
     <array name="item_11">
+        <item name="name">Health Potion</item>
+        <item name="desc">Restores +50 health.</item>
+        <item name="worth">100</item>
+        <item name="damage">0</item>
+        <item name="energy">50</item>
+        <item name="ing_1_id">6</item>
+        <item name="ing_1_quantity">1</item>
+        <item name="ing_2_id">7</item>
+        <item name="ing_2_quantity">1</item>
+    </array>
+
+    <array name="item_12">
+        <item name="name">Great Potion</item>
+        <item name="desc">Restores +100 health.</item>
+        <item name="worth">200</item>
+        <item name="damage">0</item>
+        <item name="energy">100</item>
+        <item name="ing_1_id">4</item>
+        <item name="ing_1_quantity">2</item>
+        <item name="ing_2_id">5</item>
+        <item name="ing_2_quantity">1</item>
+    </array>
+
+    <array name="item_13">
+        <item name="name">Super Potion</item>
+        <item name="desc">Restores +250 health.</item>
+        <item name="worth">400</item>
+        <item name="damage">0</item>
+        <item name="energy">250</item>
+        <item name="ing_1_id">1</item>
+        <item name="ing_1_quantity">3</item>
+        <item name="ing_2_id">8</item>
+        <item name="ing_2_quantity">2</item>
+    </array>
+
+    <array name="item_14">
+        <item name="name">Full Restore Potion</item>
+        <item name="desc">Restores all health.</item>
+        <item name="worth">600</item>
+        <item name="damage">0</item>
+        <item name="energy">100000</item>
+        <item name="ing_1_id">10</item>
+        <item name="ing_1_quantity">5</item>
+        <item name="ing_2_id">11</item>
+        <item name="ing_2_quantity">1</item>
+    </array>
+
+    <array name="item_15">
+        <item name="name">Poison Potion</item>
+        <item name="desc">Poisons an enemy in battle.</item>
+        <item name="worth">150</item>
+        <item name="damage">100</item>
+        <item name="energy">-75</item>
+        <item name="ing_1_id">9</item>
+        <item name="ing_1_quantity">3</item>
+        <item name="ing_2_id">3</item>
+        <item name="ing_2_quantity">1</item>
+    </array>
+
+
+    <!--<array name="item_11">
         <item name="name">Egg</item>
         <item name="desc"></item>
         <item name="worth">20</item>
@@ -121,7 +182,7 @@
         <item name="worth">20</item>
         <item name="damage">0</item>
         <item name="energy">0</item>
-    </array>
+    </array>-->
 
     <array name="item_16">
         <item name="name">Cloth</item>
@@ -179,7 +240,6 @@
         <item name="ing_2_quantity">5</item>
         <item name="ing_3_id">28</item>
         <item name="ing_3_quantity">3</item>
-
     </array>
 
     <array name="item_22">

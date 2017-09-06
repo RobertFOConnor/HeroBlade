@@ -1,8 +1,6 @@
 package ie.ul.postgrad.socialanxietyapp.screens;
 
-import android.os.Build;
 import android.os.Bundle;
-import android.support.v4.content.ContextCompat;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.util.SparseIntArray;
@@ -14,6 +12,7 @@ import android.widget.TextView;
 
 import java.util.ArrayList;
 
+import ie.ul.postgrad.socialanxietyapp.App;
 import ie.ul.postgrad.socialanxietyapp.R;
 import ie.ul.postgrad.socialanxietyapp.adapter.InventoryListAdapter;
 import ie.ul.postgrad.socialanxietyapp.adapter.WeaponListAdapter;
@@ -58,14 +57,16 @@ public class InventoryActivity extends AppCompatActivity {
                 Item clickedItem = itemAdapter.getItem(position);
 
                 if (clickedItem instanceof FoodItem) {
-                    int itemId = clickedItem.getId();
-                    GameManager.getInstance().consumeFoodItem(getApplicationContext(), itemId);
-                    int quantity = GameManager.getInstance().getInventory().getItems().get(itemId);
-                    if (quantity <= 0) {
-                        itemAdapter.remove(itemAdapter.getItem(position));
-                    } else {
-                        String quantityString = getString(R.string.quantity_string, quantity);
-                        ((TextView) view.findViewById(R.id.item_count)).setText(quantityString);
+                    if (((FoodItem) clickedItem).getEnergy() > 0) {
+                        int itemId = clickedItem.getId();
+                        GameManager.getInstance().consumeFoodItem(getApplicationContext(), itemId);
+                        int quantity = GameManager.getInstance().getInventory().getItems().get(itemId);
+                        if (quantity <= 0) {
+                            itemAdapter.remove(itemAdapter.getItem(position));
+                        } else {
+                            String quantityString = getString(R.string.quantity_string, quantity);
+                            ((TextView) view.findViewById(R.id.item_count)).setText(quantityString);
+                        }
                     }
                 }
             }
@@ -77,9 +78,7 @@ public class InventoryActivity extends AppCompatActivity {
             actionBar.setSubtitle(getString(R.string.inventory_subtitle));
             actionBar.setDisplayHomeAsUpEnabled(true);
         }
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-            getWindow().setStatusBarColor(ContextCompat.getColor(this, R.color.bg_color));
-        }
+        App.setStatusBarColor(this);
 
         switchView(VIEW.ITEM_VIEW);
     }

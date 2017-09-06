@@ -28,9 +28,7 @@ public class WeaponDetailActivity extends AppCompatActivity {
         setContentView(R.layout.activity_weapon_detail);
         ActionBar actionBar = getSupportActionBar();
 
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-            getWindow().setStatusBarColor(ContextCompat.getColor(this, R.color.bg_color));
-        }
+        App.setStatusBarColor(this);
 
 
         Bundle bundle = getIntent().getExtras();
@@ -62,7 +60,7 @@ public class WeaponDetailActivity extends AppCompatActivity {
                         weapon.setEquipped(true);
                         updateWeaponsMenu();
                     } else {
-                        Toast.makeText(getApplicationContext(), getString(R.string.err_unequip_weapon), Toast.LENGTH_SHORT).show();
+                        App.showToast(getApplicationContext(), getString(R.string.err_unequip_weapon));
                     }
                 }
 
@@ -71,7 +69,7 @@ public class WeaponDetailActivity extends AppCompatActivity {
     }
 
     private void updateWeaponsMenu() {
-        GameManager.getInstance().updateWeaponInDatabase(weapon.getUUID(), weapon.getId(), weapon.getCurrHealth(), weapon.isEquipped());
+        GameManager.getInstance().updateWeaponInDatabase(weapon);
         Intent returnIntent = new Intent();
         returnIntent.putExtra(getString(R.string.result), weapon.getUUID());
         setResult(Activity.RESULT_OK, returnIntent);

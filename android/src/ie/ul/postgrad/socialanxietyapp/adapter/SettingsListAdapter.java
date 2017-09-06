@@ -1,7 +1,6 @@
 package ie.ul.postgrad.socialanxietyapp.adapter;
 
 import android.content.Context;
-import android.content.Intent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -9,13 +8,7 @@ import android.widget.BaseAdapter;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.google.firebase.auth.FirebaseAuth;
-
-import java.util.ArrayList;
-
 import ie.ul.postgrad.socialanxietyapp.R;
-import ie.ul.postgrad.socialanxietyapp.account.WelcomeActivity;
-import ie.ul.postgrad.socialanxietyapp.game.item.Item;
 
 /**
  * Created by Robert on 10-Jul-17.
@@ -26,8 +19,8 @@ public class SettingsListAdapter extends BaseAdapter {
     private String[] result;
     private static LayoutInflater inflater = null;
 
-    public SettingsListAdapter(Context context) {
-        result = new String[]{"Log Out", "Unlock Chest"};
+    public SettingsListAdapter(Context context, String[] menuItems) {
+        result = menuItems;
         inflater = (LayoutInflater) context.
                 getSystemService(Context.LAYOUT_INFLATER_SERVICE);
     }
@@ -52,8 +45,6 @@ public class SettingsListAdapter extends BaseAdapter {
 
     public class Holder {
         TextView tv;
-        TextView tv2;
-        ImageView img;
     }
 
     @Override
@@ -63,10 +54,7 @@ public class SettingsListAdapter extends BaseAdapter {
         View rowView;
         rowView = inflater.inflate(R.layout.fragment_settings_item, null);
         holder.tv = (TextView) rowView.findViewById(R.id.item_title);
-        holder.tv2 = (TextView) rowView.findViewById(R.id.item_desc);
-        holder.img = (ImageView) rowView.findViewById(R.id.item_image);
         holder.tv.setText(result[position]);
-
         return rowView;
     }
 }

@@ -6,14 +6,17 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 
+import java.text.DateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Date;
 
 import ie.ul.postgrad.socialanxietyapp.Avatar;
 import ie.ul.postgrad.socialanxietyapp.game.ConsumedLocation;
 import ie.ul.postgrad.socialanxietyapp.game.InventoryItemArray;
 import ie.ul.postgrad.socialanxietyapp.game.Player;
 import ie.ul.postgrad.socialanxietyapp.game.Stats;
+import ie.ul.postgrad.socialanxietyapp.game.SurveyAnswer;
 import ie.ul.postgrad.socialanxietyapp.game.item.ChestItem;
 import ie.ul.postgrad.socialanxietyapp.game.item.ItemFactory;
 import ie.ul.postgrad.socialanxietyapp.game.item.WeaponFactory;
@@ -27,7 +30,7 @@ import ie.ul.postgrad.socialanxietyapp.game.item.WeaponItem;
 
 public class DBHelper extends SQLiteOpenHelper {
 
-    private static final int DATABASE_VERSION = 54;
+    private static final int DATABASE_VERSION = 65;
 
     private static final String DATABASE_NAME = "AnxietyApp.db";
 
@@ -45,6 +48,7 @@ public class DBHelper extends SQLiteOpenHelper {
     private static final String PLAYERS_COLUMN_MONEY = "money";
     private static final String PLAYERS_COLUMN_MAX_HEALTH = "max_health";
     private static final String PLAYERS_COLUMN_CURR_HEALTH = "curr_health";
+    private static final String PLAYERS_COLUMN_BASE_SWORD_ID = "sword_id";
 
     private static final String ITEM_TABLE_NAME = "item";
     private static final String ITEM_COLUMN_PLAYER_ID = "player_id";
@@ -88,11 +92,13 @@ public class DBHelper extends SQLiteOpenHelper {
     private static final String SURVEY_COLUMN_PLAYER_ID = "player_id";
     private static final String SURVEY_COLUMN_QUESTION = "question";
     private static final String SURVEY_COLUMN_ANSWER = "answer";
+    private static final String SURVEY_COLUMN_DATE = "date";
 
     private static final String STATS_TABLE_NAME = "player_stats";
     private static final String STATS_COLUMN_PLAYER_ID = "player_id";
     private static final String STATS_COLUMN_WINS = "win_count";
     private static final String STATS_COLUMN_CHESTS_OPENED = "chests_opened";
+    private static final String STATS_TOTAL_STEPS = "total_steps";
 
     private static final String[] TABLES = {USER_TABLE_NAME, PLAYERS_TABLE_NAME, ITEM_TABLE_NAME, WEAPON_TABLE_NAME, CHEST_TABLE_NAME, TRAVEL_TABLE_NAME, AVATAR_TABLE_NAME, LOCATION_TABLE_NAME, SURVEY_TABLE_NAME, STATS_TABLE_NAME};
 
@@ -106,15 +112,15 @@ public class DBHelper extends SQLiteOpenHelper {
 
     public void onCreate(SQLiteDatabase db) {
         db.execSQL("CREATE TABLE " + USER_TABLE_NAME + " (id text primary key, name text, email text, password text)");
-        db.execSQL("CREATE TABLE " + PLAYERS_TABLE_NAME + " (id text primary key, name text, xp integer, level integer, money integer, max_health integer, curr_health integer, villages_found integer, win_count integer)");
+        db.execSQL("CREATE TABLE " + PLAYERS_TABLE_NAME + " (id text primary key, name text, xp integer, level integer, money integer, max_health integer, curr_health integer, villages_found integer, win_count integer, sword_id text)");
         db.execSQL("CREATE TABLE " + ITEM_TABLE_NAME + " (player_id text key, item_id integer, quantity integer)");
         db.execSQL("CREATE TABLE " + WEAPON_TABLE_NAME + " (player_id text key, weapon_uuid text, weapon_id integer, curr_health integer, equipped integer)");
         db.execSQL("CREATE TABLE " + CHEST_TABLE_NAME + " (player_id text key, chest_uuid text, chest_id integer, distance_left real)");
         db.execSQL("CREATE TABLE " + TRAVEL_TABLE_NAME + " (player_id text key, creation_date text, step_count integer, distance integer)");
         db.execSQL("CREATE TABLE " + AVATAR_TABLE_NAME + " (player_id text key, shirt_color integer, skin_color integer, hair_type integer, hair_color integer)");
         db.execSQL("CREATE TABLE " + LOCATION_TABLE_NAME + " (player_id text key, lat real, lng real, type integer, timeofvisit long)");
-        db.execSQL("CREATE TABLE " + SURVEY_TABLE_NAME + " (player_id text key, question integer, answer integer)");
-        db.execSQL("CREATE TABLE " + STATS_TABLE_NAME + " (player_id text key, win_count integer, chests_opened integer)");
+        db.execSQL("CREATE TABLE " + SURVEY_TABLE_NAME + " (player_id text key, question integer, answer integer, date text)");
+        db.execSQL("CREATE TABLE " + STATS_TABLE_NAME + " (player_id text key, win_count integer, chests_opened integer, total_steps integer)");
     }
 
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
@@ -149,6 +155,7 @@ public class DBHelper extends SQLiteOpenHelper {
         contentValues.put(PLAYERS_COLUMN_MONEY, player.getMoney());
         contentValues.put(PLAYERS_COLUMN_MAX_HEALTH, player.getMaxHealth());
         contentValues.put(PLAYERS_COLUMN_CURR_HEALTH, player.getCurrHealth());
+        contentValues.put(PLAYERS_COLUMN_BASE_SWORD_ID, player.getBaseSword());
         db.insert(PLAYERS_TABLE_NAME, null, contentValues);
         return true;
     }
@@ -220,6 +227,7 @@ public class DBHelper extends SQLiteOpenHelper {
         contentValues.put(SURVEY_COLUMN_PLAYER_ID, player_id);
         contentValues.put(SURVEY_COLUMN_QUESTION, question);
         contentValues.put(SURVEY_COLUMN_ANSWER, answer);
+        contentValues.put(SURVEY_COLUMN_DATE, DateFormat.getDateTimeInstance().format(new Date()));
         db.insert(SURVEY_TABLE_NAME, null, contentValues);
         return true;
     }
@@ -230,6 +238,7 @@ public class DBHelper extends SQLiteOpenHelper {
         contentValues.put(STATS_COLUMN_PLAYER_ID, id);
         contentValues.put(STATS_COLUMN_CHESTS_OPENED, 0);
         contentValues.put(STATS_COLUMN_WINS, 0);
+        contentValues.put(STATS_TOTAL_STEPS, 0);
         db.insert(STATS_TABLE_NAME, null, contentValues);
         return true;
     }
@@ -314,6 +323,7 @@ public class DBHelper extends SQLiteOpenHelper {
         contentValues.put(STATS_COLUMN_PLAYER_ID, player_id);
         contentValues.put(STATS_COLUMN_WINS, stats.getWins());
         contentValues.put(STATS_COLUMN_CHESTS_OPENED, stats.getChestsOpened());
+        contentValues.put(STATS_TOTAL_STEPS, stats.getTotalSteps());
         db.update(STATS_TABLE_NAME, contentValues, STATS_COLUMN_PLAYER_ID + " = ? ", new String[]{player_id});
         return true;
     }
@@ -330,6 +340,20 @@ public class DBHelper extends SQLiteOpenHelper {
         cursor.close();
         db.close();
         return avatar;
+    }
+
+    public ArrayList<SurveyAnswer> getSurveyAnswers() {
+        ArrayList<SurveyAnswer> answers = new ArrayList<>();
+        db = this.getReadableDatabase();
+        Cursor res = getSurveyData(getPlayer().getId());
+        res.moveToFirst();
+
+        while (!res.isAfterLast()) {
+            answers.add(new SurveyAnswer(res.getInt(res.getColumnIndex(SURVEY_COLUMN_QUESTION)), res.getInt(res.getColumnIndex(SURVEY_COLUMN_ANSWER)), res.getString(res.getColumnIndex(SURVEY_COLUMN_DATE))));
+            res.moveToNext();
+        }
+        res.close();
+        return answers;
     }
 
     public Cursor getSurveyData(String player_id) {
@@ -386,7 +410,8 @@ public class DBHelper extends SQLiteOpenHelper {
                     Integer.parseInt(res.getString(res.getColumnIndex(PLAYERS_COLUMN_LEVEL))),
                     Integer.parseInt(res.getString(res.getColumnIndex(PLAYERS_COLUMN_MONEY))),
                     Integer.parseInt(res.getString(res.getColumnIndex(PLAYERS_COLUMN_MAX_HEALTH))),
-                    Integer.parseInt(res.getString(res.getColumnIndex(PLAYERS_COLUMN_CURR_HEALTH))));
+                    Integer.parseInt(res.getString(res.getColumnIndex(PLAYERS_COLUMN_CURR_HEALTH))),
+                    res.getString(res.getColumnIndex(PLAYERS_COLUMN_BASE_SWORD_ID)));
             res.moveToNext();
         }
         res.close();
@@ -469,7 +494,8 @@ public class DBHelper extends SQLiteOpenHelper {
         while (!res.isAfterLast()) {
             stats = new Stats(
                     Integer.parseInt(res.getString(res.getColumnIndex(STATS_COLUMN_WINS))),
-                    Integer.parseInt(res.getString(res.getColumnIndex(STATS_COLUMN_CHESTS_OPENED))));
+                    Integer.parseInt(res.getString(res.getColumnIndex(STATS_COLUMN_CHESTS_OPENED))),
+                    Integer.parseInt(res.getString(res.getColumnIndex(STATS_TOTAL_STEPS))));
             res.moveToNext();
         }
         res.close();
@@ -640,6 +666,13 @@ public class DBHelper extends SQLiteOpenHelper {
             System.out.println(table);
             System.out.println(getTableAsString(this.getReadableDatabase(), table));
             System.out.println();
+        }
+    }
+
+    public void clearTables() {
+        db = this.getWritableDatabase();
+        for (String table : TABLES) {
+            db.execSQL("delete from " + table);
         }
     }
 }

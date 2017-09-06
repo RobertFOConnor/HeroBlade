@@ -32,7 +32,7 @@
             android:layout_width="1dp"
             android:layout_height="match_parent"
             android:layout_margin="5dp"
-            android:background="@color/black" />
+            android:background="@color/gray" />
 
         <Button
             android:id="@+id/hair_color_button"
@@ -46,7 +46,7 @@
             android:layout_width="1dp"
             android:layout_height="match_parent"
             android:layout_margin="5dp"
-            android:background="@color/black" />
+            android:background="@color/gray" />
 
         <Button
             android:id="@+id/skin_color_button"
@@ -60,7 +60,7 @@
             android:layout_width="1dp"
             android:layout_height="match_parent"
             android:layout_margin="5dp"
-            android:background="@color/black" />
+            android:background="@color/gray" />
 
         <Button
             android:id="@+id/shirt_color_button"
@@ -69,17 +69,6 @@
             android:layout_weight="0.25"
             android:background="@color/transparent"
             android:text="@string/shirt_color" />
-
-    </LinearLayout>
-
-    <LinearLayout
-        android:id="@+id/avatar_view"
-        android:layout_width="300dp"
-        android:layout_height="500dp"
-        android:layout_centerHorizontal="true"
-        android:layout_centerVertical="true"
-        android:layout_gravity="center"
-        android:orientation="vertical">
 
     </LinearLayout>
 
@@ -98,4 +87,15 @@
         android:textColor="@color/white"
         android:textSize="16sp" />
 
+    <LinearLayout
+        android:id="@+id/avatar_view"
+        android:layout_width="300dp"
+        android:layout_height="match_parent"
+        android:layout_above="@id/continue_button"
+        android:layout_below="@id/style_menu"
+        android:layout_centerHorizontal="true"
+        android:layout_centerVertical="true"
+        android:layout_gravity="center"
+        android:orientation="vertical"
+        android:padding="10dp" />
 </RelativeLayout>

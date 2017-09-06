@@ -75,6 +75,14 @@ public class WeaponItem extends Item {
         return equipped;
     }
 
+    public String getEquippedAsString() {
+        if(equipped) {
+            return "1";
+        } else {
+            return "0";
+        }
+    }
+
     public void setEquipped(boolean equipped) {
         this.equipped = equipped;
     }

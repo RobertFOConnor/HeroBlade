@@ -1,4 +1,5 @@
 android {
+    useLibrary 'org.apache.http.legacy'
     buildToolsVersion '25.0.3'
     compileSdkVersion 25
     sourceSets {
@@ -19,8 +20,10 @@ android {
     }
     defaultConfig {
         applicationId "ie.ul.postgrad.socialanxietyapp"
-        minSdkVersion 19
+        minSdkVersion 15
         targetSdkVersion 25
+        versionCode 5
+        versionName "1.4"
         multiDexEnabled true
     }
 
@@ -136,5 +139,6 @@ dependencies {
     compile 'com.android.support.constraint:constraint-layout:1.0.0-beta4'
     compile 'com.android.support:support-v4:25.3.1'
     compile 'com.android.support:recyclerview-v7:25.3.1'
+    compile 'eu.the4thfloor.volley:com.android.volley:2015.05.28'
 }
 apply plugin: 'com.google.gms.google-services'

@@ -56,12 +56,57 @@
                     android:layout_height="wrap_content"
                     android:layout_weight=".33"
                     android:src="@drawable/ic_notify" />
-
-
             </LinearLayout>
 
 
         </android.support.v7.widget.Toolbar>
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentBottom="true"
+            android:layout_alignParentEnd="true"
+            android:orientation="vertical"
+            android:paddingBottom="10dp"
+            android:paddingEnd="10dp"
+            android:paddingStart="10dp">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="bottom"
+                android:gravity="bottom"
+                android:orientation="horizontal">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/level_small"
+                    android:textAllCaps="true"
+                    android:textColor="@color/white"
+                    android:textSize="18sp"
+                    android:textStyle="bold" />
+
+                <TextView
+                    android:id="@+id/level_num"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="14"
+                    android:textAllCaps="true"
+                    android:textColor="@color/white"
+                    android:textSize="50sp"
+                    android:textStyle="bold" />
+
+            </LinearLayout>
+
+            <ProgressBar
+                android:id="@+id/xp_bar"
+                style="@style/Base.Widget.AppCompat.ProgressBar.Horizontal"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:progressDrawable="@drawable/xp_bar" />
+
+        </LinearLayout>
 
         <Button
             android:id="@+id/steps_text"
@@ -70,7 +115,8 @@
             android:layout_alignParentBottom="true"
             android:layout_alignParentEnd="true"
             android:gravity="center"
-            android:text="Steps: " />
+            android:text="Steps: "
+            android:visibility="gone" />
 
         <Button
             android:id="@+id/distance_text"
@@ -79,7 +125,9 @@
             android:layout_alignParentBottom="true"
             android:layout_alignParentStart="true"
             android:gravity="center"
-            android:text="Distance: " />
+            android:text="Distance: "
+            android:visibility="gone" />
+
 
     </ie.ul.postgrad.socialanxietyapp.map.MapWrapperLayout>
 

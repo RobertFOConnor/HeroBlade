@@ -127,6 +127,9 @@ public class Avatar {
 
         drawer.setColor(1, 1, 1, 1);
         drawer.draw(player.getObject("eyes"));
+        if (player.getAnimation().name.equals("sword_idle")) {
+            drawer.draw(player.getObject("sword"));
+        }
     }
 
     private static float[] RGB(float r, float g, float b) {

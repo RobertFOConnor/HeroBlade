@@ -1,7 +1,10 @@
 package ie.ul.postgrad.socialanxietyapp.screens;
 
 import android.content.Intent;
+import android.graphics.PixelFormat;
+import android.opengl.GLSurfaceView;
 import android.os.Bundle;
+import android.view.SurfaceView;
 import android.view.View;
 import android.widget.LinearLayout;
 
@@ -24,6 +27,11 @@ public class AvatarCustomizationActivity extends AndroidApplication implements L
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_avatar_customization);
+
+        LinearLayout avatarBox = (LinearLayout) findViewById(R.id.avatar_view);
+        int width = (avatarBox.getHeight() / 5) * 3;
+        avatarBox.setMinimumWidth(width);
+
         findViewById(R.id.hair_style_button).setOnClickListener(this);
         findViewById(R.id.hair_color_button).setOnClickListener(this);
         findViewById(R.id.skin_color_button).setOnClickListener(this);

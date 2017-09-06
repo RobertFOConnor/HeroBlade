@@ -30,9 +30,10 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
+                android:textStyle="bold"
                 android:gravity="center"
                 android:text="@string/chest_unlock_title"
-                android:textColor="@color/text_dark"
+                android:textColor="@color/gray"
                 android:textSize="20sp" />
 
             <TextView
@@ -42,7 +43,26 @@
                 android:gravity="center"
                 android:paddingTop="20dp"
                 android:text="@string/scroll_for_rewards"
-                android:textColor="@color/text_dark"
+                android:textColor="@color/gray"
+                android:textStyle="bold" />
+
+            <View
+                android:layout_marginTop="20dp"
+                android:layout_marginBottom="20dp"
+                android:padding="10dp"
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:background="@color/gray"/>
+
+            <TextView
+                android:id="@+id/cash_text"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:gravity="center"
+                android:textSize="30sp"
+                android:text="+$300"
+                android:textColor="@color/green"
                 android:textStyle="bold" />
 
             <LinearLayout

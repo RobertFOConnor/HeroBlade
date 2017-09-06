@@ -27,12 +27,13 @@ public class NavigationDrawerListAdapter extends BaseAdapter {
 
     //Menu item indexes.
     public static final int PROFILE = 0;
-    public static final int INVENTORY = 1;
-    public static final int WEAPONS = 2;
-    public static final int CRAFTING = 3;
-    public static final int INDEX = 4;
-    public static final int ACHIEVEMENTS = 5;
-    public static final int SETTINGS = 6;
+    public static final int PROFILE_TEXT = 1;
+    public static final int INVENTORY = 2;
+    public static final int WEAPONS = 3;
+    public static final int CRAFTING = 4;
+    public static final int INDEX = 5;
+    public static final int ACHIEVEMENTS = 6;
+    public static final int SETTINGS = 7;
 
     public NavigationDrawerListAdapter(Context context, String[] titles, int[] iconIds) {
         this.titles = titles;

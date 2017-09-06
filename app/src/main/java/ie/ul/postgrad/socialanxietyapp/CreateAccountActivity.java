@@ -50,17 +50,17 @@ public class CreateAccountActivity extends AppCompatActivity {
                                     // the auth state listener will be notified and logic to handle the
                                     // signed in user can be handled in the listener.
                                     if (!task.isSuccessful()) {
-                                        Toast.makeText(CreateAccountActivity.this, "Authentication failed." + task.getException(),
+                                        App.showToast(CreateAccountActivity.this, "Authentication failed." + task.getException(),
                                                 Toast.LENGTH_SHORT).show();
                                     } else {
-                                        Toast.makeText(CreateAccountActivity.this, "Account Created!", Toast.LENGTH_SHORT).show();
+                                        App.showToast(CreateAccountActivity.this, "Account Created!");
                                         startActivity(new Intent(getApplicationContext(), MapsActivity.class));
                                     }
                                 }
                             });
 
                 } else {
-                    Toast.makeText(CreateAccountActivity.this, getString(R.string.error_empty), Toast.LENGTH_SHORT).show();
+                    App.showToast(CreateAccountActivity.this, getString(R.string.error_empty));
                 }
             }
         });

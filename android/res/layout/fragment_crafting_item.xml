@@ -5,8 +5,8 @@
     android:gravity="center_vertical"
     android:orientation="horizontal"
     android:paddingBottom="10dp"
-    android:paddingLeft="30dp"
-    android:paddingRight="30dp"
+    android:paddingLeft="10dp"
+    android:paddingRight="10dp"
     android:paddingTop="10dp">
 
     <ImageView
@@ -30,6 +30,14 @@
             android:textStyle="bold" />
 
         <TextView
+            android:id="@+id/item_desc"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Axe"
+            android:textSize="14sp" />
+
+        <TextView
+            android:layout_marginTop="5dp"
             android:id="@+id/item_req"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"

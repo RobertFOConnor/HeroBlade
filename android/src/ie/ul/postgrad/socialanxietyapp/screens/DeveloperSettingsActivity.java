@@ -17,9 +17,9 @@ import ie.ul.postgrad.socialanxietyapp.adapter.SettingsListAdapter;
 import ie.ul.postgrad.socialanxietyapp.game.GameManager;
 import ie.ul.postgrad.socialanxietyapp.sync.SyncManager;
 
-public class SettingsActivity extends AppCompatActivity {
+public class DeveloperSettingsActivity extends AppCompatActivity {
 
-    private String[] menu = new String[]{"Log Out", "Test Mode", "Test Chest", "Erase Data", "Test XP", "Test Remote Server"};
+    private String[] menu = new String[]{"Log Out", "Test Mode", "Test Chest", "Erase Data", "Test XP", "Test Remote Server", "Open player search"};
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -44,7 +44,7 @@ public class SettingsActivity extends AppCompatActivity {
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 switch (position) {
                     case 0:
-                        App.getInstance().getGoogleApiHelperInstance().disconnect();
+                        //App.getInstance().getGoogleApiHelperInstance().disconnect();
                         break;
                     case 1:
                         if (GameManager.TESTING) {
@@ -74,8 +74,10 @@ public class SettingsActivity extends AppCompatActivity {
                     case 5:
                         SyncManager.getInstance().forceSync();
                         App.showToast(getApplicationContext(), "Testing remote server, check netbeans...");
+                        break;
+                    case 6:
 
-                        Intent browserIntent = new Intent(Intent.ACTION_VIEW, Uri.parse("http://www.google.com"));
+                        Intent browserIntent = new Intent(Intent.ACTION_VIEW, Uri.parse("http://193.1.99.30:8080/AnxietyAppServer/"));
                         startActivity(browserIntent);
                         break;
                 }

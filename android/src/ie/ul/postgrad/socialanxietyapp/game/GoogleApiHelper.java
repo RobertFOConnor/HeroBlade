@@ -14,8 +14,9 @@ import com.google.android.gms.games.Games;
 import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.location.places.Places;
 
+import ie.ul.postgrad.socialanxietyapp.App;
 import ie.ul.postgrad.socialanxietyapp.R;
-import ie.ul.postgrad.socialanxietyapp.screens.AvatarCustomizationActivity;
+import ie.ul.postgrad.socialanxietyapp.screens.InputNameActvity;
 import ie.ul.postgrad.socialanxietyapp.screens.MapsActivity;
 
 /**
@@ -24,14 +25,17 @@ import ie.ul.postgrad.socialanxietyapp.screens.MapsActivity;
 
 public class GoogleApiHelper implements GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener, LocationListener {
     private static final String TAG = GoogleApiHelper.class.getSimpleName();
-    Context context;
-    GoogleApiClient mGoogleApiClient;
-    boolean GAMES = false;
+    private Context context;
+    private GoogleApiClient mGoogleApiClient;
+    private boolean GAMES = true;
 
     public GoogleApiHelper(Context context) {
         this.context = context;
         buildGoogleApiClient();
-        //connect();
+    }
+
+    public void setmGoogleApiClient(GoogleApiClient mGoogleApiClient) {
+        this.mGoogleApiClient = mGoogleApiClient;
     }
 
     public GoogleApiClient getGoogleApiClient() {
@@ -44,6 +48,7 @@ public class GoogleApiHelper implements GoogleApiClient.ConnectionCallbacks, Goo
                 advanceScreen();
             } else {
                 mGoogleApiClient.connect();
+                System.out.println("GOOGLE API CONNECTING");
             }
         }
     }
@@ -66,18 +71,20 @@ public class GoogleApiHelper implements GoogleApiClient.ConnectionCallbacks, Goo
         if (GAMES) {
             mGoogleApiClient = new GoogleApiClient.Builder(context)
                     .addConnectionCallbacks(this)
+                    .addOnConnectionFailedListener(this)
                     .addApi(LocationServices.API)
                     .addApi(Places.GEO_DATA_API)
                     .addApi(Places.PLACE_DETECTION_API)
                     .addApi(Games.API).addScope(Games.SCOPE_GAMES)
                     .build();
+            System.out.println("GOOGLE API BUILT");
         } else {
             mGoogleApiClient = new GoogleApiClient.Builder(context)
                     .addConnectionCallbacks(this)
+                    .addOnConnectionFailedListener(this)
                     .addApi(LocationServices.API)
                     .addApi(Places.GEO_DATA_API)
                     .addApi(Places.PLACE_DETECTION_API)
-                    //.addApi(Games.API).addScope(Games.SCOPE_GAMES)
                     .build();
         }
 
@@ -97,6 +104,7 @@ public class GoogleApiHelper implements GoogleApiClient.ConnectionCallbacks, Goo
     public void onConnectionFailed(@NonNull ConnectionResult result) {
         Log.d(TAG, context.getString(R.string.play_services_failed_connection) + result.getErrorCode());
         // Put code here to display the sign-in button
+        App.showToast(context, "Sign in failed.");
     }
 
     @Override
@@ -106,23 +114,7 @@ public class GoogleApiHelper implements GoogleApiClient.ConnectionCallbacks, Goo
     }
 
     private void advanceScreen() {
-        boolean userExists;
-        if (GAMES) {
-            String playerId = Games.Players.getCurrentPlayerId(mGoogleApiClient);
-            String name = Games.Players.getCurrentPlayer(mGoogleApiClient).getDisplayName();
 
-            userExists = GameManager.getInstance().initDatabaseHelper(context, playerId, name, "guest@guest.com", "");
-        } else {
-            userExists = GameManager.getInstance().initDatabaseHelper(context, "guest1", "Guest", "guest@guest.com", "guest");
-        }
-
-        if (userExists) {
-            Intent i = new Intent(context, MapsActivity.class);
-            context.startActivity(i);
-        } else {
-            Intent i = new Intent(context, AvatarCustomizationActivity.class);
-            context.startActivity(i);
-        }
     }
 
     @Override

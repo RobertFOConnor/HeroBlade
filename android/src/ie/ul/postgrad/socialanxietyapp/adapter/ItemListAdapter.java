@@ -55,7 +55,7 @@ public class ItemListAdapter extends ArrayAdapter<Item> {
                 viewHolder.img.setImageResource(item.getImageID());
             }
 
-            String costText = "$" + item.getWorth();
+            String costText = getContext().getString(R.string.cash_display, item.getWorth());
             viewHolder.cost.setText(costText);
         }
 

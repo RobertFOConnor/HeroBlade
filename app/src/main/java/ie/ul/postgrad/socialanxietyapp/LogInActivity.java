@@ -49,18 +49,18 @@ public class LogInActivity extends AppCompatActivity implements View.OnClickList
                             // the auth state listener will be notified and logic to handle the
                             // signed in user can be handled in the listener.
                             if (!task.isSuccessful()) {
-                                Toast.makeText(LogInActivity.this, getString(R.string.authentication_failed) + task.getException(),
+                                App.showToast(LogInActivity.this, getString(R.string.authentication_failed) + task.getException(),
                                         Toast.LENGTH_SHORT).show();
                             } else {
                                 startActivity(new Intent(LogInActivity.this, MapsActivity.class));
-                                Toast.makeText(LogInActivity.this, getString(R.string.login_success), Toast.LENGTH_SHORT).show();
+                                App.showToast(LogInActivity.this, getString(R.string.login_success));
                                 finish();
                             }
                         }
                     });
 
         } else {
-            Toast.makeText(LogInActivity.this, getString(R.string.error_empty), Toast.LENGTH_SHORT).show();
+            App.showToast(LogInActivity.this, getString(R.string.error_empty));
         }
     }
 
