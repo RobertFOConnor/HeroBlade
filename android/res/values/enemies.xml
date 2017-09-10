@@ -9,7 +9,7 @@
     </array>
 
     <array name="enemy_1">
-        <item name="name">Giant Spider</item>
+        <item name="name">Steve</item>
         <item name="base_level">1</item>
         <item name="type">GRASS</item>
         <item name="can_poison">1</item>
@@ -17,7 +17,7 @@
     </array>
 
     <array name="enemy_2">
-        <item name="name">Skeleton</item>
+        <item name="name">Rick</item>
         <item name="base_level">2</item>
         <item name="type">GRASS</item>
         <item name="can_poison">1</item>
@@ -25,7 +25,7 @@
     </array>
 
     <array name="enemy_3">
-        <item name="name">Fire Demon</item>
+        <item name="name">Joey</item>
         <item name="base_level">1</item>
         <item name="type">FIRE</item>
         <item name="can_poison">1</item>
@@ -33,7 +33,7 @@
     </array>
 
     <array name="enemy_4">
-        <item name="name">Flame Bot</item>
+        <item name="name">Harvey</item>
         <item name="base_level">2</item>
         <item name="type">GRASS</item>
         <item name="can_poison">1</item>
@@ -41,7 +41,7 @@
     </array>
 
     <array name="enemy_5">
-        <item name="name">Shark Knight</item>
+        <item name="name">Johnson</item>
         <item name="base_level">3</item>
         <item name="type">WATER</item>
         <item name="can_poison">1</item>
@@ -49,7 +49,7 @@
     </array>
 
     <array name="enemy_6">
-        <item name="name">Evil Crab</item>
+        <item name="name">Paulie</item>
         <item name="base_level">1</item>
         <item name="type">WATER</item>
         <item name="can_poison">1</item>

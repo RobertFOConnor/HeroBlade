@@ -76,7 +76,7 @@ public class ItemSelectActivity extends AppCompatActivity {
                         Intent returnIntent = new Intent();
                         returnIntent.putExtra(getString(R.string.result), selectedWeapon.getUUID());
 
-                        if (currWeaponUUID != null) {
+                        if (!currWeaponUUID.equals("")) {
                             if (currWeaponUUID.equals(selectedWeapon.getUUID())) { //Check if they already equipped this weapon.
                                 setResult(Activity.RESULT_CANCELED, returnIntent);
                                 finish();

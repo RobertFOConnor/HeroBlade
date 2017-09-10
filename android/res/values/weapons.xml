@@ -561,7 +561,7 @@
     </array>
 
     <array name="weapon_56">
-        <item name="name">Epic Staff of the Woods</item>
+        <item name="name">Epic Sword of the Woods</item>
         <item name="desc">A weapon lost to the ages, but it\'s power still lingers.</item>
         <item name="type">GRASS</item>
         <item name="worth">1500</item>

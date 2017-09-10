@@ -38,7 +38,6 @@ public class LevelUpActivity extends AppCompatActivity {
                 finish();
             }
         });
-        AchievementManager.checkLevelAchievements(this);
     }
 
     private void addChestRewardView() {

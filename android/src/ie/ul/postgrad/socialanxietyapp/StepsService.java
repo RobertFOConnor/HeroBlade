@@ -55,8 +55,6 @@ public class StepsService extends Service implements SensorEventListener {
                 mStepDetectorSensor = mSensorManager.getDefaultSensor(Sensor.TYPE_STEP_COUNTER);
                 mSensorManager.registerListener(this, mStepDetectorSensor, SensorManager.SENSOR_DELAY_NORMAL);
                 usingDetector = false;
-            } else {
-                App.showToast(getApplicationContext(), getString(R.string.no_steps));
             }
         }
 

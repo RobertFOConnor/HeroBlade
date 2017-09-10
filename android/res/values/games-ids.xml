@@ -1,5 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
-<!--
+<?xml version="1.0" encoding="utf-8"?><!--
 Google Play game services IDs.
 Save this file as res/values/games-ids.xml in your project.
 -->
@@ -22,4 +21,6 @@ Save this file as res/values/games-ids.xml in your project.
     <string name="achievement_experience_is_knowledge">CgkI_s3AycUTEAIQDg</string>
     <string name="achievement_quartersized_hero">CgkI_s3AycUTEAIQDw</string>
     <string name="achievement_impossible_hero">CgkI_s3AycUTEAIQEA</string>
+    <!-- leaderboard Top Players -->
+    <string name="leaderboard_top_players">CgkI_s3AycUTEAIQEQ</string>
 </resources>

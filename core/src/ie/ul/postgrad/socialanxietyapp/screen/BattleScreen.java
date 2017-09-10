@@ -6,10 +6,12 @@ import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
+import com.brashmonkey.spriter.Animation;
 import com.brashmonkey.spriter.Data;
 import com.brashmonkey.spriter.Drawer;
 import com.brashmonkey.spriter.Entity;
 import com.brashmonkey.spriter.Loader;
+import com.brashmonkey.spriter.Mainline;
 import com.brashmonkey.spriter.Player;
 import com.brashmonkey.spriter.SCMLReader;
 
@@ -27,7 +29,6 @@ import static ie.ul.postgrad.socialanxietyapp.MainGame.WIDTH;
 
 public class BattleScreen implements Screen {
 
-    private Texture background1;
     private int pos = 0;
 
     private Texture bg;
@@ -35,9 +36,11 @@ public class BattleScreen implements Screen {
     private Player player, npcPlayer;
     private SpriteBatch sb;
     private Avatar avatar, enemyAvatar;
+    private int playerSwordId = 1;
 
     public BattleScreen(LibGdxInterface libGdxInterface, SpriteBatch sb) {
         avatar = libGdxInterface.getAvatar();
+        playerSwordId = libGdxInterface.getNPCId() - 1;
         enemyAvatar = new Avatar();
         this.sb = sb;
     }
@@ -46,8 +49,6 @@ public class BattleScreen implements Screen {
     public void create() {
         ShapeRenderer renderer = new ShapeRenderer();
         bg = new Texture("convo_bg.png");
-
-        background1 = new Texture("battle_bg.png");
 
         FileHandle handle = Gdx.files.internal("avatar/avatar.scml");
         SCMLReader reader = new SCMLReader(handle.read());
@@ -71,7 +72,7 @@ public class BattleScreen implements Screen {
 
         npcPlayer.setObject("hair", 1f, 1, enemyAvatar.getHairtype());
         player.setObject("hair", 1f, 1, avatar.getHairtype()); //set correct hair style for player avatar
-        //player.setObject("sword", 1f, 7, 1);
+        player.setObject("sword", 1f, 8, playerSwordId);
 
         //pos-=100;
 
@@ -86,8 +87,6 @@ public class BattleScreen implements Screen {
         sb.begin();
         drawer.setColor(1, 1, 1, 1);
         sb.draw(bg, 0, 0, WIDTH, HEIGHT);
-        //sb.draw(background1, pos, 0, WIDTH, HEIGHT);
-        //sb.draw(background1, pos + WIDTH, 0, WIDTH, HEIGHT);
         avatar.drawAvatar(drawer, player);
         enemyAvatar.drawAvatar(drawer, npcPlayer);
         sb.end();
@@ -104,5 +103,47 @@ public class BattleScreen implements Screen {
         player.setAnimation("sword_idle");
 
         return player;
+    }
+
+    public void swordStrike(boolean isPlayer) {
+        if(isPlayer) {
+            swordStrike(player);
+        } else {
+            swordStrike(npcPlayer);
+        }
+    }
+
+    private void swordStrike(final Player p) {
+        p.setAnimation("sword_strike");
+        p.addListener(new Player.PlayerListener() {
+            @Override
+            public void animationFinished(Animation animation) {
+                p.setAnimation("sword_idle");
+            }
+
+            @Override
+            public void animationChanged(Animation oldAnim, Animation newAnim) {
+
+            }
+
+            @Override
+            public void preProcess(Player player) {
+
+            }
+
+            @Override
+            public void postProcess(Player player) {
+
+            }
+
+            @Override
+            public void mainlineKeyChanged(Mainline.Key prevKey, Mainline.Key newKey) {
+
+            }
+        });
+    }
+
+    public void updateWeapon(int id) {
+        playerSwordId = id;
     }
 }

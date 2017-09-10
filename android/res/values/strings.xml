@@ -48,7 +48,7 @@
     <string name="name_with_level">%1$s LVL: %2$d</string>
     <string name="requires">Requires: </string>
     <string name="enemies_left">Enemies Left: %1$d</string>
-    <string name="enemy_appeared">A wild %1$s has appeared.</string>
+    <string name="enemy_appeared">Avoidroid %1$s has appeared.</string>
     <string name="attack_missed">%1$s tried to attack but missed!</string>
     <string name="pass_out">%1$s has lost the battle. %1$s has passed out.</string>
     <string name="out_of_weapons">%1$s is out of weapons. %1$s has lost.</string>
@@ -142,6 +142,7 @@
     <string name="nav_item_3">Crafting</string>
     <string name="nav_item_4">Weapon Index</string>
     <string name="nav_item_5">Achievements</string>
+    <string name="nav_item_6">Leaderboard</string>
 
     <string-array name="nav_items">
         <item>@string/nav_item_0</item>
@@ -150,6 +151,7 @@
         <item>@string/nav_item_3</item>
         <item>@string/nav_item_4</item>
         <item>@string/nav_item_5</item>
+        <item>@string/nav_item_6</item>
     </string-array>
 
     <string name="question_part_2">Do you ever get that?</string>
@@ -160,13 +162,16 @@
     <string name="shirt_color">Shirt Colour</string>
 
 
-    <string name="game_tip_1">Looking to earn more XP? Talk to villagers for some easy points.</string>
-    <string name="game_tip_2">Treasure chests will always contain swords and cash. Rarer chests contain better weapons.</string>
-    <string name="game_tip_3">Crafting items gives you an advantage in battle, earns you XP and can be sold at a high price!</string>
-    <string name="game_tip_4">There are over 50 swords in the game. Can you collect them all?</string>
+    <string name="game_tip_1">Talk to villagers for some easy XP.</string>
+    <string name="game_tip_2">Treasure chests will always contain swords and cash.</string>
+    <string name="game_tip_3">Crafting items gives you an advantage in battle.</string>
+    <string name="game_tip_4">Everyone feels anxious sometimes, but don\'t let it stop you.</string>
     <string name="game_tip_5">Villages will restore all of your health. Blacksmiths will repair all your weapons.</string>
-    <string name="game_tip_6">Villages and Blacksmiths are founded near real world locations. Ask people where the to find the nearest shops or public buildings.</string>
-    <string name="game_tip_7">Try exploring new areas and locations. You never know where you might find a new village!</string>
+    <string name="game_tip_6">Pay attention to your breathing when under pressure.</string>
+    <string name="game_tip_7">Try exploring new areas and locations with some friends.</string>
+    <string name="game_tip_8">Stay true to yourself, and nothing will phase you.</string>
+    <string name="game_tip_9">Challenge yourself to enter new social situations everyday.</string>
+    <string name="game_tip_10">Try to be aware of negative thinking, it is your greatest enemy.</string>
 
     <string-array name="game_tips">
         <item>@string/game_tip_1</item>
@@ -176,6 +181,9 @@
         <item>@string/game_tip_5</item>
         <item>@string/game_tip_6</item>
         <item>@string/game_tip_7</item>
+        <item>@string/game_tip_8</item>
+        <item>@string/game_tip_9</item>
+        <item>@string/game_tip_10</item>
     </string-array>
 
 
@@ -192,6 +200,7 @@
     <string name="move_avatar">Move in the real world to move your avatar.</string>
 
     <string name="no_google_play_achievements">You must be signed in to Google Play to view achievements.</string>
+    <string name="no_google_play_leaderboard">You must be signed in to Google Play to view the leaderboard.</string>
 
     <string name="attack">Attack</string>
     <string name="use_item">Use\nItem</string>
@@ -203,6 +212,7 @@
     <string name="sell_items">Sell Items</string>
     <string name="buy_swords">Buy Swords</string>
     <string name="sell_swords">Sell Swords</string>
+    <string name="tips">Tips</string>
     <string name="leave">Leave</string>
 
     <string name="go_back">Back</string>

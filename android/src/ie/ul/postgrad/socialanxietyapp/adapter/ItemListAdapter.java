@@ -50,7 +50,7 @@ public class ItemListAdapter extends ArrayAdapter<Item> {
             viewHolder.descText.setText(item.getDescription());
 
             if (item instanceof WeaponItem) {
-                viewHolder.img.setImageResource(((WeaponItem) item).getTypeDrawableRes());
+                viewHolder.img.setImageResource(getContext().getResources().getIdentifier("weapon" + String.format("%04d", item.getId()), "drawable", getContext().getPackageName()));
             } else {
                 viewHolder.img.setImageResource(item.getImageID());
             }

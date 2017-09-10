@@ -8,7 +8,7 @@
 
     <array name="marker_enemy">
         <item name="name">Hostile Enemy</item>
-        <item name="Description">They could be trouble. Better have some weapons ready.</item>
+        <item name="Description">Better have some weapons ready.</item>
     </array>
 
     <array name="marker_village">

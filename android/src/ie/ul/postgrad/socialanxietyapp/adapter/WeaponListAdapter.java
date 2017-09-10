@@ -46,6 +46,7 @@ public class WeaponListAdapter extends ArrayAdapter<WeaponItem> {
             viewHolder.damageText = (TextView) convertView.findViewById(R.id.damage_field);
             viewHolder.durabilityText = (TextView) convertView.findViewById(R.id.health_field);
             viewHolder.img = (ImageView) convertView.findViewById(R.id.item_image);
+            viewHolder.imgType = (ImageView) convertView.findViewById(R.id.item_image_type);
             viewHolder.bg = (LinearLayout) convertView.findViewById(R.id.item_bg);
 
             convertView.setTag(viewHolder);
@@ -59,7 +60,8 @@ public class WeaponListAdapter extends ArrayAdapter<WeaponItem> {
         viewHolder.healthBar.setProgress(weaponItem.getCurrHealth());
         viewHolder.damageText.setText("DMG: " + weaponItem.getDamage());
         viewHolder.durabilityText.setText("DU: " + weaponItem.getCurrHealth() + "/" + weaponItem.getMaxHealth());
-        viewHolder.img.setImageResource(weaponItem.getTypeDrawableRes());
+        viewHolder.img.setImageResource(getContext().getResources().getIdentifier("weapon" + String.format("%04d", weaponItem.getId()), "drawable", getContext().getPackageName()));
+        viewHolder.imgType.setImageResource(weaponItem.getTypeDrawableRes());
 
         if (currWeaponUUID != null) {
             if (weaponItem.getUUID().equals(currWeaponUUID)) {
@@ -75,6 +77,7 @@ public class WeaponListAdapter extends ArrayAdapter<WeaponItem> {
         TextView durabilityText;
         ProgressBar healthBar;
         ImageView img;
+        ImageView imgType;
         LinearLayout bg;
     }
 }

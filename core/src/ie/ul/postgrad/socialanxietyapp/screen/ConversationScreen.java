@@ -2,7 +2,6 @@ package ie.ul.postgrad.socialanxietyapp.screen;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.files.FileHandle;
-import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
@@ -46,7 +45,12 @@ public class ConversationScreen implements Screen {
     @Override
     public void create() {
         ShapeRenderer renderer = new ShapeRenderer();
-        bg = new Texture("convo_bg.png");
+
+        if (libGdxInterface.getNPCId() == 2) {
+            bg = new Texture("convo_bg.png");
+        } else {
+            bg = new Texture("blacksmith.png");
+        }
 
         FileHandle handle = Gdx.files.internal("avatar/avatar.scml");
         SCMLReader reader = new SCMLReader(handle.read());
@@ -72,7 +76,7 @@ public class ConversationScreen implements Screen {
             currPlayer = npcPlayer;
         }
 
-        if(type.equals("SMITH")) {
+        if (type.equals("SMITH")) {
             bg = new Texture("blacksmith.png");
 
         }

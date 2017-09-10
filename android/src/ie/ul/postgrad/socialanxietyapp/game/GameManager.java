@@ -45,7 +45,7 @@ public class GameManager {
     private static final GameManager ourInstance = new GameManager();
 
     //Game stats (XP)
-    public static final int playerStartHP = 100;
+    public static final int playerStartHP = 50;
     public static final int playerLevelUpHP = 25;
     public static final int villageXP = 150;
     public static final int blacksmithXP = 150;
@@ -150,7 +150,6 @@ public class GameManager {
             weaponItem.setEquipped(true);
         }
         updateWeaponInDatabase(weaponItem);
-        AchievementManager.checkSwordAchievements(context);
     }
 
     private WeaponItem generateStartingWeapon(Context context) {

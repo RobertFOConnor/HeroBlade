@@ -33,8 +33,10 @@ public class MarkerFactory {
         TypedArray itemValues = context.getResources().obtainTypedArray(resId);
 
 
+        @SuppressWarnings("ResourceType")
         String name = itemValues.getString(0);
-        //String desc = itemValues.getString(1);
+        @SuppressWarnings("ResourceType")
+        String desc = itemValues.getString(1);
         int imageId = context.getResources().getIdentifier("marker_" + String.format("%04d", id), "drawable", context.getPackageName());
 
         ta.recycle();
@@ -52,7 +54,7 @@ public class MarkerFactory {
                 .position(latlng)
                 .title(name)
                 .icon(BitmapDescriptorFactory.fromResource(imageId))
-                .snippet(snippet));
+                .snippet(desc));
 
         m.setTag(new MarkerTag(id, true));
         return m;

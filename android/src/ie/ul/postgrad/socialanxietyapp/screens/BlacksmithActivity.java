@@ -31,7 +31,7 @@ public class BlacksmithActivity extends AndroidApplication implements LibGdxInte
     private LinearLayout questionOptions;//Options for answering npc questions
     private TextView dialogue;//npc dialog text
     private Button nextButton;
-    private boolean doneTalking = false;//true if users already answered npc question
+    private boolean talking = true;//true if users already answered npc question
     private boolean leaving = false;//true if user is leaving conversation
     public static ArrayList<Integer> itemIdsForSale;//ids of items user can buy from this village
 
@@ -96,7 +96,10 @@ public class BlacksmithActivity extends AndroidApplication implements LibGdxInte
                 startActivity(intent);
                 break;
             case R.id.talk_button:
-
+                talking = true;
+                showText();
+                String tips[] = getResources().getStringArray(R.array.game_tips);
+                scrollText(tips[(int) (Math.random() * tips.length)]);
                 break;
             case R.id.run_button:
                 leaving = true;

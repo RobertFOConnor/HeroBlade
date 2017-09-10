@@ -42,6 +42,7 @@ public class WeaponIndexAdapter extends ArrayAdapter<WeaponItem> {
             viewHolder.damageText = (TextView) convertView.findViewById(R.id.damage_field);
             viewHolder.durabilityText = (TextView) convertView.findViewById(R.id.health_field);
             viewHolder.img = (ImageView) convertView.findViewById(R.id.item_image);
+            viewHolder.imgType = (ImageView) convertView.findViewById(R.id.item_image_type);
             viewHolder.bg = (LinearLayout) convertView.findViewById(R.id.item_bg);
 
             convertView.setTag(viewHolder);
@@ -55,7 +56,8 @@ public class WeaponIndexAdapter extends ArrayAdapter<WeaponItem> {
             viewHolder.descText.setText(weaponItem.getDescription());
             viewHolder.damageText.setText("DMG: " + weaponItem.getDamage());
             viewHolder.durabilityText.setText("DU: " + weaponItem.getCurrHealth() + "/" + weaponItem.getMaxHealth());
-            viewHolder.img.setImageResource(weaponItem.getTypeDrawableRes());
+            viewHolder.img.setImageResource(getContext().getResources().getIdentifier("weapon" + String.format("%04d", weaponItem.getId()), "drawable", getContext().getPackageName()));
+            viewHolder.imgType.setImageResource(weaponItem.getTypeDrawableRes());
         }
 
         return convertView;
@@ -67,6 +69,7 @@ public class WeaponIndexAdapter extends ArrayAdapter<WeaponItem> {
         TextView damageText;
         TextView durabilityText;
         ImageView img;
+        ImageView imgType;
         LinearLayout bg;
     }
 }

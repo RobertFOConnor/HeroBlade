@@ -80,8 +80,7 @@
                     android:background="@color/transparent"
                     android:paddingBottom="20dp"
                     android:paddingTop="20dp"
-                    android:text="@string/talk"
-                    android:textColor="@color/white" />
+                    android:text="@string/talk" />
 
                 <View
                     android:layout_width="2dp"

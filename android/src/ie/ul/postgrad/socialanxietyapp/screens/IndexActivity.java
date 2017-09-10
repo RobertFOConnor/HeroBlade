@@ -32,8 +32,6 @@ public class IndexActivity extends AppCompatActivity {
             if (GameManager.getInstance().getFoundWeapons().contains(i)) {
                 weapons.add(WeaponFactory.buildWeapon(this, i));
                 System.out.println("MATCHED");
-            } else {
-                //weapons.add(null);
             }
         }
 

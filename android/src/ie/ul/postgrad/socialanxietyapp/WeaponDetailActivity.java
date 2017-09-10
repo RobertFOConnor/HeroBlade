@@ -2,16 +2,14 @@ package ie.ul.postgrad.socialanxietyapp;
 
 import android.app.Activity;
 import android.content.Intent;
-import android.os.Build;
 import android.os.Bundle;
-import android.support.v4.content.ContextCompat;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import ie.ul.postgrad.socialanxietyapp.game.GameManager;
 import ie.ul.postgrad.socialanxietyapp.game.item.WeaponItem;
@@ -45,6 +43,10 @@ public class WeaponDetailActivity extends AppCompatActivity {
         ((TextView) findViewById(R.id.damage)).setText("Damage: " + weapon.getDamage());
         ((TextView) findViewById(R.id.health)).setText("Health: " + weapon.getCurrHealth());
         ((TextView) findViewById(R.id.rarity)).setText("Rarity: " + weapon.getRarity());
+
+        ((ImageView) findViewById(R.id.item_image)).setImageResource(this.getResources().getIdentifier("weapon" + String.format("%04d", weapon.getId()), "drawable", this.getPackageName()));
+        ((ImageView) findViewById(R.id.item_image_type)).setImageResource(weapon.getTypeDrawableRes());
+
 
         equipButton = (Button) findViewById(R.id.equip_button);
         setEquipButtonText();

@@ -72,6 +72,7 @@ import static ie.ul.postgrad.socialanxietyapp.adapter.NavigationDrawerListAdapte
 import static ie.ul.postgrad.socialanxietyapp.adapter.NavigationDrawerListAdapter.INDEX;
 import static ie.ul.postgrad.socialanxietyapp.adapter.NavigationDrawerListAdapter.INVENTORY;
 import static ie.ul.postgrad.socialanxietyapp.adapter.NavigationDrawerListAdapter.PROFILE_TEXT;
+import static ie.ul.postgrad.socialanxietyapp.adapter.NavigationDrawerListAdapter.SETTINGS;
 import static ie.ul.postgrad.socialanxietyapp.adapter.NavigationDrawerListAdapter.WEAPONS;
 import static ie.ul.postgrad.socialanxietyapp.game.GameManager.blacksmithXP;
 import static ie.ul.postgrad.socialanxietyapp.game.GameManager.villageXP;
@@ -96,7 +97,6 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
     private Button infoButton;
     private OnInfoWindowElemTouchListener infoButtonListener;
     private GameManager gm;
-    private long startTime;
     private static final String KEY_CAMERA_POSITION = "camera_position";
     private static final String KEY_LOCATION = "location";
     private static final int DEFAULT_ZOOM = 15;
@@ -104,8 +104,9 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
     private static final long UPDATE_INTERVAL_IN_MILLISECONDS = 10000;
     private static final long FASTEST_UPDATE_INTERVAL_IN_MILLISECONDS = UPDATE_INTERVAL_IN_MILLISECONDS / 2;
     public static final int markerRadius = 1000;
-    public static final int markerUsableRadius = 30;
+    public static final int markerUsableRadius = 60;
     private GoogleApiClient mGoogleApiClient;
+    private boolean usingGames = true;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -121,18 +122,8 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
             mCameraPosition = savedInstanceState.getParcelable(KEY_CAMERA_POSITION);
         }
 
-        mGoogleApiClient = new GoogleApiClient.Builder(this)
-                .addConnectionCallbacks(this)
-                .addOnConnectionFailedListener(this)
-                .addApi(LocationServices.API)
-                .addApi(Places.GEO_DATA_API)
-                .addApi(Places.PLACE_DETECTION_API)
-                .addApi(Games.API).addScope(Games.SCOPE_GAMES)
-                .build();
-
-        createLocationRequest();
-
-        startTime = System.nanoTime();
+        buildGoogleGamesApiClient();
+        mGoogleApiClient.connect();
         markers = new ArrayList<>();
 
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
@@ -150,7 +141,6 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
             startActivity(i);
         }
 
-        AchievementManager.checkAllAchievements(this);
         findViewById(R.id.menu_button).setOnClickListener(this);
         findViewById(R.id.marker_button).setOnClickListener(this);
         findViewById(R.id.updates_button).setOnClickListener(this);
@@ -161,15 +151,6 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
         super.onStart();
         active = true;
         setupNavDrawer();
-        if (!mGoogleApiClient.isConnected()) {
-            mGoogleApiClient.connect();
-        } else {
-            getDeviceLocation();
-        }
-
-        // Build the map.
-        SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager().findFragmentById(R.id.map);
-        mapFragment.getMapAsync(this);
     }
 
     /**
@@ -177,7 +158,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
      */
     private void setupNavDrawer() {
         final String[] menuTitles = getResources().getStringArray(R.array.nav_items);
-        int[] menuIcons = new int[]{R.drawable.ic_settings, R.drawable.ic_backpack, R.drawable.ic_quest, R.drawable.ic_crafting, R.drawable.ic_backpack, R.drawable.ic_achievements};
+        int[] menuIcons = new int[]{R.drawable.ic_settings, R.drawable.ic_backpack, R.drawable.ic_quest, R.drawable.ic_crafting, R.drawable.ic_backpack, R.drawable.ic_achievements, R.drawable.ic_settings};
         mDrawerList.setAdapter(new NavigationDrawerListAdapter(this, menuTitles, menuIcons));
         mDrawerList.setOnItemClickListener(new DrawerItemClickListener(this));
     }
@@ -320,7 +301,6 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
 
     private void startMarkerActivity(Class activity, Marker marker, int type) {
         gm.addUsedLocation(marker.getPosition(), type);
-        AchievementManager.checkMarkerAchievements(this);
         Intent i = new Intent(getApplicationContext(), activity);
         startActivity(i);
     }
@@ -383,6 +363,10 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
         super.onResume();
         if (mGoogleApiClient.isConnected()) {
             getDeviceLocation();
+
+            if (mGoogleApiClient.hasConnectedApi(Games.API)) {
+                AchievementManager.checkAllAchievements(this, mGoogleApiClient);
+            }
         }
         updateMarkers();
         ((TextView) findViewById(R.id.level_num)).setText(String.valueOf(gm.getPlayer().getLevel()));
@@ -500,6 +484,36 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
     }
 
     /**
+     * Builds a GoogleApiClient.
+     * Uses the addApi() method to request the Google Places API and the Fused Location Provider.
+     */
+    private synchronized void buildGoogleApiClient() {
+        mGoogleApiClient = new GoogleApiClient.Builder(this)
+                .enableAutoManage(this /* FragmentActivity */,
+                        this /* OnConnectionFailedListener */)
+                .addConnectionCallbacks(this)
+                .addApi(LocationServices.API)
+                .addApi(Places.GEO_DATA_API)
+                .addApi(Places.PLACE_DETECTION_API)
+                //.addApi(Games.API).addScope(Games.SCOPE_GAMES)
+                .build();
+        createLocationRequest();
+    }
+
+    private synchronized void buildGoogleGamesApiClient() {
+        mGoogleApiClient = new GoogleApiClient.Builder(this)
+                .enableAutoManage(this /* FragmentActivity */,
+                        this /* OnConnectionFailedListener */)
+                .addConnectionCallbacks(this)
+                .addApi(LocationServices.API)
+                .addApi(Places.GEO_DATA_API)
+                .addApi(Places.PLACE_DETECTION_API)
+                .addApi(Games.API).addScope(Games.SCOPE_GAMES)
+                .build();
+        createLocationRequest();
+    }
+
+    /**
      * Updates the map's UI settings based on whether the user has granted location permission.
      */
     @SuppressWarnings("MissingPermission")
@@ -531,16 +545,34 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
     public void onConnected(@Nullable Bundle bundle) {
         App.getInstance().setmGoogleApiClient(mGoogleApiClient);
         getDeviceLocation();
+        SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager().findFragmentById(R.id.map);
+        mapFragment.getMapAsync(this);
+        System.out.println("CONNECT SUCCESS");
     }
 
+    /**
+     * Handles failure to connect to the Google Play services client.
+     */
     @Override
-    public void onConnectionSuspended(int i) {
+    public void onConnectionFailed(@NonNull ConnectionResult result) {
+        // Refer to the reference doc for ConnectionResult to see what error codes might
+        // be returned in onConnectionFailed.
+        Log.d(TAG, getString(R.string.play_services_failed_connection) + result.getErrorCode());
 
+        if (usingGames) {
+            usingGames = false;
+            buildGoogleApiClient();
+            mGoogleApiClient.connect();
+            Log.d(TAG, "Can't sign in to games. Using maps only." + result.getErrorCode());
+        }
     }
 
+    /**
+     * Handles suspension of the connection to the Google Play services client.
+     */
     @Override
-    public void onConnectionFailed(@NonNull ConnectionResult connectionResult) {
-
+    public void onConnectionSuspended(int cause) {
+        Log.d(TAG, getString(R.string.play_services_suspended_connection));
     }
 
     private class DrawerItemClickListener implements ListView.OnItemClickListener {
@@ -575,12 +607,29 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
                     startActivity(i);
                     break;
                 case ACHIEVEMENTS:
-                    AchievementManager.showAchievements(context, mGoogleApiClient);
+                    if (mGoogleApiClient.hasConnectedApi(Games.API)) {
+                        AchievementManager.showAchievements(context, mGoogleApiClient);
+                    } else {
+                        App.showToast(getApplicationContext(), getString(R.string.no_google_play_achievements));
+                    }
                     break;
-            /*case SETTINGS:
-                i = new Intent(context, DeveloperSettingsActivity.class);
-                context.startActivity(i);
-                break;*/
+                case SETTINGS:
+                    //i = new Intent(context, DeveloperSettingsActivity.class);
+                    //context.startActivity(i);
+
+                    if (mGoogleApiClient.hasConnectedApi(Games.API)) {
+                        int totalXP = 0;
+                        for (int j = 0; j < gm.getPlayer().getLevel(); j++) {
+                            totalXP += XPLevels.XP_LEVELS[j];
+                        }
+                        totalXP += gm.getPlayer().getXp();
+                        Games.Leaderboards.submitScore(mGoogleApiClient, getString(R.string.leaderboard_top_players), totalXP);
+                        startActivityForResult(Games.Leaderboards.getLeaderboardIntent(mGoogleApiClient,
+                                getString(R.string.leaderboard_top_players)), 122);
+                    } else {
+                        App.showToast(getApplicationContext(), getString(R.string.no_google_play_leaderboard));
+                    }
+                    break;
             }
 
             DrawerLayout drawer = (DrawerLayout) ((AppCompatActivity) context).findViewById(R.id.drawer_layout);
