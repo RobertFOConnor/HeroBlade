@@ -62,7 +62,6 @@
         android:id="@+id/continue_button"
         android:layout_width="match_parent"
         android:layout_height="@dimen/field_height"
-        android:background="@drawable/button_custom"
         android:padding="@dimen/text_margin"
         android:text="@string/proceed"
         android:textAllCaps="false"

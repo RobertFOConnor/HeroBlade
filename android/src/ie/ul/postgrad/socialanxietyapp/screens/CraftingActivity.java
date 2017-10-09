@@ -12,7 +12,7 @@ import ie.ul.postgrad.socialanxietyapp.App;
 import ie.ul.postgrad.socialanxietyapp.R;
 import ie.ul.postgrad.socialanxietyapp.adapter.CraftableListAdapter;
 import ie.ul.postgrad.socialanxietyapp.game.item.Item;
-import ie.ul.postgrad.socialanxietyapp.game.item.ItemFactory;
+import ie.ul.postgrad.socialanxietyapp.game.factory.ItemFactory;
 
 public class CraftingActivity extends AppCompatActivity {
 

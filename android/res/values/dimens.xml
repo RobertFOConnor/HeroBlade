@@ -8,6 +8,7 @@
     <dimen name="field_height">60dp</dimen>
     <dimen name="field_gap_margin">30dp</dimen>
 
+    <dimen name="text_main_title_size">36sp</dimen>
     <dimen name="text_title_size">26sp</dimen>
     <dimen name="fab_margin">16dp</dimen>
     <dimen name="text_margin">16dp</dimen>

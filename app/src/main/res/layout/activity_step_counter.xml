@@ -75,7 +75,7 @@
         android:layout_alignParentBottom="true"
         android:layout_alignParentStart="true"
         android:layout_gravity="bottom"
-        android:background="@drawable/button_custom"
+
         android:text="Back"
         android:textAllCaps="false"
         android:textColor="@color/white" />

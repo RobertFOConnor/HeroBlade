@@ -128,6 +128,14 @@
             android:text="Distance: "
             android:visibility="gone" />
 
+        <LinearLayout
+            android:id="@+id/avatar_fragment"
+            android:layout_width="60dp"
+            android:layout_height="110dp"
+            android:layout_centerHorizontal="true"
+            android:layout_centerVertical="true"
+            android:orientation="vertical" />
+
 
     </ie.ul.postgrad.socialanxietyapp.map.MapWrapperLayout>
 

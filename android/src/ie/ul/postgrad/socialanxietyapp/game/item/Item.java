@@ -4,6 +4,7 @@ import android.content.Context;
 import android.util.SparseIntArray;
 
 import ie.ul.postgrad.socialanxietyapp.R;
+import ie.ul.postgrad.socialanxietyapp.game.factory.ItemFactory;
 
 /**
  * Created by Robert on 20-Feb-17.
@@ -22,7 +23,7 @@ public class Item {
     private SparseIntArray ingredients;
 
 
-    Item(int id, String name, String description, int imageID, SparseIntArray ingredients) {
+    public Item(int id, String name, String description, int imageID, SparseIntArray ingredients) {
         this.id = id;
         this.name = name;
         this.description = description;
@@ -31,7 +32,7 @@ public class Item {
         worth = 0;
     }
 
-    Item(int id, String name, String description, int worth, int imageID, SparseIntArray ingredients) {
+    public Item(int id, String name, String description, int worth, int imageID, SparseIntArray ingredients) {
         this.id = id;
         this.name = name;
         this.description = description;

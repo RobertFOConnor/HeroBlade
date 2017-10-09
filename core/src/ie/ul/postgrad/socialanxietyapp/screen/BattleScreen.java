@@ -15,6 +15,8 @@ import com.brashmonkey.spriter.Mainline;
 import com.brashmonkey.spriter.Player;
 import com.brashmonkey.spriter.SCMLReader;
 
+import java.util.ConcurrentModificationException;
+
 import ie.ul.postgrad.socialanxietyapp.Avatar;
 import ie.ul.postgrad.socialanxietyapp.LibGdxInterface;
 import ie.ul.postgrad.socialanxietyapp.spriter.LibGdxDrawer;
@@ -67,8 +69,12 @@ public class BattleScreen implements Screen {
     }
 
     public void update() {
-        player.update();
-        npcPlayer.update();
+        try {
+            player.update();
+            npcPlayer.update();
+        } catch (ConcurrentModificationException e) {
+            e.printStackTrace();
+        }
 
         npcPlayer.setObject("hair", 1f, 1, enemyAvatar.getHairtype());
         player.setObject("hair", 1f, 1, avatar.getHairtype()); //set correct hair style for player avatar
@@ -106,7 +112,7 @@ public class BattleScreen implements Screen {
     }
 
     public void swordStrike(boolean isPlayer) {
-        if(isPlayer) {
+        if (isPlayer) {
             swordStrike(player);
         } else {
             swordStrike(npcPlayer);

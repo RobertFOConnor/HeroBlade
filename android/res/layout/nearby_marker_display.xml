@@ -15,6 +15,7 @@
         android:id="@+id/marker_text"
         android:layout_gravity="center"
         android:text="Distance"
+        android:textColor="@color/gray"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content" />
 

@@ -5,12 +5,14 @@ import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.content.res.Resources;
 import android.graphics.Color;
+import android.graphics.PixelFormat;
 import android.graphics.PorterDuff;
 import android.location.Location;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.ActivityCompat;
+import android.support.v4.app.FragmentTransaction;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
@@ -19,6 +21,8 @@ import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.util.TypedValue;
 import android.view.Gravity;
+import android.view.LayoutInflater;
+import android.view.SurfaceView;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
@@ -28,6 +32,9 @@ import android.widget.ListView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
+import com.badlogic.gdx.backends.android.AndroidApplicationConfiguration;
+import com.badlogic.gdx.backends.android.AndroidFragmentApplication;
+import com.bumptech.glide.Glide;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.common.api.PendingResult;
@@ -51,9 +58,10 @@ import com.google.android.gms.maps.model.Marker;
 import java.util.ArrayList;
 
 import ie.ul.postgrad.socialanxietyapp.App;
+import ie.ul.postgrad.socialanxietyapp.Avatar;
+import ie.ul.postgrad.socialanxietyapp.LibGdxInterface;
+import ie.ul.postgrad.socialanxietyapp.MainGame;
 import ie.ul.postgrad.socialanxietyapp.R;
-import ie.ul.postgrad.socialanxietyapp.StepsService;
-import ie.ul.postgrad.socialanxietyapp.TimeToWalkActivity;
 import ie.ul.postgrad.socialanxietyapp.adapter.NavigationDrawerListAdapter;
 import ie.ul.postgrad.socialanxietyapp.game.AchievementManager;
 import ie.ul.postgrad.socialanxietyapp.game.GameManager;
@@ -61,10 +69,12 @@ import ie.ul.postgrad.socialanxietyapp.game.MarkerManager;
 import ie.ul.postgrad.socialanxietyapp.game.MarkerTag;
 import ie.ul.postgrad.socialanxietyapp.game.Player;
 import ie.ul.postgrad.socialanxietyapp.game.XPLevels;
-import ie.ul.postgrad.socialanxietyapp.game.item.MarkerFactory;
+import ie.ul.postgrad.socialanxietyapp.game.factory.MarkerFactory;
 import ie.ul.postgrad.socialanxietyapp.game.item.WeaponItem;
 import ie.ul.postgrad.socialanxietyapp.map.MapWrapperLayout;
 import ie.ul.postgrad.socialanxietyapp.map.OnInfoWindowElemTouchListener;
+import ie.ul.postgrad.socialanxietyapp.screen.AvatarScreen;
+import ie.ul.postgrad.socialanxietyapp.service.StepsService;
 import ie.ul.postgrad.socialanxietyapp.sync.SyncManager;
 
 import static ie.ul.postgrad.socialanxietyapp.adapter.NavigationDrawerListAdapter.ACHIEVEMENTS;
@@ -77,7 +87,7 @@ import static ie.ul.postgrad.socialanxietyapp.adapter.NavigationDrawerListAdapte
 import static ie.ul.postgrad.socialanxietyapp.game.GameManager.blacksmithXP;
 import static ie.ul.postgrad.socialanxietyapp.game.GameManager.villageXP;
 
-public class MapsActivity extends AppCompatActivity implements OnMapReadyCallback, View.OnClickListener, GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener, LocationListener {
+public class MapsActivity extends AppCompatActivity implements OnMapReadyCallback, AndroidFragmentApplication.Callbacks, View.OnClickListener, GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener, LocationListener {
 
     private static final String TAG = MapsActivity.class.getSimpleName();
     public static boolean active = false;
@@ -107,14 +117,39 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
     public static final int markerUsableRadius = 60;
     private GoogleApiClient mGoogleApiClient;
     private boolean usingGames = true;
+    private AvatarFragment avatarFrag;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_maps);
         mDrawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
+
+        avatarFrag = new AvatarFragment();
+        mDrawerLayout.addDrawerListener(new DrawerLayout.DrawerListener() {
+            @Override
+            public void onDrawerSlide(View drawerView, float slideOffset) {
+                avatarFrag.hide();
+            }
+
+            @Override
+            public void onDrawerOpened(View drawerView) {
+                avatarFrag.hide();
+            }
+
+            @Override
+            public void onDrawerClosed(View drawerView) {
+                avatarFrag.show();
+            }
+
+            @Override
+            public void onDrawerStateChanged(int newState) {
+
+            }
+        });
         mDrawerList = (ListView) findViewById(R.id.left_drawer);
         gm = GameManager.getInstance();
+        gm.initDatabaseHelper(this);
 
         // Retrieve location and camera position from saved instance state.
         if (savedInstanceState != null) {
@@ -136,15 +171,76 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
         Intent mStepsIntent = new Intent(getApplicationContext(), StepsService.class);
         startService(mStepsIntent);
 
-        if (gm.getPlayer().getXp() == 0) {//Show walking instructions only first time.
-            Intent i = new Intent(getApplicationContext(), TimeToWalkActivity.class);
-            startActivity(i);
-        }
-
         findViewById(R.id.menu_button).setOnClickListener(this);
         findViewById(R.id.marker_button).setOnClickListener(this);
         findViewById(R.id.updates_button).setOnClickListener(this);
+        Glide.with(this).load(R.drawable.loading_map).into((ImageView) findViewById(R.id.loading_gif));
+
+        // Finally, replace the AndroidLauncher activity content with the Libgdx Fragment.
+        /*FragmentTransaction trans = getSupportFragmentManager().beginTransaction();
+        trans.add(R.id.avatar_fragment, avatarFrag);
+        trans.addToBackStack(null);
+        trans.commit();*/
     }
+
+    public static class AvatarFragment extends AndroidFragmentApplication implements LibGdxInterface {
+
+        MainGame game;
+
+        @Override
+        public View onCreateView(LayoutInflater inflater, ViewGroup container,
+                                 Bundle savedInstanceState) {
+            // Inflate the layout for this fragment
+
+            AndroidApplicationConfiguration cfg = new AndroidApplicationConfiguration();
+            cfg.r = cfg.g = cfg.b = cfg.a = 8;
+
+            game = new MainGame(this, MainGame.AVATAR_SCREEN);
+            View view = initializeForView(game, cfg);
+
+            if (graphics.getView() instanceof SurfaceView) {
+                SurfaceView glView = (SurfaceView) graphics.getView();
+                glView.getHolder().setFormat(PixelFormat.TRANSLUCENT);
+                glView.setZOrderOnTop(true);
+            }
+
+            return view;
+        }
+
+        public void show() {
+            ((AvatarScreen) game.getScreen()).show();
+        }
+
+        public void hide() {
+            ((AvatarScreen) game.getScreen()).hide();
+        }
+
+        @Override
+        public void saveAvatar(Avatar avatar) {
+
+        }
+
+        @Override
+        public Avatar getAvatar() {
+            return GameManager.getInstance().getAvatar();
+        }
+
+        @Override
+        public int getNPCId() {
+            return 0;
+        }
+
+        @Override
+        public void collectResource() {
+
+        }
+
+        @Override
+        public void finishGame() {
+
+        }
+    }
+
 
     @Override
     protected void onStart() {
@@ -216,27 +312,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
         };
         this.infoButton.setOnTouchListener(infoButtonListener);
 
-        map.setInfoWindowAdapter(new GoogleMap.InfoWindowAdapter() {
-            @Override
-            public View getInfoWindow(Marker marker) {
-                return null;
-            }
-
-            @Override
-            public View getInfoContents(Marker marker) {
-                // Setting up the infoWindow with current's marker info
-                infoTitle.setText(marker.getTitle());
-                infoSnippet.setText(marker.getSnippet());
-                Context c = getApplicationContext();
-                infoImg.setImageDrawable(ContextCompat.getDrawable(getApplicationContext(), c.getResources().getIdentifier("marker_" + String.format("%04d", ((MarkerTag) marker.getTag()).getId()), "drawable", c.getPackageName())));
-                infoButtonListener.setMarker(marker);
-
-                // We must call this to set the current marker and infoWindow references
-                // to the MapWrapperLayout
-                mapWrapperLayout.setMarkerWithInfoWindow(marker, infoWindow);
-                return infoWindow;
-            }
-        });
+        map.setInfoWindowAdapter(getInfoWindowAdapter(mapWrapperLayout));
 
         applyStyleToMap();
 
@@ -265,8 +341,42 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
         } else {
             Log.d(TAG, getString(R.string.null_location));
             mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(mDefaultLocation, DEFAULT_ZOOM));
-            mMap.getUiSettings().setMyLocationButtonEnabled(false);
         }
+        mMap.getUiSettings().setScrollGesturesEnabled(false);
+        mMap.getUiSettings().setMyLocationButtonEnabled(false);
+        findViewById(R.id.loading).setVisibility(View.GONE);
+        try {
+            if (gm.getPlayer().getXp() == 0) {//Show walking instructions only first time.
+                Intent i = new Intent(getApplicationContext(), TimeToWalkActivity.class);
+                startActivity(i);
+            }
+        } catch (NullPointerException e) {
+            e.printStackTrace();
+        }
+    }
+
+    private GoogleMap.InfoWindowAdapter getInfoWindowAdapter(final MapWrapperLayout mapWrapperLayout) {
+        return new GoogleMap.InfoWindowAdapter() {
+            @Override
+            public View getInfoWindow(Marker marker) {
+                return null;
+            }
+
+            @Override
+            public View getInfoContents(Marker marker) {
+                // Setting up the infoWindow with current's marker info
+                infoTitle.setText(marker.getTitle());
+                infoSnippet.setText(marker.getSnippet());
+                Context c = getApplicationContext();
+                infoImg.setImageDrawable(ContextCompat.getDrawable(getApplicationContext(), c.getResources().getIdentifier("marker_" + String.format("%04d", ((MarkerTag) marker.getTag()).getId()), "drawable", c.getPackageName())));
+                infoButtonListener.setMarker(marker);
+
+                // We must call this to set the current marker and infoWindow references
+                // to the MapWrapperLayout
+                mapWrapperLayout.setMarkerWithInfoWindow(marker, infoWindow);
+                return infoWindow;
+            }
+        };
     }
 
     private void startVillage(Marker marker) {
@@ -427,6 +537,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
     @Override
     public void onLocationChanged(Location location) {
         mCurrentLocation = location;
+        moveUser(mCurrentLocation);
         updateMarkers();
     }
 
@@ -524,7 +635,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
 
         if (mLocationPermissionGranted) {
             mMap.setMyLocationEnabled(true);
-            mMap.getUiSettings().setMyLocationButtonEnabled(true);
+            mMap.getUiSettings().setMyLocationButtonEnabled(false);
         } else {
             mMap.setMyLocationEnabled(false);
             mMap.getUiSettings().setMyLocationButtonEnabled(false);
@@ -543,11 +654,15 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
 
     @Override
     public void onConnected(@Nullable Bundle bundle) {
-        App.getInstance().setmGoogleApiClient(mGoogleApiClient);
         getDeviceLocation();
         SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager().findFragmentById(R.id.map);
         mapFragment.getMapAsync(this);
         System.out.println("CONNECT SUCCESS");
+    }
+
+    private void moveUser(Location location) {
+        LatLng latLng = new LatLng(location.getLatitude(), location.getLongitude());
+        mMap.animateCamera(CameraUpdateFactory.newLatLng(latLng));
     }
 
     /**
@@ -573,6 +688,11 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
     @Override
     public void onConnectionSuspended(int cause) {
         Log.d(TAG, getString(R.string.play_services_suspended_connection));
+    }
+
+    @Override
+    public void exit() {
+
     }
 
     private class DrawerItemClickListener implements ListView.OnItemClickListener {

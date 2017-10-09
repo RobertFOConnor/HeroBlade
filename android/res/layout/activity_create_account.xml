@@ -141,7 +141,7 @@
         android:layout_width="match_parent"
         android:layout_height="@dimen/field_height"
         android:layout_marginBottom="20dp"
-        android:background="@drawable/button_custom"
+
         android:paddingLeft="25dp"
         android:paddingRight="25dp"
         android:text="@string/proceed"

@@ -10,7 +10,7 @@ public class FoodItem extends Item {
 
     private int energy;
 
-    FoodItem(int id, String name, String description, int worth, int imageID, SparseIntArray ingredients, int energy) {
+    public FoodItem(int id, String name, String description, int worth, int imageID, SparseIntArray ingredients, int energy) {
         super(id, name, description, worth, imageID, ingredients);
         this.energy = energy;
     }

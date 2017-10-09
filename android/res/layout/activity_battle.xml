@@ -129,6 +129,7 @@
 
             <Button
                 android:id="@+id/next_button"
+                android:background="@color/secondary_color"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="bottom|end"
@@ -147,6 +148,7 @@
                 android:id="@+id/change_weapon_button"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:textColor="@color/gray"
                 android:layout_columnWeight=".5"
                 android:layout_rowWeight=".5"
                 android:text="@string/change_weapon" />
@@ -154,6 +156,7 @@
             <Button
                 android:id="@+id/attack_button"
                 android:layout_width="wrap_content"
+                android:textColor="@color/gray"
                 android:layout_height="wrap_content"
                 android:layout_columnWeight=".5"
                 android:layout_rowWeight=".5"
@@ -162,6 +165,7 @@
             <Button
                 android:id="@+id/run_button"
                 android:layout_width="wrap_content"
+                android:textColor="@color/gray"
                 android:layout_height="wrap_content"
                 android:layout_columnWeight=".5"
                 android:layout_rowWeight=".5"
@@ -171,6 +175,7 @@
                 android:id="@+id/item_button"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:textColor="@color/gray"
                 android:layout_columnWeight=".5"
                 android:layout_rowWeight=".5"
                 android:text="@string/use_item" />

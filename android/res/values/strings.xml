@@ -1,11 +1,12 @@
 <resources>
     <string name="app_name">Hero Blade</string>
 
-    <string name="welcome">Welcome To Hero Blade</string>
+    <string name="welcome">HERO BLADE</string>
 
     <string name="sign_up">Sign up</string>
     <string name="login">Log in</string>
     <string name="log_out">Log out</string>
+    <string name="start_game">Start Game</string>
 
     <string name="create_account">Create Account</string>
     <string name="name">Name</string>
@@ -111,6 +112,8 @@
     <string name="anxiety_question_4">I feel tense if I am alone with just one person.</string>
     <string name="anxiety_question_5">I have difficulty talking with other people.</string>
     <string name="anxiety_question_6">I find it difficult to disagree with another’s point of view.</string>
+
+    
     <string name="anxiety_question_7">I get nervous that people are staring at me as I walk down the street.</string>
     <string name="anxiety_question_8">I worry about shaking or trembling when I’m watched by other people.</string>
     <string name="anxiety_question_9">I would get tense if I had to sit facing other people on a bus or train.</string>

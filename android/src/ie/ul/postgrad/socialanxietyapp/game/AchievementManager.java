@@ -8,7 +8,7 @@ import com.google.android.gms.games.Games;
 
 import ie.ul.postgrad.socialanxietyapp.App;
 import ie.ul.postgrad.socialanxietyapp.R;
-import ie.ul.postgrad.socialanxietyapp.game.item.WeaponFactory;
+import ie.ul.postgrad.socialanxietyapp.game.factory.WeaponFactory;
 
 /**
  * Created by Robert on 16-Aug-17.

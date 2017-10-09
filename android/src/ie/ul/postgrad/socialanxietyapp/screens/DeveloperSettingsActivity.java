@@ -67,9 +67,9 @@ public class DeveloperSettingsActivity extends AppCompatActivity {
                         finish();
                         break;
                     case 4:
-                        GameManager.getInstance().awardXP(getApplicationContext(), 500);
+                        GameManager.getInstance().awardXP(getApplicationContext(), 136);
                         GameManager.getInstance().awardMoney(100);
-                        App.showToast(getApplicationContext(), "500XP given to player.");
+                        App.showToast(getApplicationContext(), "136XP given to player.");
                         break;
                     case 5:
                         SyncManager.getInstance().forceSync();

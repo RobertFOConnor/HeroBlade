@@ -11,8 +11,8 @@ import android.widget.TextView;
 import ie.ul.postgrad.socialanxietyapp.R;
 import ie.ul.postgrad.socialanxietyapp.game.GameManager;
 import ie.ul.postgrad.socialanxietyapp.game.item.ChestItem;
-import ie.ul.postgrad.socialanxietyapp.game.item.ItemFactory;
-import ie.ul.postgrad.socialanxietyapp.game.item.WeaponFactory;
+import ie.ul.postgrad.socialanxietyapp.game.factory.ItemFactory;
+import ie.ul.postgrad.socialanxietyapp.game.factory.WeaponFactory;
 import ie.ul.postgrad.socialanxietyapp.game.item.WeaponItem;
 
 public class ChestOpenActivity extends AppCompatActivity {

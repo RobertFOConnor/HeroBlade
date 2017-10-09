@@ -53,6 +53,7 @@
             <Button
                 android:id="@+id/next_button"
                 android:layout_width="wrap_content"
+                android:background="@color/secondary_color"
                 android:layout_height="wrap_content"
                 android:layout_gravity="bottom|end"
                 android:text="@string/next" />
@@ -77,6 +78,7 @@
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight=".5"
+                    android:textColor="@color/gray"
                     android:background="@color/transparent"
                     android:paddingBottom="20dp"
                     android:paddingTop="20dp"
@@ -89,6 +91,7 @@
 
                 <Button
                     android:id="@+id/buy_button"
+                    android:textColor="@color/gray"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight=".5"
@@ -113,6 +116,7 @@
                 <Button
                     android:id="@+id/run_button"
                     android:layout_width="0dp"
+                    android:textColor="@color/gray"
                     android:layout_height="wrap_content"
                     android:layout_weight=".5"
                     android:background="@color/transparent"
@@ -128,6 +132,7 @@
                 <Button
                     android:id="@+id/sell_button"
                     android:layout_width="0dp"
+                    android:textColor="@color/gray"
                     android:layout_height="wrap_content"
                     android:layout_weight=".5"
                     android:background="@color/transparent"

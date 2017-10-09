@@ -39,7 +39,7 @@
             android:layout_width="match_parent"
             android:layout_height="@dimen/field_height"
             android:layout_marginBottom="20dp"
-            android:background="@drawable/button_custom"
+
             android:drawableStart="@drawable/ic_sign_up"
             android:drawableTint="@color/white"
             android:paddingLeft="25dp"
@@ -54,7 +54,7 @@
             android:layout_width="match_parent"
             android:layout_height="@dimen/field_height"
             android:layout_marginBottom="30dp"
-            android:background="@drawable/button_custom"
+
             android:drawableStart="@drawable/ic_login"
             android:drawableTint="@color/white"
             android:paddingLeft="25dp"

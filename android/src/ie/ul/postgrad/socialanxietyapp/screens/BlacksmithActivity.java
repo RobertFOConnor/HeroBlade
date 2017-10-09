@@ -18,7 +18,7 @@ import ie.ul.postgrad.socialanxietyapp.LibGdxInterface;
 import ie.ul.postgrad.socialanxietyapp.MainGame;
 import ie.ul.postgrad.socialanxietyapp.R;
 import ie.ul.postgrad.socialanxietyapp.game.GameManager;
-import ie.ul.postgrad.socialanxietyapp.game.item.WeaponFactory;
+import ie.ul.postgrad.socialanxietyapp.game.factory.WeaponFactory;
 
 import static ie.ul.postgrad.socialanxietyapp.screens.ItemSelectActivity.BUY_WEAPON_KEY;
 import static ie.ul.postgrad.socialanxietyapp.screens.ItemSelectActivity.SELL_WEAPON_KEY;
@@ -66,6 +66,7 @@ public class BlacksmithActivity extends AndroidApplication implements LibGdxInte
         AndroidApplicationConfiguration config = new AndroidApplicationConfiguration();
 
         game = new MainGame(this, MainGame.CONVERSATION_SCREEN);
+
         View v = initializeForView(game, config);
         ((LinearLayout) findViewById(R.id.character_layout)).addView(v);
         game.updateConvo(1, "SMITH");

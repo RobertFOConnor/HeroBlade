@@ -8,14 +8,42 @@
         android:id="@+id/activity_player_avatar"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="#00A1A9"
+        android:background="@color/bg_color"
         android:orientation="vertical"
         android:paddingBottom="@dimen/activity_vertical_margin"
         android:paddingLeft="@dimen/activity_horizontal_margin"
         android:paddingRight="@dimen/activity_horizontal_margin"
-        android:paddingTop="?attr/actionBarSize"
         tools:context="ie.ul.postgrad.socialanxietyapp.screens.PlayerAvatarActivity">
 
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="?android:attr/actionBarSize"
+            android:orientation="horizontal">
+
+            <ImageButton
+                android:id="@+id/back_button"
+                style="@style/SilentImageButton"
+                android:layout_width="30dp"
+                android:layout_height="30dp"
+                android:layout_gravity="center"
+                android:src="@drawable/ic_arrow_back"
+                android:tint="@color/white" />
+
+            <View
+                android:layout_width="0dp"
+                android:layout_height="0dp"
+                android:layout_weight="1" />
+
+            <ImageButton
+                android:id="@+id/edit_avatar"
+                style="@style/SilentImageButton"
+                android:layout_width="30dp"
+                android:layout_height="30dp"
+                android:layout_gravity="end|center_vertical"
+                android:maxHeight="30dp"
+                android:maxWidth="30dp"
+                android:src="@drawable/edit_avatar" />
+        </LinearLayout>
 
         <TextView
             android:id="@+id/name_field"
@@ -23,6 +51,7 @@
             android:layout_height="wrap_content"
             android:layout_gravity="center"
             android:text="Robert"
+            android:textColor="@color/white"
             android:textSize="24sp"
             android:textStyle="italic|bold" />
 
@@ -113,8 +142,8 @@
             <LinearLayout
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:layout_weight=".5"
                 android:layout_margin="5dp"
+                android:layout_weight=".5"
                 android:background="@color/half_transparent"
                 android:gravity="center"
                 android:orientation="vertical"
@@ -150,8 +179,8 @@
             <LinearLayout
                 android:id="@+id/linearLayout"
                 android:layout_width="0dp"
-                android:layout_margin="5dp"
                 android:layout_height="wrap_content"
+                android:layout_margin="5dp"
                 android:layout_marginBottom="20dp"
                 android:layout_weight=".5"
                 android:background="@color/half_transparent"
@@ -178,9 +207,9 @@
             </LinearLayout>
 
             <LinearLayout
-                android:layout_margin="5dp"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
+                android:layout_margin="5dp"
                 android:layout_weight=".5"
                 android:background="@color/half_transparent"
                 android:gravity="center"

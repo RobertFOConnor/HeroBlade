@@ -29,7 +29,7 @@
         android:lines="2"
         android:text="@string/welcome"
         android:textColor="#fff"
-        android:textSize="@dimen/text_title_size"
+        android:textSize="@dimen/text_main_title_size"
         android:textStyle="bold" />
 
     <LinearLayout
@@ -41,10 +41,10 @@
 
         <Button
             android:id="@+id/sign_in_button"
+            style="@style/SilentButton"
             android:layout_width="match_parent"
             android:layout_height="@dimen/field_height"
-            android:background="@drawable/button_custom"
-            android:text="Start Game"
+            android:text="@string/start_game"
             android:textAlignment="center"
             android:textAllCaps="false"
             android:textColor="@color/white" />
@@ -52,9 +52,9 @@
         <!-- sign-out button -->
         <Button
             android:id="@+id/sign_out_button"
+            style="@style/SilentButton"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:background="@drawable/button_custom"
             android:text="Sign Out"
             android:visibility="gone" />
 

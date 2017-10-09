@@ -73,8 +73,8 @@
             android:name=".screens.BattleActivity"
             android:screenOrientation="portrait" />
 
-        <service android:name=".StepsService" />
-        <service android:name=".LocationService" />
+        <service android:name=".service.StepsService" />
+        <service android:name=".service.LocationService" />
 
         <activity
             android:name=".AndroidLauncher"
@@ -109,13 +109,13 @@
             android:name=".screens.WeaponActivity"
             android:screenOrientation="portrait" />
         <activity
-            android:name=".WeaponDetailActivity"
+            android:name=".screens.WeaponDetailActivity"
             android:screenOrientation="portrait" />
         <activity
             android:name=".screens.IndexActivity"
             android:screenOrientation="portrait" />
         <activity
-            android:name=".TimeToWalkActivity"
+            android:name=".screens.TimeToWalkActivity"
             android:screenOrientation="portrait"
             android:theme="@style/Theme.Transparent" />
         <activity
@@ -157,10 +157,13 @@
             <intent-filter>
                 <action android:name="android.accounts.AccountAuthenticator" />
             </intent-filter>
+
             <meta-data
                 android:name="android.accounts.AccountAuthenticator"
                 android:resource="@xml/authenticator" />
         </service>
+
+        <activity android:name=".screens.HelpActivity"></activity>
     </application>
 
 </manifest>

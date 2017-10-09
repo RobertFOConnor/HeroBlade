@@ -18,8 +18,8 @@ import ie.ul.postgrad.socialanxietyapp.game.Player;
 import ie.ul.postgrad.socialanxietyapp.game.Stats;
 import ie.ul.postgrad.socialanxietyapp.game.SurveyAnswer;
 import ie.ul.postgrad.socialanxietyapp.game.item.ChestItem;
-import ie.ul.postgrad.socialanxietyapp.game.item.ItemFactory;
-import ie.ul.postgrad.socialanxietyapp.game.item.WeaponFactory;
+import ie.ul.postgrad.socialanxietyapp.game.factory.ItemFactory;
+import ie.ul.postgrad.socialanxietyapp.game.factory.WeaponFactory;
 import ie.ul.postgrad.socialanxietyapp.game.item.WeaponItem;
 
 /**

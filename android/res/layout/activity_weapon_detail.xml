@@ -10,7 +10,7 @@
         android:layout_gravity="center"
         android:gravity="center"
         android:orientation="vertical"
-        tools:context="ie.ul.postgrad.socialanxietyapp.WeaponDetailActivity">
+        tools:context="ie.ul.postgrad.socialanxietyapp.screens.WeaponDetailActivity">
 
         <LinearLayout
             android:layout_width="wrap_content"

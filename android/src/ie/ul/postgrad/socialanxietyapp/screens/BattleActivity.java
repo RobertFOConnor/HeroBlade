@@ -1,6 +1,5 @@
 package ie.ul.postgrad.socialanxietyapp.screens;
 
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
@@ -23,8 +22,8 @@ import ie.ul.postgrad.socialanxietyapp.game.Enemy;
 import ie.ul.postgrad.socialanxietyapp.game.EnemyFactory;
 import ie.ul.postgrad.socialanxietyapp.game.GameManager;
 import ie.ul.postgrad.socialanxietyapp.game.Player;
+import ie.ul.postgrad.socialanxietyapp.game.factory.ItemFactory;
 import ie.ul.postgrad.socialanxietyapp.game.item.FoodItem;
-import ie.ul.postgrad.socialanxietyapp.game.item.ItemFactory;
 import ie.ul.postgrad.socialanxietyapp.game.item.WeaponItem;
 import ie.ul.postgrad.socialanxietyapp.screen.BattleScreen;
 
@@ -55,7 +54,6 @@ public class BattleActivity extends AndroidApplication implements LibGdxInterfac
     private int rewardedXP = 800;
     private int rewardMoney = 200;
     private final Context context = new Context();
-    private DialogInterface.OnClickListener dialogClickListener;
     private MainGame game;
     private BattleScreen battleDisplay;
 
@@ -127,21 +125,6 @@ public class BattleActivity extends AndroidApplication implements LibGdxInterfac
         findViewById(R.id.run_button).setOnClickListener(this);
         findViewById(R.id.next_button).setOnClickListener(this);
 
-        dialogClickListener = new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
-                switch (which) {
-                    case DialogInterface.BUTTON_POSITIVE:
-                        finish();
-                        break;
-
-                    case DialogInterface.BUTTON_NEGATIVE:
-                        //No button clicked
-                        break;
-                }
-            }
-        };
-
         game = new MainGame(this, MainGame.BATTLE_SCREEN);
         View v = initializeForView(game, new AndroidApplicationConfiguration());
         ((LinearLayout) findViewById(R.id.character_layout)).addView(v);
@@ -191,9 +174,6 @@ public class BattleActivity extends AndroidApplication implements LibGdxInterfac
     }
 
     private void showExitDialog() {
-        /*AlertDialog.Builder builder = new AlertDialog.Builder(BattleActivity.this);
-        builder.setMessage("Are you sure you want to exit the battle?").setPositiveButton("Yes", dialogClickListener)
-                .setNegativeButton("No", dialogClickListener).show();*/
         finish();
     }
 
@@ -421,15 +401,19 @@ public class BattleActivity extends AndroidApplication implements LibGdxInterfac
 
         private FinishState(String state) {
             showText();
-            if (state.equals(LOST)) {
-                dialogueText.setText(getString(R.string.pass_out, player.getName()));
-            } else if (state.equals(WON)) {
-                dialogueText.setText(player.getName() + " has won the battle. (" + rewardedXP + "XP) " + player.getName() + " received $" + rewardMoney + ".");
-                gm.awardXP(getApplicationContext(), rewardedXP);
-                gm.awardMoney(rewardMoney);
-                gm.addWin();
-            } else if (state.equals(OUT_OF_WEAPONS)) {
-                dialogueText.setText(getString(R.string.out_of_weapons, player.getName()));
+            switch (state) {
+                case LOST:
+                    dialogueText.setText(getString(R.string.pass_out, player.getName()));
+                    break;
+                case WON:
+                    dialogueText.setText(player.getName() + " has won the battle. (" + rewardedXP + "XP) " + player.getName() + " received $" + rewardMoney + ".");
+                    gm.awardXP(getApplicationContext(), rewardedXP);
+                    gm.awardMoney(rewardMoney);
+                    gm.addWin();
+                    break;
+                case OUT_OF_WEAPONS:
+                    dialogueText.setText(getString(R.string.out_of_weapons, player.getName()));
+                    break;
             }
         }
 

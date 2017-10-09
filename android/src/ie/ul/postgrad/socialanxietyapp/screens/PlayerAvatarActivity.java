@@ -1,6 +1,9 @@
 package ie.ul.postgrad.socialanxietyapp.screens;
 
+import android.content.Intent;
+import android.graphics.PixelFormat;
 import android.os.Bundle;
+import android.view.SurfaceView;
 import android.view.View;
 import android.widget.LinearLayout;
 import android.widget.TextView;
@@ -17,7 +20,7 @@ import ie.ul.postgrad.socialanxietyapp.game.GameManager;
 import ie.ul.postgrad.socialanxietyapp.game.Player;
 import ie.ul.postgrad.socialanxietyapp.game.XPLevels;
 
-public class PlayerAvatarActivity extends AndroidApplication implements LibGdxInterface {
+public class PlayerAvatarActivity extends AndroidApplication implements LibGdxInterface, View.OnClickListener {
 
     private GameManager gm;
 
@@ -27,11 +30,25 @@ public class PlayerAvatarActivity extends AndroidApplication implements LibGdxIn
         setContentView(R.layout.activity_player_avatar);
         gm = GameManager.getInstance();
         setupStats();
-        AndroidApplicationConfiguration config = new AndroidApplicationConfiguration();
+
+        //Populate LibGDX view.
+        AndroidApplicationConfiguration cfg = new AndroidApplicationConfiguration();
+        cfg.r = cfg.g = cfg.b = cfg.a = 8;
+
         MainGame game = new MainGame(this, MainGame.AVATAR_SCREEN);
-        View v = initializeForView(game, config);
-        ((LinearLayout) findViewById(R.id.avatar_view)).addView(v);
+        View view = initializeForView(game, cfg);
+
+        if (graphics.getView() instanceof SurfaceView) {
+            SurfaceView glView = (SurfaceView) graphics.getView();
+            glView.getHolder().setFormat(PixelFormat.TRANSLUCENT);
+            glView.setZOrderOnTop(true);
+        }
+        ((LinearLayout) findViewById(R.id.avatar_view)).addView(view);
         App.setStatusBarColor(this);
+
+        //Setup button listeners.
+        findViewById(R.id.edit_avatar).setOnClickListener(this);
+        findViewById(R.id.back_button).setOnClickListener(this);
     }
 
     private void setupStats() {
@@ -49,7 +66,6 @@ public class PlayerAvatarActivity extends AndroidApplication implements LibGdxIn
     public void saveAvatar(Avatar avatar) {
 
     }
-
 
     @Override
     public void collectResource() {
@@ -69,5 +85,20 @@ public class PlayerAvatarActivity extends AndroidApplication implements LibGdxIn
     @Override
     public void finishGame() {
         finish();
+    }
+
+    @Override
+    public void onClick(View v) {
+        switch (v.getId()) {
+            case R.id.edit_avatar:
+                Intent i = new Intent(getApplicationContext(), AvatarCustomizationActivity.class);
+                i.putExtra("edit", true);
+                startActivity(i);
+                finish();
+                break;
+            case R.id.back_button:
+                finish();
+                break;
+        }
     }
 }

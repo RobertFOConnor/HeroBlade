@@ -25,7 +25,7 @@ public class WeaponItem extends Item {
     public static final String WATER_TYPE = "WATER";
     public static final String FIRE_TYPE = "FIRE";
 
-    protected WeaponItem(int id, String name, String description, String type, int imageID, int worth, int damage, int maxHealth, int rarity, SparseIntArray ingredients) {
+    public WeaponItem(int id, String name, String description, String type, int imageID, int worth, int damage, int maxHealth, int rarity, SparseIntArray ingredients) {
         super(id, name, description, worth, imageID, ingredients);
         this.type = type;
         this.damage = damage;

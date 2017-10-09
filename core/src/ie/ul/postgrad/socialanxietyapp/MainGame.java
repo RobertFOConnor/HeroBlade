@@ -8,7 +8,6 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 
 import ie.ul.postgrad.socialanxietyapp.screen.AvatarScreen;
 import ie.ul.postgrad.socialanxietyapp.screen.BattleScreen;
-import ie.ul.postgrad.socialanxietyapp.screen.CollectingGameScreen;
 import ie.ul.postgrad.socialanxietyapp.screen.ConversationScreen;
 import ie.ul.postgrad.socialanxietyapp.screen.Screen;
 import ie.ul.postgrad.socialanxietyapp.screen.ScreenManager;
@@ -27,7 +26,6 @@ public class MainGame extends ApplicationAdapter {
     private OrthographicCamera camera;
     private SpriteBatch batch;
 
-
     //Measurements
     public static int WIDTH;
     public static int HEIGHT;
@@ -35,8 +33,6 @@ public class MainGame extends ApplicationAdapter {
     private String screenName;
     public static final String AVATAR_SCREEN = "avatar";
     public static final String CONVERSATION_SCREEN = "convo";
-    public static final String TREE_GAME_SCREEN = "tree";
-    public static final String ROCK_GAME_SCREEN = "rock";
     public static final String BATTLE_SCREEN = "battle";
 
     public MainGame(LibGdxInterface libGdxInterface, String screenName) {
@@ -56,10 +52,6 @@ public class MainGame extends ApplicationAdapter {
 
         if (screenName.equals(AVATAR_SCREEN)) {
             ScreenManager.setScreen(new AvatarScreen(libGdxInterface, batch));
-        } else if (screenName.equals(TREE_GAME_SCREEN)) {
-            ScreenManager.setScreen(new CollectingGameScreen(libGdxInterface, batch, camera, 0));
-        } else if (screenName.equals(ROCK_GAME_SCREEN)) {
-            ScreenManager.setScreen(new CollectingGameScreen(libGdxInterface, batch, camera, 1));
         } else if (screenName.equals(CONVERSATION_SCREEN)) {
             ScreenManager.setScreen(new ConversationScreen(libGdxInterface, batch));
         } else if (screenName.equals(BATTLE_SCREEN)) {
@@ -69,8 +61,12 @@ public class MainGame extends ApplicationAdapter {
 
     @Override
     public void render() {
-        Gdx.gl.glClearColor(0 / 255f, 161 / 255f, 169 / 255f, 1);
+
+        Gdx.gl.glClearColor(0.0f, 0.0f, 0.0f, 0.0f);
+        Gdx.gl.glBlendFunc(GL20.GL_SRC_ALPHA, GL20.GL_ONE_MINUS_SRC_ALPHA);
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
+        Gdx.gl.glEnable(GL20.GL_BLEND);
+
         batch.setProjectionMatrix(camera.combined);
         ScreenManager.getCurrentScreen().render();
     }

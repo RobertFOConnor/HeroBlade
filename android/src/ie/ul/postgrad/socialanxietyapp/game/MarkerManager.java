@@ -13,7 +13,7 @@ import com.google.android.gms.maps.model.Marker;
 import java.util.ArrayList;
 
 import ie.ul.postgrad.socialanxietyapp.R;
-import ie.ul.postgrad.socialanxietyapp.game.item.MarkerFactory;
+import ie.ul.postgrad.socialanxietyapp.game.factory.MarkerFactory;
 import ie.ul.postgrad.socialanxietyapp.screens.MapsActivity;
 import ie.ul.postgrad.socialanxietyapp.screens.NearbyLocationsActivity;
 

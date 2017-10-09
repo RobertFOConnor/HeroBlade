@@ -1,1 +1,1 @@
-include 'desktop', 'android', 'core', ':BaseGameUtils'
+include 'desktop', 'android', 'core'

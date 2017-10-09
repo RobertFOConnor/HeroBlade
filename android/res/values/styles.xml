@@ -6,6 +6,10 @@
         <item name="colorPrimary">@color/bg_color</item>
         <item name="colorPrimaryDark">#000</item>
         <item name="colorAccent">@color/colorAccent</item>
+        <item name="imageButtonStyle">@style/SilentImageButton</item>
+        <item name="android:buttonStyle">@style/SilentButton</item>
+        <item name="buttonStyle">@style/SilentButton</item>
+        <item name="android:button">@drawable/button_custom</item>
     </style>
 
     <style name="AppTheme.AppBarOverlay" parent="ThemeOverlay.AppCompat.Dark.ActionBar" />
@@ -22,6 +26,19 @@
     <style name="Theme.NoActionBar" parent="Theme.AppCompat">
         <item name="windowNoTitle">true</item>
         <item name="windowActionBar">false</item>
+    </style>
+
+    <style name="SilentImageButton" parent="Base.Widget.AppCompat.ImageButton">
+        <item name="android:scaleType">fitXY</item>
+        <item name="android:soundEffectsEnabled">false</item>
+        <item name="android:adjustViewBounds">false</item>
+        <item name="android:background">@color/transparent</item>
+        <item name="background">@color/transparent</item>
+    </style>
+
+    <style name="SilentButton" parent="Base.Widget.AppCompat.Button.Colored">
+        <item name="android:background">@drawable/button_custom</item>
+        <item name="android:soundEffectsEnabled">false</item>
     </style>
 
 </resources>

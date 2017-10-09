@@ -2,8 +2,8 @@ package ie.ul.postgrad.socialanxietyapp.game;
 
 import android.content.Context;
 import android.content.Intent;
-import android.location.Location;
 import android.os.AsyncTask;
+import android.util.AndroidRuntimeException;
 
 import com.google.android.gms.maps.model.LatLng;
 
@@ -25,9 +25,9 @@ import ie.ul.postgrad.socialanxietyapp.database.DBHelper;
 import ie.ul.postgrad.socialanxietyapp.database.WebDBHelper;
 import ie.ul.postgrad.socialanxietyapp.game.item.ChestItem;
 import ie.ul.postgrad.socialanxietyapp.game.item.FoodItem;
-import ie.ul.postgrad.socialanxietyapp.game.item.ItemFactory;
-import ie.ul.postgrad.socialanxietyapp.game.item.MarkerFactory;
-import ie.ul.postgrad.socialanxietyapp.game.item.WeaponFactory;
+import ie.ul.postgrad.socialanxietyapp.game.factory.ItemFactory;
+import ie.ul.postgrad.socialanxietyapp.game.factory.MarkerFactory;
+import ie.ul.postgrad.socialanxietyapp.game.factory.WeaponFactory;
 import ie.ul.postgrad.socialanxietyapp.game.item.WeaponItem;
 import ie.ul.postgrad.socialanxietyapp.screens.LevelUpActivity;
 
@@ -173,8 +173,14 @@ public class GameManager {
         player.setMaxHealth(player.getMaxHealth() + GameManager.playerLevelUpHP);
         player.setCurrHealth(player.getMaxHealth());
         awardChest(context);
-        Intent intent = new Intent(context, LevelUpActivity.class);
-        context.startActivity(intent);
+
+        try {
+            Intent intent = new Intent(context, LevelUpActivity.class);
+            intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+            context.startActivity(intent);
+        } catch (AndroidRuntimeException e) {
+            e.printStackTrace();
+        }
     }
 
     public void answerSurveyQuestion(int question, int answer) {
