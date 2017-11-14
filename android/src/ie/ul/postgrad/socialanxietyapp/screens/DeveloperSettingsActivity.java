@@ -42,11 +42,11 @@ public class DeveloperSettingsActivity extends AppCompatActivity {
         settingsList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                switch (position) {
-                    case 0:
+                switch (menu[position]) {
+                    case "Log Out":
                         //App.getInstance().getGoogleApiHelperInstance().disconnect();
                         break;
-                    case 1:
+                    case "Test Mode":
                         if (GameManager.TESTING) {
                             GameManager.TESTING = false;
                             App.showToast(getApplicationContext(), "Test mode off.");
@@ -55,27 +55,27 @@ public class DeveloperSettingsActivity extends AppCompatActivity {
                             App.showToast(getApplicationContext(), "Test mode on.");
                         }
                         break;
-                    case 2:
+                    case "Test Chest":
                         GameManager.getInstance().awardTestChest(getApplicationContext());
                         App.showToast(getApplicationContext(), "Test chest given to player.");
 
                         break;
-                    case 3:
+                    case "Erase Data":
                         GameManager.getInstance().eraseData();
                         Intent i = new Intent(getApplicationContext(), WelcomeActivity.class);
                         startActivity(i);
                         finish();
                         break;
-                    case 4:
+                    case "Test XP":
                         GameManager.getInstance().awardXP(getApplicationContext(), 136);
                         GameManager.getInstance().awardMoney(100);
                         App.showToast(getApplicationContext(), "136XP given to player.");
                         break;
-                    case 5:
+                    case "Test Remote Server":
                         SyncManager.getInstance().forceSync();
                         App.showToast(getApplicationContext(), "Testing remote server, check netbeans...");
                         break;
-                    case 6:
+                    case "Open player search":
 
                         Intent browserIntent = new Intent(Intent.ACTION_VIEW, Uri.parse("http://193.1.99.30:8080/AnxietyAppServer/"));
                         startActivity(browserIntent);

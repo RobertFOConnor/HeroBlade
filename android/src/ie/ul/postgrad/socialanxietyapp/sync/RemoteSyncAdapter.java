@@ -31,7 +31,7 @@ public class RemoteSyncAdapter extends AbstractThreadedSyncAdapter {
         super(context, autoInitialize);
         /*
          * If your app uses a content resolver, get an instance of it
-         * from the incoming Context
+         * from the incoming BattleContext
          */
         mContentResolver = context.getContentResolver();
     }
@@ -45,7 +45,7 @@ public class RemoteSyncAdapter extends AbstractThreadedSyncAdapter {
         super(context, autoInitialize, allowParallelSyncs);
         /*
          * If your app uses a content resolver, get an instance of it
-         * from the incoming Context
+         * from the incoming BattleContext
          */
         mContentResolver = context.getContentResolver();
 

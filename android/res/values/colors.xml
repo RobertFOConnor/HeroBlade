@@ -13,6 +13,7 @@
     <color name="bg_color">#4fc3f7</color>
     <color name="secondary_color">#FF6E6E</color>
     <color name="green">#58DB88</color>
+    <color name="menu_text_color">#4fc3f7</color>
     <color name="bg_color_transparent">#2000A1A9</color>
     <color name="transparent">#00000000</color>
     <color name="half_transparent">#50000000</color>

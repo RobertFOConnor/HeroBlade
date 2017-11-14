@@ -13,6 +13,7 @@ import java.util.ArrayList;
 
 import ie.ul.postgrad.socialanxietyapp.R;
 import ie.ul.postgrad.socialanxietyapp.game.GameManager;
+import ie.ul.postgrad.socialanxietyapp.game.SoundManager;
 import ie.ul.postgrad.socialanxietyapp.game.item.ChestItem;
 
 public class ChestViewActivity extends AppCompatActivity {
@@ -51,6 +52,7 @@ public class ChestViewActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 finish();
+                SoundManager.getInstance(getApplicationContext()).playSound(SoundManager.Sound.BACK);
             }
         });
     }

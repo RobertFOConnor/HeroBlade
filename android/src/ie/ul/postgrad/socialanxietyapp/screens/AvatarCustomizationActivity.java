@@ -16,6 +16,7 @@ import ie.ul.postgrad.socialanxietyapp.LibGdxInterface;
 import ie.ul.postgrad.socialanxietyapp.MainGame;
 import ie.ul.postgrad.socialanxietyapp.R;
 import ie.ul.postgrad.socialanxietyapp.game.GameManager;
+import ie.ul.postgrad.socialanxietyapp.game.SoundManager;
 import ie.ul.postgrad.socialanxietyapp.screen.AvatarScreen;
 
 public class AvatarCustomizationActivity extends AndroidApplication implements LibGdxInterface, View.OnClickListener {
@@ -29,10 +30,6 @@ public class AvatarCustomizationActivity extends AndroidApplication implements L
         setContentView(R.layout.activity_avatar_customization);
         App.setStatusBarColor(this);
 
-        //Set avatar display dimensions.
-        LinearLayout avatarBox = (LinearLayout) findViewById(R.id.avatar_view);
-        int width = (avatarBox.getHeight() / 5) * 3;
-        avatarBox.setMinimumWidth(width);
 
         //Populate LibGDX view.
         AndroidApplicationConfiguration cfg = new AndroidApplicationConfiguration();
@@ -83,6 +80,7 @@ public class AvatarCustomizationActivity extends AndroidApplication implements L
                 if (!edit) {
                     Intent intent = new Intent(getApplicationContext(), MapsActivity.class);
                     startActivity(intent);
+                    SoundManager.getInstance(this).playSound(SoundManager.Sound.CLICK);
                 }
                 finish();
                 break;

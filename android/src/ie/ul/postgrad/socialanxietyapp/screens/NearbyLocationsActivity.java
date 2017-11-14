@@ -12,6 +12,7 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import ie.ul.postgrad.socialanxietyapp.R;
+import ie.ul.postgrad.socialanxietyapp.game.SoundManager;
 
 public class NearbyLocationsActivity extends AppCompatActivity {
 
@@ -50,6 +51,7 @@ public class NearbyLocationsActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 finish();
+                SoundManager.getInstance(getApplicationContext()).playSound(SoundManager.Sound.BACK);
             }
         });
     }

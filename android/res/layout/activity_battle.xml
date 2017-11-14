@@ -19,13 +19,14 @@
         android:layout_height="wrap_content"
         android:layout_alignParentStart="true"
         android:layout_marginTop="20dp"
+        android:baselineAligned="true"
         android:orientation="horizontal">
 
         <LinearLayout
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_marginStart="10dp"
             android:layout_marginEnd="50dp"
+            android:layout_marginStart="10dp"
             android:layout_weight=".5"
             android:orientation="vertical">
 
@@ -33,7 +34,8 @@
                 android:id="@+id/player_name"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="@string/health" />
+                android:text="@string/health"
+                android:textSize="20sp" />
 
             <ProgressBar
                 android:id="@+id/user_bar"
@@ -45,21 +47,24 @@
                 android:id="@+id/player_health"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="@string/health" />
+                android:text="@string/health"
+                android:textColor="@color/secondary_color"
+                android:textSize="18sp"
+                android:textStyle="bold" />
 
             <ImageView
-                android:layout_marginTop="10dp"
                 android:id="@+id/user_type_img"
                 android:layout_width="30dp"
-                android:layout_height="30dp" />
+                android:layout_height="30dp"
+                android:layout_marginTop="10dp" />
 
         </LinearLayout>
 
         <LinearLayout
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_marginStart="50dp"
             android:layout_marginEnd="10dp"
+            android:layout_marginStart="50dp"
             android:layout_weight=".5"
             android:orientation="vertical">
 
@@ -68,7 +73,8 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="end"
-                android:text="Enemy Health" />
+                android:text="Enemy Health"
+                android:textSize="20sp" />
 
             <ProgressBar
                 android:id="@+id/enemy_bar"
@@ -81,41 +87,42 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="end"
-                android:text="@string/health" />
+                android:text="@string/health"
+                android:textColor="@color/secondary_color"
+                android:textSize="18sp"
+                android:textStyle="bold" />
 
             <ImageView
-                android:layout_marginTop="10dp"
-                android:layout_gravity="end"
                 android:id="@+id/enemy_type_img"
                 android:layout_width="30dp"
-                android:layout_height="30dp" />
+                android:layout_height="30dp"
+                android:layout_gravity="end"
+                android:layout_marginTop="10dp" />
 
             <TextView
                 android:id="@+id/enemy_count"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_gravity="end"/>
+                android:layout_gravity="end" />
 
         </LinearLayout>
-
     </LinearLayout>
-
 
     <FrameLayout
         android:id="@+id/container"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_centerHorizontal="true"
+        android:layout_marginBottom="14dp"
         android:layout_marginLeft="10dp"
         android:layout_marginRight="10dp"
-        android:layout_marginBottom="14dp"
-        android:layout_alignParentBottom="true"
-        android:layout_centerHorizontal="true">
+        android:background="@drawable/dialogue_box_bg">
 
         <LinearLayout
             android:id="@+id/text_display"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:background="@drawable/dialogue_box_bg"
             android:orientation="vertical"
             android:padding="15dp">
 
@@ -129,57 +136,96 @@
 
             <Button
                 android:id="@+id/next_button"
-                android:background="@color/secondary_color"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="bottom|end"
+                android:background="@color/secondary_color"
                 android:text="@string/next" />
 
         </LinearLayout>
 
-        <GridLayout
+        <LinearLayout
             android:id="@+id/battle_menu"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:rowCount="2"
-            android:columnCount="2">
+            android:orientation="vertical">
 
-            <Button
-                android:id="@+id/change_weapon_button"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:textColor="@color/gray"
-                android:layout_columnWeight=".5"
-                android:layout_rowWeight=".5"
-                android:text="@string/change_weapon" />
+            <LinearLayout
+                android:id="@+id/battle_menu_row_1"
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                android:layout_weight=".5"
+                android:orientation="horizontal">
 
-            <Button
-                android:id="@+id/attack_button"
-                android:layout_width="wrap_content"
-                android:textColor="@color/gray"
-                android:layout_height="wrap_content"
-                android:layout_columnWeight=".5"
-                android:layout_rowWeight=".5"
-                android:text="@string/attack" />
+                <Button
+                    android:id="@+id/change_weapon_button"
+                    style="@style/MenuButton"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:layout_weight=".5"
+                    android:drawableStart="@drawable/ic_change_weapon"
+                    android:padding="10dp"
+                    android:text="@string/change_weapon" />
 
-            <Button
-                android:id="@+id/run_button"
-                android:layout_width="wrap_content"
-                android:textColor="@color/gray"
-                android:layout_height="wrap_content"
-                android:layout_columnWeight=".5"
-                android:layout_rowWeight=".5"
-                android:text="@string/run" />
+                <View
+                    android:layout_width="1dp"
+                    android:layout_height="match_parent"
+                    android:background="@color/menu_text_color" />
 
-            <Button
-                android:id="@+id/item_button"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:textColor="@color/gray"
-                android:layout_columnWeight=".5"
-                android:layout_rowWeight=".5"
-                android:text="@string/use_item" />
+                <Button
+                    android:id="@+id/attack_button"
+                    style="@style/MenuButton"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:layout_weight=".5"
+                    android:drawableStart="@drawable/ic_attack"
+                    android:padding="10dp"
+                    android:text="@string/attack" />
 
-        </GridLayout>
+            </LinearLayout>
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:background="@color/menu_text_color" />
+
+            <LinearLayout
+                android:id="@+id/battle_menu_row_2"
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                android:layout_weight=".5"
+                android:orientation="horizontal">
+
+                <Button
+                    android:id="@+id/run_button"
+                    style="@style/MenuButton"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:layout_weight=".5"
+                    android:drawableStart="@drawable/ic_run"
+                    android:padding="10dp"
+                    android:text="@string/run" />
+
+                <View
+                    android:layout_width="1dp"
+                    android:layout_height="match_parent"
+                    android:background="@color/menu_text_color" />
+
+                <Button
+                    android:id="@+id/item_button"
+                    style="@style/MenuButton"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:layout_weight=".5"
+                    android:drawableStart="@drawable/ic_use_item"
+                    android:padding="10dp"
+                    android:text="@string/use_item" />
+
+            </LinearLayout>
+        </LinearLayout>
     </FrameLayout>
 </RelativeLayout>

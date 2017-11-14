@@ -8,7 +8,7 @@
         <item name="colorAccent">@color/colorAccent</item>
         <item name="imageButtonStyle">@style/SilentImageButton</item>
         <item name="android:buttonStyle">@style/SilentButton</item>
-        <item name="buttonStyle">@style/SilentButton</item>
+        <item name="jarvisStyle">@style/SilentButton</item>
         <item name="android:button">@drawable/button_custom</item>
     </style>
 
@@ -38,6 +38,12 @@
 
     <style name="SilentButton" parent="Base.Widget.AppCompat.Button.Colored">
         <item name="android:background">@drawable/button_custom</item>
+        <item name="android:soundEffectsEnabled">false</item>
+    </style>
+
+    <style name="MenuButton" parent="Base.Widget.AppCompat.Button.Colored">
+        <item name="android:background">@color/transparent</item>
+        <item name="android:textColor">@color/menu_text_color</item>
         <item name="android:soundEffectsEnabled">false</item>
     </style>
 

@@ -7,11 +7,14 @@ import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.widget.EditText;
 
+import java.util.UUID;
+
 import ie.ul.postgrad.socialanxietyapp.App;
 import ie.ul.postgrad.socialanxietyapp.FontManager;
 import ie.ul.postgrad.socialanxietyapp.R;
 import ie.ul.postgrad.socialanxietyapp.game.GameManager;
 import ie.ul.postgrad.socialanxietyapp.game.Player;
+import ie.ul.postgrad.socialanxietyapp.game.SoundManager;
 
 public class InputNameActvity extends AppCompatActivity {
 
@@ -30,6 +33,7 @@ public class InputNameActvity extends AppCompatActivity {
                 String name = ((EditText) findViewById(R.id.name_field)).getText().toString();
 
                 if (name.length() > 0) {
+                    GameManager.getInstance().initDatabaseHelper(getApplicationContext(), UUID.randomUUID().toString(), "Guest", "guest@guest.com", "");
                     GameManager gm = GameManager.getInstance();
                     Player p = gm.getPlayer();
                     p.setName(name);
@@ -37,6 +41,7 @@ public class InputNameActvity extends AppCompatActivity {
                     Intent i = new Intent(getApplicationContext(), AvatarCustomizationActivity.class);
                     startActivity(i);
                     finish();
+                    SoundManager.getInstance(getApplicationContext()).playSound(SoundManager.Sound.CLICK);
                 }
             }
         });

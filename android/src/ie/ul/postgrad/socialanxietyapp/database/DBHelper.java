@@ -30,7 +30,7 @@ import ie.ul.postgrad.socialanxietyapp.game.item.WeaponItem;
 
 public class DBHelper extends SQLiteOpenHelper {
 
-    private static final int DATABASE_VERSION = 65;
+    private static final int DATABASE_VERSION = 66;
 
     private static final String DATABASE_NAME = "AnxietyApp.db";
 
@@ -100,7 +100,13 @@ public class DBHelper extends SQLiteOpenHelper {
     private static final String STATS_COLUMN_CHESTS_OPENED = "chests_opened";
     private static final String STATS_TOTAL_STEPS = "total_steps";
 
-    private static final String[] TABLES = {USER_TABLE_NAME, PLAYERS_TABLE_NAME, ITEM_TABLE_NAME, WEAPON_TABLE_NAME, CHEST_TABLE_NAME, TRAVEL_TABLE_NAME, AVATAR_TABLE_NAME, LOCATION_TABLE_NAME, SURVEY_TABLE_NAME, STATS_TABLE_NAME};
+    private static final String MOOD_TABLE_NAME = "mood";
+    private static final String MOOD_COLUMN_PLAYER_ID = "player_id";
+    private static final String MOOD_RATING= "rating";
+    private static final String MOOD_DESCRIPTION = "description";
+    private static final String MOOD_DATE_TIME = "date_time";
+
+    private static final String[] TABLES = {USER_TABLE_NAME, PLAYERS_TABLE_NAME, ITEM_TABLE_NAME, WEAPON_TABLE_NAME, CHEST_TABLE_NAME, TRAVEL_TABLE_NAME, AVATAR_TABLE_NAME, LOCATION_TABLE_NAME, SURVEY_TABLE_NAME, STATS_TABLE_NAME, MOOD_TABLE_NAME};
 
     private Context context;
     private SQLiteDatabase db;
@@ -121,6 +127,7 @@ public class DBHelper extends SQLiteOpenHelper {
         db.execSQL("CREATE TABLE " + LOCATION_TABLE_NAME + " (player_id text key, lat real, lng real, type integer, timeofvisit long)");
         db.execSQL("CREATE TABLE " + SURVEY_TABLE_NAME + " (player_id text key, question integer, answer integer, date text)");
         db.execSQL("CREATE TABLE " + STATS_TABLE_NAME + " (player_id text key, win_count integer, chests_opened integer, total_steps integer)");
+        db.execSQL("CREATE TABLE " + MOOD_TABLE_NAME + " (player_id text key, rating integer, description text, date_time text)");
     }
 
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
@@ -229,6 +236,17 @@ public class DBHelper extends SQLiteOpenHelper {
         contentValues.put(SURVEY_COLUMN_ANSWER, answer);
         contentValues.put(SURVEY_COLUMN_DATE, DateFormat.getDateTimeInstance().format(new Date()));
         db.insert(SURVEY_TABLE_NAME, null, contentValues);
+        return true;
+    }
+
+    public boolean insertMoodRating(String player_id, int rating, String description) {
+        db = this.getWritableDatabase();
+        ContentValues contentValues = new ContentValues();
+        contentValues.put(MOOD_COLUMN_PLAYER_ID, player_id);
+        contentValues.put(MOOD_RATING, rating);
+        contentValues.put(MOOD_DESCRIPTION, description);
+        contentValues.put(MOOD_DATE_TIME, DateFormat.getDateTimeInstance().format(new Date()));
+        db.insert(MOOD_TABLE_NAME, null, contentValues);
         return true;
     }
 

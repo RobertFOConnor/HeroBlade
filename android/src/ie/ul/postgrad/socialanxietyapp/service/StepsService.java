@@ -156,6 +156,9 @@ public class StepsService extends Service implements SensorEventListener {
 
         int mNotificationId = (int) (Math.random() * 1000);// Set an ID for the notification
         NotificationManager notificationManager = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);// Get an instance of NotificationManager service
-        notificationManager.notify(mNotificationId, mBuilder.build()); // Build the notification and issue it.
+
+        if (notificationManager != null) {
+            notificationManager.notify(mNotificationId, mBuilder.build()); // Build the notification and issue it.
+        }
     }
 }

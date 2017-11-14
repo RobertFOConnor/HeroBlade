@@ -10,15 +10,13 @@ import android.widget.TextView;
 
 import ie.ul.postgrad.socialanxietyapp.R;
 import ie.ul.postgrad.socialanxietyapp.game.GameManager;
+import ie.ul.postgrad.socialanxietyapp.game.SoundManager;
 import ie.ul.postgrad.socialanxietyapp.game.item.ChestItem;
 import ie.ul.postgrad.socialanxietyapp.game.factory.ItemFactory;
 import ie.ul.postgrad.socialanxietyapp.game.factory.WeaponFactory;
 import ie.ul.postgrad.socialanxietyapp.game.item.WeaponItem;
 
 public class ChestOpenActivity extends AppCompatActivity {
-
-    private LinearLayout rewardList;
-    private GameManager gm;
 
     public static String CHEST_ID_KEY = "chest_id";
     public static String SWORD_ID_KEY = "sword_id";
@@ -28,17 +26,21 @@ public class ChestOpenActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_chest_open);
 
-        rewardList = (LinearLayout) findViewById(R.id.reward_list);
+        LinearLayout rewardList = (LinearLayout) findViewById(R.id.reward_list);
+        int chestId = 76;
+        int swordId = 1;
 
         Bundle bundle = getIntent().getExtras();
-        int chestId = bundle.getInt(CHEST_ID_KEY);
-        int swordId = bundle.getInt(SWORD_ID_KEY);
+        if(bundle != null) {
+            chestId = bundle.getInt(CHEST_ID_KEY);
+            swordId = bundle.getInt(SWORD_ID_KEY);
+        }
 
         ChestItem chestItem = (ChestItem) ItemFactory.buildItem(this, chestId);
         WeaponItem weaponItem = WeaponFactory.buildWeapon(this, swordId);
 
         //Random chest
-        gm = GameManager.getInstance();
+        GameManager gm = GameManager.getInstance();
         gm.initDatabaseHelper(this);
         ((TextView) findViewById(R.id.title)).setText(getString(R.string.chest_unlocked, chestItem.getName()));
         ((TextView) findViewById(R.id.cash_text)).setText(getString(R.string.cash_display, chestItem.getRarity() * 500));
@@ -57,8 +59,8 @@ public class ChestOpenActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 finish();
+                SoundManager.getInstance(getApplicationContext()).playSound(SoundManager.Sound.BACK);
             }
         });
-
     }
 }

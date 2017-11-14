@@ -15,6 +15,7 @@ import ie.ul.postgrad.socialanxietyapp.R;
 import ie.ul.postgrad.socialanxietyapp.adapter.WeaponListAdapter;
 import ie.ul.postgrad.socialanxietyapp.game.GameManager;
 import ie.ul.postgrad.socialanxietyapp.game.Inventory;
+import ie.ul.postgrad.socialanxietyapp.game.SoundManager;
 import ie.ul.postgrad.socialanxietyapp.game.item.WeaponItem;
 
 public class WeaponActivity extends AppCompatActivity implements View.OnClickListener {
@@ -113,6 +114,7 @@ public class WeaponActivity extends AppCompatActivity implements View.OnClickLis
         switch (item.getItemId()) {
             case android.R.id.home:
                 finish();
+                SoundManager.getInstance(this).playSound(SoundManager.Sound.BACK);
                 break;
         }
         return true;

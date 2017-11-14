@@ -92,7 +92,7 @@
 
     <LinearLayout
         android:id="@+id/avatar_view"
-        android:layout_width="300dp"
+        android:layout_width="wrap_content"
         android:layout_height="match_parent"
         android:layout_above="@id/continue_button"
         android:layout_below="@id/style_menu"

@@ -1,9 +1,13 @@
 package ie.ul.postgrad.socialanxietyapp.game;
 
+import android.app.AlarmManager;
+import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
+import android.net.Uri;
 import android.os.AsyncTask;
 import android.util.AndroidRuntimeException;
+import android.util.Log;
 
 import com.google.android.gms.maps.model.LatLng;
 
@@ -17,6 +21,7 @@ import org.apache.http.message.BasicNameValuePair;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.List;
 import java.util.UUID;
 
@@ -29,7 +34,10 @@ import ie.ul.postgrad.socialanxietyapp.game.factory.ItemFactory;
 import ie.ul.postgrad.socialanxietyapp.game.factory.MarkerFactory;
 import ie.ul.postgrad.socialanxietyapp.game.factory.WeaponFactory;
 import ie.ul.postgrad.socialanxietyapp.game.item.WeaponItem;
+import ie.ul.postgrad.socialanxietyapp.receiver.AlarmReceiver;
 import ie.ul.postgrad.socialanxietyapp.screens.LevelUpActivity;
+
+import static android.content.Context.ALARM_SERVICE;
 
 /**
  * Created by Robert on 15-Mar-17.
@@ -393,6 +401,30 @@ public class GameManager {
         Stats stats = dbHelper.getStats();
         stats.addChestsOpened();
         dbHelper.updateStats(getPlayer().getId(), stats);
+    }
+
+    public void setMoodRatingAlarm(Context context) {
+        AlarmManager alarmManager = (AlarmManager) context.getSystemService(ALARM_SERVICE);
+        Intent alarmIntent = new Intent(context, AlarmReceiver.class); // AlarmReceiver1 = broadcast receiver
+
+        PendingIntent pendingIntent = PendingIntent.getBroadcast(context, 0, alarmIntent, PendingIntent.FLAG_UPDATE_CURRENT);
+        alarmIntent.setData((Uri.parse("custom://" + System.currentTimeMillis())));
+
+        if (alarmManager != null) {
+            alarmManager.cancel(pendingIntent);
+
+            Calendar alarmStartTime = Calendar.getInstance();
+            Calendar now = Calendar.getInstance();
+            alarmStartTime.set(Calendar.HOUR_OF_DAY, 20); //replace with custom time.
+            alarmStartTime.set(Calendar.MINUTE, 0);
+            alarmStartTime.set(Calendar.SECOND, 0);
+            if (now.after(alarmStartTime)) {
+                Log.d("Hey", "Added a day");
+                alarmStartTime.add(Calendar.DATE, 1);
+            }
+            alarmManager.setRepeating(AlarmManager.RTC_WAKEUP, alarmStartTime.getTimeInMillis(), AlarmManager.INTERVAL_DAY, pendingIntent);
+        }
+        Log.d("Alarm", "Alarms set for everyday 8 am.");
     }
 
     public void addWin() {

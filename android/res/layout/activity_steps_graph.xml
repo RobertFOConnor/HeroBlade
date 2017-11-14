@@ -5,6 +5,7 @@
     android:layout_height="match_parent"
     android:paddingTop="40dp"
     android:orientation="vertical"
+    android:isScrollContainer="true"
     tools:context="ie.ul.postgrad.socialanxietyapp.screens.StepsGraphActivity">
 
     <TextView
@@ -12,15 +13,12 @@
         android:gravity="center"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Steps taken per day" />
+        android:text="Mood Ratings" />
 
 
-    <com.jjoe64.graphview.GraphView
-        android:id="@+id/graph"
+    <com.github.mikephil.charting.charts.LineChart
+        android:id="@+id/chart"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        tools:layout_editor_absoluteX="8dp"
-        tools:layout_editor_absoluteY="0dp"
-        android:layout_marginBottom="40dp"/>
+        android:layout_height="match_parent" />
 
 </LinearLayout>

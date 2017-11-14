@@ -14,6 +14,7 @@ import android.widget.TextView;
 import ie.ul.postgrad.socialanxietyapp.App;
 import ie.ul.postgrad.socialanxietyapp.R;
 import ie.ul.postgrad.socialanxietyapp.game.GameManager;
+import ie.ul.postgrad.socialanxietyapp.game.SoundManager;
 import ie.ul.postgrad.socialanxietyapp.game.item.WeaponItem;
 
 public class WeaponDetailActivity extends AppCompatActivity {
@@ -93,6 +94,7 @@ public class WeaponDetailActivity extends AppCompatActivity {
         switch (item.getItemId()) {
             case android.R.id.home:
                 finish();
+                SoundManager.getInstance(this).playSound(SoundManager.Sound.BACK);
                 break;
         }
         return true;

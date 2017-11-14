@@ -8,11 +8,12 @@ import android.graphics.Color;
 import android.graphics.PixelFormat;
 import android.graphics.PorterDuff;
 import android.location.Location;
+import android.media.MediaPlayer;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.ActivityCompat;
-import android.support.v4.app.FragmentTransaction;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
@@ -68,12 +69,12 @@ import ie.ul.postgrad.socialanxietyapp.game.GameManager;
 import ie.ul.postgrad.socialanxietyapp.game.MarkerManager;
 import ie.ul.postgrad.socialanxietyapp.game.MarkerTag;
 import ie.ul.postgrad.socialanxietyapp.game.Player;
+import ie.ul.postgrad.socialanxietyapp.game.SoundManager;
 import ie.ul.postgrad.socialanxietyapp.game.XPLevels;
 import ie.ul.postgrad.socialanxietyapp.game.factory.MarkerFactory;
 import ie.ul.postgrad.socialanxietyapp.game.item.WeaponItem;
 import ie.ul.postgrad.socialanxietyapp.map.MapWrapperLayout;
 import ie.ul.postgrad.socialanxietyapp.map.OnInfoWindowElemTouchListener;
-import ie.ul.postgrad.socialanxietyapp.screen.AvatarScreen;
 import ie.ul.postgrad.socialanxietyapp.service.StepsService;
 import ie.ul.postgrad.socialanxietyapp.sync.SyncManager;
 
@@ -118,6 +119,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
     private GoogleApiClient mGoogleApiClient;
     private boolean usingGames = true;
     private AvatarFragment avatarFrag;
+    private AsyncTask bgMusic;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -126,27 +128,6 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
         mDrawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
 
         avatarFrag = new AvatarFragment();
-        mDrawerLayout.addDrawerListener(new DrawerLayout.DrawerListener() {
-            @Override
-            public void onDrawerSlide(View drawerView, float slideOffset) {
-                avatarFrag.hide();
-            }
-
-            @Override
-            public void onDrawerOpened(View drawerView) {
-                avatarFrag.hide();
-            }
-
-            @Override
-            public void onDrawerClosed(View drawerView) {
-                avatarFrag.show();
-            }
-
-            @Override
-            public void onDrawerStateChanged(int newState) {
-
-            }
-        });
         mDrawerList = (ListView) findViewById(R.id.left_drawer);
         gm = GameManager.getInstance();
         gm.initDatabaseHelper(this);
@@ -165,12 +146,6 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
         toolbar.setTitle("");
         setSupportActionBar(toolbar);
 
-        SyncManager.getInstance().startSyncAdapter(this);
-
-        //Start step counter and location service
-        Intent mStepsIntent = new Intent(getApplicationContext(), StepsService.class);
-        startService(mStepsIntent);
-
         findViewById(R.id.menu_button).setOnClickListener(this);
         findViewById(R.id.marker_button).setOnClickListener(this);
         findViewById(R.id.updates_button).setOnClickListener(this);
@@ -181,6 +156,13 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
         trans.add(R.id.avatar_fragment, avatarFrag);
         trans.addToBackStack(null);
         trans.commit();*/
+
+        SyncManager.getInstance().startSyncAdapter(this);
+        GameManager.getInstance().setMoodRatingAlarm(this);
+
+        //Start step counter and location service
+        Intent mStepsIntent = new Intent(getApplicationContext(), StepsService.class);
+        startService(mStepsIntent);
     }
 
     public static class AvatarFragment extends AndroidFragmentApplication implements LibGdxInterface {
@@ -188,8 +170,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
         MainGame game;
 
         @Override
-        public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                                 Bundle savedInstanceState) {
+        public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
             // Inflate the layout for this fragment
 
             AndroidApplicationConfiguration cfg = new AndroidApplicationConfiguration();
@@ -203,16 +184,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
                 glView.getHolder().setFormat(PixelFormat.TRANSLUCENT);
                 glView.setZOrderOnTop(true);
             }
-
             return view;
-        }
-
-        public void show() {
-            ((AvatarScreen) game.getScreen()).show();
-        }
-
-        public void hide() {
-            ((AvatarScreen) game.getScreen()).hide();
         }
 
         @Override
@@ -247,6 +219,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
         super.onStart();
         active = true;
         setupNavDrawer();
+        bgMusic = new BackgroundMusic().execute(getApplicationContext());
     }
 
     /**
@@ -278,6 +251,14 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
         this.infoImg = (ImageView) infoWindow.findViewById(R.id.info_img);
         this.infoButton = (Button) infoWindow.findViewById(R.id.collect_button);
 
+        map.setOnMarkerClickListener(new GoogleMap.OnMarkerClickListener() {
+            @Override
+            public boolean onMarkerClick(Marker marker) {
+                SoundManager.getInstance(getApplicationContext()).playSound(SoundManager.Sound.MARKER);
+                return false;
+            }
+        });
+
         // Setting custom OnTouchListener which deals with the pressed state
         // so it shows up
         this.infoButtonListener = new OnInfoWindowElemTouchListener(infoButton,
@@ -302,6 +283,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
                                 startBattle(marker);
                                 break;
                         }
+                        playClick();
                     } else {
                         App.showToast(getApplicationContext(), getString(R.string.already_visited));
                     }
@@ -491,13 +473,16 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
         switch (v.getId()) {
             case (R.id.menu_button):
                 mDrawerLayout.openDrawer(Gravity.START);
+                playClick();
                 break;
             case (R.id.marker_button):
                 MarkerManager.showNearbyMarkers(this, markers, mCurrentLocation);
+                playClick();
                 break;
             case (R.id.updates_button):
                 Intent intent = new Intent(getApplicationContext(), ChestViewActivity.class);
                 startActivity(intent);
+                playClick();
                 break;
         }
     }
@@ -517,6 +502,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
     protected void onDestroy() {
         gm.closeDatabase();
         super.onDestroy();
+        bgMusic.cancel(true);
     }
 
     /**
@@ -709,26 +695,32 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
                 case PROFILE_TEXT:
                     i = new Intent(context, PlayerAvatarActivity.class);
                     startActivity(i);
+                    playClick();
                     break;
                 case INVENTORY:
                     i = new Intent(context, InventoryActivity.class);
                     startActivity(i);
+                    playClick();
                     break;
                 case WEAPONS:
                     i = new Intent(context, WeaponActivity.class);
                     startActivity(i);
+                    playClick();
                     break;
                 case CRAFTING:
                     i = new Intent(context, CraftingActivity.class);
                     startActivity(i);
+                    playClick();
                     break;
                 case INDEX:
                     i = new Intent(context, IndexActivity.class);
                     startActivity(i);
+                    playClick();
                     break;
                 case ACHIEVEMENTS:
                     if (mGoogleApiClient.hasConnectedApi(Games.API)) {
                         AchievementManager.showAchievements(context, mGoogleApiClient);
+                        playClick();
                     } else {
                         App.showToast(getApplicationContext(), getString(R.string.no_google_play_achievements));
                     }
@@ -746,6 +738,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
                         Games.Leaderboards.submitScore(mGoogleApiClient, getString(R.string.leaderboard_top_players), totalXP);
                         startActivityForResult(Games.Leaderboards.getLeaderboardIntent(mGoogleApiClient,
                                 getString(R.string.leaderboard_top_players)), 122);
+                        playClick();
                     } else {
                         App.showToast(getApplicationContext(), getString(R.string.no_google_play_leaderboard));
                     }
@@ -755,5 +748,29 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
             DrawerLayout drawer = (DrawerLayout) ((AppCompatActivity) context).findViewById(R.id.drawer_layout);
             drawer.closeDrawer(GravityCompat.START);
         }
+    }
+
+    public static class BackgroundMusic extends AsyncTask<Context, Void, Void> {
+        MediaPlayer mediaPlayer;
+
+        @Override
+        protected Void doInBackground(Context... params) {
+            mediaPlayer = MediaPlayer.create(params[0], R.raw.bg_music_map);
+            mediaPlayer.setLooping(true); // Set looping
+            mediaPlayer.setVolume(100, 100);
+            mediaPlayer.start();
+
+            return null;
+        }
+
+        @Override
+        protected void onCancelled() {
+            super.onCancelled();
+            mediaPlayer.stop();
+        }
+    }
+
+    private void playClick() {
+        SoundManager.getInstance(this).playSound(SoundManager.Sound.CLICK);
     }
 }

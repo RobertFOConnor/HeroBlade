@@ -11,6 +11,7 @@ import java.util.ArrayList;
 import ie.ul.postgrad.socialanxietyapp.App;
 import ie.ul.postgrad.socialanxietyapp.R;
 import ie.ul.postgrad.socialanxietyapp.adapter.CraftableListAdapter;
+import ie.ul.postgrad.socialanxietyapp.game.SoundManager;
 import ie.ul.postgrad.socialanxietyapp.game.item.Item;
 import ie.ul.postgrad.socialanxietyapp.game.factory.ItemFactory;
 
@@ -22,8 +23,8 @@ public class CraftingActivity extends AppCompatActivity {
         setContentView(R.layout.activity_crafting);
         ArrayList<Item> items = new ArrayList<>();
         int[] craftItems = ItemFactory.CRAFTABLES;
-        for (int i = 0; i < craftItems.length; i++) {
-            Item item = ItemFactory.buildItem(this, craftItems[i]);
+        for (int craftItem : craftItems) {
+            Item item = ItemFactory.buildItem(this, craftItem);
             if (item.getIngredients().size() > 0) {
                 items.add(item);
             }
@@ -47,6 +48,7 @@ public class CraftingActivity extends AppCompatActivity {
         switch (item.getItemId()) {
             case android.R.id.home:
                 finish();
+                SoundManager.getInstance(this).playSound(SoundManager.Sound.BACK);
                 break;
         }
         return true;

@@ -10,9 +10,11 @@ import android.view.View;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import ie.ul.postgrad.socialanxietyapp.game.SoundManager;
+
 /**
  * Created by Robert on 14-Aug-17.
- *
+ * <p>
  * Application object available throughout the app
  * for setting styles and showing toasts.
  */
@@ -21,10 +23,12 @@ public class App extends Application {
     private static App mInstance;
     private static Toast mToast;
 
+
     @Override
     public void onCreate() {
         super.onCreate();
         mInstance = this;
+        SoundManager.getInstance(this);
     }
 
     public static synchronized App getInstance() {

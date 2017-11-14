@@ -5,6 +5,7 @@ import android.os.Bundle;
 import android.view.View;
 
 import ie.ul.postgrad.socialanxietyapp.R;
+import ie.ul.postgrad.socialanxietyapp.game.SoundManager;
 
 public class TimeToWalkActivity extends AppCompatActivity {
 
@@ -17,6 +18,7 @@ public class TimeToWalkActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 finish();
+                SoundManager.getInstance(getApplicationContext()).playSound(SoundManager.Sound.BACK);
             }
         });
     }

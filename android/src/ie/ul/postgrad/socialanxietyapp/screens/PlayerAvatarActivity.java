@@ -18,6 +18,7 @@ import ie.ul.postgrad.socialanxietyapp.MainGame;
 import ie.ul.postgrad.socialanxietyapp.R;
 import ie.ul.postgrad.socialanxietyapp.game.GameManager;
 import ie.ul.postgrad.socialanxietyapp.game.Player;
+import ie.ul.postgrad.socialanxietyapp.game.SoundManager;
 import ie.ul.postgrad.socialanxietyapp.game.XPLevels;
 
 public class PlayerAvatarActivity extends AndroidApplication implements LibGdxInterface, View.OnClickListener {
@@ -95,9 +96,11 @@ public class PlayerAvatarActivity extends AndroidApplication implements LibGdxIn
                 i.putExtra("edit", true);
                 startActivity(i);
                 finish();
+                SoundManager.getInstance(this).playSound(SoundManager.Sound.CLICK);
                 break;
             case R.id.back_button:
                 finish();
+                SoundManager.getInstance(this).playSound(SoundManager.Sound.BACK);
                 break;
         }
     }

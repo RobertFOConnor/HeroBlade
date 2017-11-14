@@ -18,6 +18,7 @@ import ie.ul.postgrad.socialanxietyapp.adapter.InventoryListAdapter;
 import ie.ul.postgrad.socialanxietyapp.adapter.WeaponListAdapter;
 import ie.ul.postgrad.socialanxietyapp.game.GameManager;
 import ie.ul.postgrad.socialanxietyapp.game.Inventory;
+import ie.ul.postgrad.socialanxietyapp.game.SoundManager;
 import ie.ul.postgrad.socialanxietyapp.game.item.FoodItem;
 import ie.ul.postgrad.socialanxietyapp.game.item.Item;
 import ie.ul.postgrad.socialanxietyapp.game.factory.ItemFactory;
@@ -109,6 +110,7 @@ public class InventoryActivity extends AppCompatActivity {
         switch (item.getItemId()) {
             case android.R.id.home:
                 finish();
+                SoundManager.getInstance(this).playSound(SoundManager.Sound.BACK);
                 break;
         }
         return true;

@@ -12,6 +12,7 @@ import ie.ul.postgrad.socialanxietyapp.App;
 import ie.ul.postgrad.socialanxietyapp.R;
 import ie.ul.postgrad.socialanxietyapp.adapter.WeaponIndexAdapter;
 import ie.ul.postgrad.socialanxietyapp.game.GameManager;
+import ie.ul.postgrad.socialanxietyapp.game.SoundManager;
 import ie.ul.postgrad.socialanxietyapp.game.factory.WeaponFactory;
 import ie.ul.postgrad.socialanxietyapp.game.item.WeaponItem;
 
@@ -48,6 +49,7 @@ public class IndexActivity extends AppCompatActivity {
         switch (item.getItemId()) {
             case android.R.id.home:
                 finish();
+                SoundManager.getInstance(this).playSound(SoundManager.Sound.BACK);
                 break;
         }
         return true;
