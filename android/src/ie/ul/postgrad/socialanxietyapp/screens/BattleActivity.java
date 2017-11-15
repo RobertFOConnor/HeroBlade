@@ -22,6 +22,7 @@ import ie.ul.postgrad.socialanxietyapp.game.EnemyFactory;
 import ie.ul.postgrad.socialanxietyapp.game.GameManager;
 import ie.ul.postgrad.socialanxietyapp.game.Player;
 import ie.ul.postgrad.socialanxietyapp.game.factory.ItemFactory;
+import ie.ul.postgrad.socialanxietyapp.game.factory.WeaponFactory;
 import ie.ul.postgrad.socialanxietyapp.game.item.FoodItem;
 import ie.ul.postgrad.socialanxietyapp.game.item.WeaponItem;
 import ie.ul.postgrad.socialanxietyapp.screen.BattleScreen;
@@ -79,6 +80,8 @@ public class BattleActivity extends AndroidApplication implements LibGdxInterfac
                     weaponType.setImageResource(weapons.get(i).getTypeDrawableRes());
                 }
             }
+        } else {
+            weapon = WeaponFactory.buildWeapon(this, 1);
         }
 
         ProgressBar userHealthBar = (ProgressBar) findViewById(R.id.user_bar);
@@ -360,8 +363,8 @@ public class BattleActivity extends AndroidApplication implements LibGdxInterfac
                 } else {
                     context.setState(new FinishState(FinishState.WON));
                 }
-            } else if (!gm.getInventory().hasUsableWeapons()) {
-                context.setState(new FinishState(FinishState.OUT_OF_WEAPONS));
+            //} else if (!gm.getInventory().hasUsableWeapons()) {
+                //context.setState(new FinishState(FinishState.OUT_OF_WEAPONS));
             } else {
                 context.setState(new EnemyTurnState());
             }
@@ -447,7 +450,7 @@ public class BattleActivity extends AndroidApplication implements LibGdxInterfac
     private class BattleContext {
         private BattleState state;
 
-        public BattleContext() {
+        private BattleContext() {
             state = null;
         }
 

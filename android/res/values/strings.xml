@@ -136,18 +136,14 @@
         <item>@string/anxiety_question_12</item>
     </string-array>
 
-    <string name="help_screen_1">The Map screen lets you see what\'s around your real world. Markers will pop up here when you go to new places!</string>
-    <string name="help_screen_2">Village markers will heal your character back to full health. Blacksmith markers will repair your weaponry. You must be close to a marker to visit it.</string>
-    <string name="help_screen_3">There are bandits lurking around the map. You can battle these bandits when you are close, just make sure you have some weapons ready.</string>
-    <string name="help_screen_4">You can craft new items from the Crafting menu. These can be helpful in battle. Be sure to buy the items villagers have on sale.</string>
-    <string name="help_screen_5">When you level up you will receive treasure chests. These are unlocked by walking certain distances in the real world, so be sure to stay on the move.</string>
+    <string name="help_map_screen_1">The Map screen shows you what\'s around you. This screen updates as you travel. Markers will pop up here when you go to new places!</string>
+    <string name="help_map_screen_2">Village markers will heal your character back to full health. Blacksmith markers will repair your weaponry. You must be close to a marker to visit it.</string>
+    <string name="help_map_screen_3">There are bandits lurking around the map. You can battle these bandits when you are close, just make sure you have some weapons ready.</string>
 
     <string-array name="help_screens">
-        <item>@string/help_screen_1</item>
-        <item>@string/help_screen_2</item>
-        <item>@string/help_screen_3</item>
-        <item>@string/help_screen_4</item>
-        <item>@string/help_screen_5</item>
+        <item>@string/help_map_screen_1</item>
+        <item>@string/help_map_screen_2</item>
+        <item>@string/help_map_screen_3</item>
     </string-array>
 
     <string name="nav_item_0">Profile</string>

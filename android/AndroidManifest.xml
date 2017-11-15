@@ -68,7 +68,13 @@
             android:screenOrientation="portrait" />
         <activity
             android:name=".screens.BattleActivity"
-            android:screenOrientation="portrait" />
+            android:screenOrientation="portrait" >
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
 
         <service android:name=".service.StepsService" />
         <service android:name=".service.LocationService" />
@@ -164,11 +170,7 @@
             android:name=".screens.HelpActivity"
             android:screenOrientation="portrait"
             android:theme="@style/Theme.Transparent">
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
 
-                <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter>
 
         </activity>
         <activity
