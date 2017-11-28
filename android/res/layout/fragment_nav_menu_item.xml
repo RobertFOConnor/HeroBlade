@@ -16,14 +16,14 @@
         android:layout_marginLeft="20dp"
         android:layout_marginRight="20dp"
         android:src="@mipmap/ic_launcher"
-        android:tint="@color/text_dark" />
+        android:tint="@color/text_dark"
+        android:contentDescription="@string/proceed" />
 
     <TextView
         android:id="@+id/title"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:padding="10dp"
-        android:text="Wood"
         android:textColor="@color/text_dark"
         android:textSize="17sp" />
 

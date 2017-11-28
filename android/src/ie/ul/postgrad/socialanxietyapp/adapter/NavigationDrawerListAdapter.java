@@ -33,7 +33,9 @@ public class NavigationDrawerListAdapter extends BaseAdapter {
     public static final int CRAFTING = 4;
     public static final int INDEX = 5;
     public static final int ACHIEVEMENTS = 6;
-    public static final int SETTINGS = 7;
+    public static final int LEADERBOARD = 7;
+    public static final int HELP = 8;
+    public static final int SETTINGS = 9;
 
     public NavigationDrawerListAdapter(Context context, String[] titles, int[] iconIds) {
         this.titles = titles;

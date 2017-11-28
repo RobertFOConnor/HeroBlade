@@ -66,16 +66,16 @@ public class Item {
     }
 
     public String getIngredientsString(Context context) {
-        String s = context.getString(R.string.requires);
+        StringBuilder s = new StringBuilder(context.getString(R.string.requires));
 
         for (int i = 0; i < ingredients.size(); i++) {
-            s += ingredients.valueAt(i) + " " + ItemFactory.buildItem(context, ingredients.keyAt(i)).getName();
+            s.append(ingredients.valueAt(i)).append(" ").append(ItemFactory.buildItem(context, ingredients.keyAt(i)).getName());
             if (i >= ingredients.size()-1) {
-                s += ".";
+                s.append(".");
             } else {
-                s += ", ";
+                s.append(", ");
             }
         }
-        return s;
+        return s.toString();
     }
 }

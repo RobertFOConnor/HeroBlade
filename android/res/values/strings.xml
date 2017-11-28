@@ -74,6 +74,7 @@
     <string name="crafting">Crafting</string>
     <string name="crafting_subtitle">Create potions from your items.</string>
     <string name="inventory">Inventory</string>
+    <string name="help">Help</string>
     <string name="inventory_subtitle">Touch on a food item to consume.</string>
     <string name="items">Items</string>
     <string name="tools">Tools</string>
@@ -106,6 +107,8 @@
     <string name="weapon_change">%1$s changed weapon to %2$s.</string>
     <string name="health_amount">HP: %1$d/%2$d</string>
 
+    <string name="go_back">Go Back</string>
+
     <string name="anxiety_question_1">I have difficulty making eye contact with others.</string>
     <string name="anxiety_question_2">I find it difficult mixing comfortably with the people I work with.</string>
     <string name="anxiety_question_3">I tense up if I meet an acquaintance on the street.</string>
@@ -136,14 +139,136 @@
         <item>@string/anxiety_question_12</item>
     </string-array>
 
-    <string name="help_map_screen_1">The Map screen shows you what\'s around you. This screen updates as you travel. Markers will pop up here when you go to new places!</string>
-    <string name="help_map_screen_2">Village markers will heal your character back to full health. Blacksmith markers will repair your weaponry. You must be close to a marker to visit it.</string>
+
+    <string-array name="mini_spin">
+    <item>@string/mini_spin_1</item>
+    <item>@string/mini_spin_2</item>
+    <item>@string/mini_spin_3</item>
+    </string-array>
+
+    <string name="mini_spin_1">(1/3) Fear of embarrassment causes me to avoid doing things or speaking to people.</string>
+    <string name="mini_spin_2">(2/3) I avoid activities in which I am the center of attention.</string>
+    <string name="mini_spin_3">(3/3) Being embarrassed or looking stupid are among my worst fears.</string>
+
+    <string name="help_welcome_screen_1">First off, THANK YOU for taking part in this study! Welcome to Hero Blade (working title). This is a location-based adventure game which will assess your levels of physical and social activity over the next week.</string>
+    <string name="help_welcome_screen_2">The aim of this project is to observe a connection between levels of social anxiety and physical activity, and may later be used to help therapy patients. But for now, you will have to do. :D</string>
+    <string name="help_welcome_screen_3">Although you may not have social anxiety, this app includes material which could help you learn more about yourself. But also, it\'s a bit of fun. So enough jibber jabber, here we go. :)</string>
+
+    <string-array name="help_welcome_screens">
+        <item>@string/help_welcome_screen_1</item>
+        <item>@string/help_welcome_screen_2</item>
+        <item>@string/help_welcome_screen_3</item>
+    </string-array>
+
+    <string name="help_weapon_screen_1">Looking good! Now you\'re officially ready to start playing! But wait, you\'ll need an epic weapon before you head out into the world. I\'ve got just the thing!</string>
+    <string name="help_weapon_screen_2">Here, I found this tree branch, but you can have it. It\'s been placed in your inventory. This will help fend off the baddies. You\'ll gather more weapons along your journey.</string>
+    <string name="help_weapon_screen_3">Okay, now I\'m sure you\'re definitely ready. It\'s time to take a look at the MAP.</string>
+
+    <string-array name="help_weapon_screens">
+        <item>@string/help_weapon_screen_1</item>
+        <item>@string/help_weapon_screen_2</item>
+        <item>@string/help_weapon_screen_3</item>
+    </string-array>
+
+    <string name="help_map_screen_1">Behold, the Map screen! This shows you what\'s around you (obviously). Updates will happen as you travel, and markers will pop up here when you go to new places!</string>
+    <string name="help_map_screen_2">You can keep this screen open while you walk (stay observant), or open it when you visit a shop or place of interest.</string>
     <string name="help_map_screen_3">There are bandits lurking around the map. You can battle these bandits when you are close, just make sure you have some weapons ready.</string>
 
-    <string-array name="help_screens">
+    <string-array name="help_map_screens">
         <item>@string/help_map_screen_1</item>
         <item>@string/help_map_screen_2</item>
         <item>@string/help_map_screen_3</item>
+    </string-array>
+
+    <string name="help_village_screen_1">When you visit a village, you will be greeted by a villager who will heal you. You can buy and sell food and potions from them. Villagers will pay lots of cash for potions you craft.</string>
+    <string name="help_village_screen_2">Villagers can be slightly personal at times. Try talking to them to see what I mean. However, if you answer all 3 of their questions honestly, they\'ll actually tell you something about yourself. (plus you\'ll get a big 500XP boost if you answer all 3, I promise.)</string>
+    <string name="help_village_screen_3">Each village will have different items available. They will buy your items, but they won\'t buy your swords. You\'ll also have to wait before visiting the same village again.</string>
+
+    <string-array name="help_village_screens">
+        <item>@string/help_village_screen_1</item>
+        <item>@string/help_village_screen_2</item>
+        <item>@string/help_village_screen_3</item>
+    </string-array>
+
+    <string name="help_blacksmith_screen_1">Blacksmiths will repair all your weapons when you visit. You can buy new weapons and sell weapons you don\'t want anymore.</string>
+    <string name="help_blacksmith_screen_2">They look tough, but blacksmiths will ask about your mood and how your day\'s going. "A happy customer is a good customer."</string>
+    <string name="help_blacksmith_screen_3">There are over 50 weapons in the game. Buying from blacksmiths and opening chests are the best ways to get more weapons.</string>
+
+    <string-array name="help_blacksmith_screens">
+        <item>@string/help_blacksmith_screen_1</item>
+        <item>@string/help_blacksmith_screen_2</item>
+        <item>@string/help_blacksmith_screen_3</item>
+    </string-array>
+
+    <string name="help_levelup_screen_1">Leveling up will grant you a free treasure chest! You can view your chests buy touching the chest icon from the map screen.</string>
+    <string name="help_levelup_screen_2">When you level up, your max health will be increased. This means you can take more damage in enemy battles.</string>
+    <string name="help_levelup_screen_3">You can view your level and XP from the map screen in the bottom right corner. Check the leaderboard to see how far others have leveled up.</string>
+
+    <string-array name="help_levelup_screens">
+        <item>@string/help_levelup_screen_1</item>
+        <item>@string/help_levelup_screen_2</item>
+        <item>@string/help_levelup_screen_3</item>
+    </string-array>
+
+    <string name="help_chests_screen_1">Treasure chest require you to walk around before they will open. You don\'t need to keep the app open to record steps, they will be counted even when your phone is sleeping.</string>
+    <string name="help_chests_screen_2">Look under the chest to see how far you need to travel for each chest. The rarer chests require more walking, but have much better rewards inside.</string>
+    <string name="help_chests_screen_3">If you have more than 1 chest, they will both be unlocked as you walk. You will be notified when a chest is opened.</string>
+
+    <string-array name="help_chests_screens">
+        <item>@string/help_chests_screen_1</item>
+        <item>@string/help_chests_screen_2</item>
+        <item>@string/help_chests_screen_3</item>
+    </string-array>
+
+    <string name="help_battle_screen_1">Battle time. When you attack, arrows will appear at the bottom of the screen. Press the left and right sides of the screen to copy the arrow sequence (from left to right).</string>
+    <string name="help_battle_screen_2">Look at the weapon types being used in battle. Using the right type can give you an advantage over your enemy. You can change weapons using the menu and choosing a new weapon.</string>
+    <string name="help_battle_screen_3">If your health bar is low, eat some food to restore your health. Crafted potions will heal you much more efficiently in battle. If things get too crazy, you can run away.</string>
+
+    <string-array name="help_battle_screens">
+        <item>@string/help_battle_screen_1</item>
+        <item>@string/help_battle_screen_2</item>
+        <item>@string/help_battle_screen_3</item>
+    </string-array>
+
+
+    <string name="help_craft_screen_1">As you level up, you will unlock new potion recipes. The crafting screen is where you can see your unlocked recipes. You gain XP each time you craft a potion.</string>
+    <string name="help_craft_screen_2">Potions require certain items before they can be created. Potions appear gray until you have the required ingredients.</string>
+    <string name="help_craft_screen_3">Potions can be helpful in battle. You can also sell potions to villagers to earn extra cash. Villagers will pay a lot of money for potions you craft.</string>
+
+    <string-array name="help_craft_screens">
+        <item>@string/help_craft_screen_1</item>
+        <item>@string/help_craft_screen_2</item>
+        <item>@string/help_craft_screen_3</item>
+    </string-array>
+
+    <string name="help_SAD_screen_1">In difficult times it may help to speak to professionals when you need someone to talk to, who can assist you in coping with your current circumstances.</string>
+    <string name="help_SAD_screen_2">Your answers indicate that you may have symptoms of Social Anxiety Disorder. </string>
+    <string name="help_SAD_screen_3">Potions can be helpful in battle. You can also sell potions to villagers to earn extra cash. Villagers will pay a lot of money for potions you craft.</string>
+
+    <string-array name="help_SAD_screens">
+        <item>@string/help_SAD_screen_1</item>
+        <item>@string/help_SAD_screen_2</item>
+        <item>@string/help_SAD_screen_3</item>
+    </string-array>
+
+    <string name="help_item_1">Introduction to Game</string>
+    <string name="help_item_2">The Map</string>
+    <string name="help_item_3">Villages</string>
+    <string name="help_item_4">Blacksmiths</string>
+    <string name="help_item_5">Leveling Up</string>
+    <string name="help_item_6">Treasure Chests</string>
+    <string name="help_item_7">Battles</string>
+    <string name="help_item_8">Crafting</string>
+
+    <string-array name="help_list_items">
+        <item>@string/help_item_1</item>
+        <item>@string/help_item_2</item>
+        <item>@string/help_item_3</item>
+        <item>@string/help_item_4</item>
+        <item>@string/help_item_5</item>
+        <item>@string/help_item_6</item>
+        <item>@string/help_item_7</item>
+        <item>@string/help_item_8</item>
     </string-array>
 
     <string name="nav_item_0">Profile</string>
@@ -153,6 +278,7 @@
     <string name="nav_item_4">Weapon Index</string>
     <string name="nav_item_5">Achievements</string>
     <string name="nav_item_6">Leaderboard</string>
+    <string name="nav_item_7">Help</string>
 
     <string-array name="nav_items">
         <item>@string/nav_item_0</item>
@@ -162,6 +288,7 @@
         <item>@string/nav_item_4</item>
         <item>@string/nav_item_5</item>
         <item>@string/nav_item_6</item>
+        <item>@string/nav_item_7</item>
     </string-array>
 
     <string name="question_part_2">Do you ever get that?</string>
@@ -203,7 +330,7 @@
 
     <string name="sign_in_other_error">Error signing in.</string>
 
-    <string name="what_is_your_name">Your journey is about to begin.\nWhat is your name?</string>
+    <string name="what_is_your_name">Let\'s get started.\nWhat is your name?</string>
     <string name="health">Health</string>
 
     <string name="time_to_walk">Time to walk!</string>
@@ -211,6 +338,7 @@
 
     <string name="no_google_play_achievements">You must be signed in to Google Play to view achievements.</string>
     <string name="no_google_play_leaderboard">You must be signed in to Google Play to view the leaderboard.</string>
+    <string name="no_mood_ratings">No mood ratings to show.</string>
 
     <string name="attack">Attack</string>
     <string name="use_item">Use\nItem</string>
@@ -218,6 +346,7 @@
     <string name="run">Run</string>
 
     <string name="talk">Talk</string>
+    <string name="what_up">What\'s Up</string>
     <string name="buy_items">Buy Items</string>
     <string name="sell_items">Sell Items</string>
     <string name="buy_swords">Buy Swords</string>
@@ -225,12 +354,26 @@
     <string name="tips">Tips</string>
     <string name="leave">Leave</string>
 
-    <string name="go_back">Back</string>
-    <string name="ans_0">Not at all like me</string>
-    <string name="ans_1">Slightly like me</string>
-    <string name="ans_2">Moderately like me</string>
-    <string name="ans_3">Very much like me</string>
-    <string name="ans_4">Extremely like me</string>
+    <string name="mood_0">Very Bad</string>
+    <string name="mood_1">Bad</string>
+    <string name="mood_2">Alright</string>
+    <string name="mood_3">Good</string>
+    <string name="mood_4">Very Good</string>
+
+    <string-array name="mood_ratings">
+        <item>@string/mood_0</item>
+        <item>@string/mood_1</item>
+        <item>@string/mood_2</item>
+        <item>@string/mood_3</item>
+        <item>@string/mood_4</item>
+    </string-array>
+
+    <string name="signin_other_error">Hmm, couldn\'t sign you in to Google. That means you can\'t view achievements or leaderboard.</string>
+    <string name="ans_0">Not at all</string>
+    <string name="ans_1">A little bit</string>
+    <string name="ans_2">Somewhat</string>
+    <string name="ans_3">Very much</string>
+    <string name="ans_4">Extremely</string>
 
     <string name="style_failed">Style parsing failed.</string>
     <string name="style_not_found">Can\'t find style. Error: </string>

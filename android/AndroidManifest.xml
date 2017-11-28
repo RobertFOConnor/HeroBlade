@@ -31,7 +31,11 @@
             android:name=".account.WelcomeActivity"
             android:screenOrientation="portrait"
             android:theme="@style/Theme.NoActionBar">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
 
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
         </activity>
         <activity
             android:name=".account.CreateAccountActivity"
@@ -69,11 +73,7 @@
         <activity
             android:name=".screens.BattleActivity"
             android:screenOrientation="portrait" >
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
 
-                <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter>
         </activity>
 
         <service android:name=".service.StepsService" />
@@ -123,7 +123,8 @@
             android:theme="@style/Theme.Transparent" />
         <activity
             android:name=".screens.VillageActivity"
-            android:screenOrientation="portrait" />
+            android:screenOrientation="portrait" >
+        </activity>
         <activity
             android:name=".screens.BlacksmithActivity"
             android:screenOrientation="portrait" />
@@ -169,16 +170,11 @@
         <activity
             android:name=".screens.HelpActivity"
             android:screenOrientation="portrait"
-            android:theme="@style/Theme.Transparent">
-
-
-        </activity>
+            android:theme="@style/Theme.Transparent" />
         <activity
             android:name=".screens.MoodRatingActivity"
             android:screenOrientation="portrait"
-            android:theme="@style/Theme.NoActionBar">
-
-        </activity>
+            android:theme="@style/Theme.NoActionBar" />
 
         <service
             android:name=".service.MoodNotificationService"
@@ -199,6 +195,12 @@
                 <action android:name="android.intent.action.BOOT_COMPLETED" />
             </intent-filter>
         </receiver>
+
+        <activity android:name=".screens.MoodLogActivity" >
+
+
+        </activity>
+        <activity android:name=".screens.HelpMenuActivity"></activity>
     </application>
 
 </manifest>

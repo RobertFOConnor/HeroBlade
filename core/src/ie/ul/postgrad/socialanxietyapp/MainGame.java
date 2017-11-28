@@ -55,7 +55,7 @@ public class MainGame extends ApplicationAdapter {
         } else if (screenName.equals(CONVERSATION_SCREEN)) {
             ScreenManager.setScreen(new ConversationScreen(libGdxInterface, batch));
         } else if (screenName.equals(BATTLE_SCREEN)) {
-            ScreenManager.setScreen(new BattleScreen(libGdxInterface, batch));
+            ScreenManager.setScreen(new BattleScreen(libGdxInterface, camera, batch));
         }
     }
 

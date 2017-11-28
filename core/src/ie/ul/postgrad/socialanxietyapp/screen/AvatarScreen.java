@@ -31,7 +31,6 @@ public class AvatarScreen implements Screen {
     private Player player;
     private SpriteBatch sb;
     private Avatar avatar;
-    private boolean hidden = false;
 
     public AvatarScreen(LibGdxInterface libGdxInterface, SpriteBatch sb) {
         avatar = libGdxInterface.getAvatar();
@@ -66,7 +65,6 @@ public class AvatarScreen implements Screen {
 
     @Override
     public void create() {
-
     }
 
     public void update() {
@@ -79,21 +77,10 @@ public class AvatarScreen implements Screen {
     }
 
     public void render() {
-        if(!hidden) {
-            update();
-
-            sb.begin();
-            avatar.drawAvatar(drawer, player);
-            sb.end();
-        }
-    }
-
-    public void hide() {
-        hidden = true;
-    }
-
-    public void show() {
-        hidden = false;
+        update();
+        sb.begin();
+        avatar.drawAvatar(drawer, player);
+        sb.end();
     }
 
     @Override

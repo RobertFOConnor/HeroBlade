@@ -114,7 +114,7 @@ public class MoodRatingActivity extends AppCompatActivity implements View.OnClic
             ((ImageView) findViewById(R.id.result_confirm)).setImageResource(res);
             animateMoods();
             animating = true;
-            rating = res;
+
         }
     }
 
@@ -123,18 +123,23 @@ public class MoodRatingActivity extends AppCompatActivity implements View.OnClic
         switch (v.getId()) {
             case R.id.mood_0:
                 setImageResult(R.drawable.mood_0);
+                rating = 0;
                 break;
             case R.id.mood_1:
                 setImageResult(R.drawable.mood_1);
+                rating = 1;
                 break;
             case R.id.mood_2:
                 setImageResult(R.drawable.mood_2);
+                rating = 2;
                 break;
             case R.id.mood_3:
                 setImageResult(R.drawable.mood_3);
+                rating = 3;
                 break;
             case R.id.mood_4:
                 setImageResult(R.drawable.mood_4);
+                rating = 4;
                 break;
             case R.id.back_button:
                 playSound(SoundManager.Sound.BACK);
@@ -159,6 +164,10 @@ public class MoodRatingActivity extends AppCompatActivity implements View.OnClic
     //Inserts mood data into database (only once).
     private void insertMoodInDatabase() {
         GameManager gm = GameManager.getInstance();
+        if (desc.length() < 2) {
+            desc = getResources().getStringArray(R.array.mood_ratings)[rating];
+        }
+
         gm.initDatabaseHelper(this).insertMoodRating(gm.getPlayer().getId(), rating, desc);
         inserted = true;
     }

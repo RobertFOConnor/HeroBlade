@@ -63,7 +63,7 @@ public class WeaponListAdapter extends ArrayAdapter<WeaponItem> {
         viewHolder.img.setImageResource(getContext().getResources().getIdentifier("weapon" + String.format("%04d", weaponItem.getId()), "drawable", getContext().getPackageName()));
         viewHolder.imgType.setImageResource(weaponItem.getTypeDrawableRes());
 
-        if (currWeaponUUID != null) {
+        if (currWeaponUUID != null && weaponItem.getUUID() != null) {
             if (weaponItem.getUUID().equals(currWeaponUUID)) {
                 viewHolder.bg.setBackgroundColor(ContextCompat.getColor(getContext(), R.color.bg_color_transparent));
             }

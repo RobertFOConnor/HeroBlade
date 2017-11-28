@@ -24,7 +24,7 @@
             android:id="@+id/hair_style_button"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_weight="0.25"
+            android:layout_weight="1"
             android:background="@color/transparent"
             android:text="@string/hair_style"
             android:textColor="@color/gray" />
@@ -39,7 +39,7 @@
             android:id="@+id/hair_color_button"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_weight="0.25"
+            android:layout_weight="1"
             android:background="@color/transparent"
             android:text="@string/hair_color"
             android:textColor="@color/gray" />
@@ -54,7 +54,7 @@
             android:id="@+id/skin_color_button"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_weight="0.25"
+            android:layout_weight="1"
             android:background="@color/transparent"
             android:text="@string/skin_tone"
             android:textColor="@color/gray" />
@@ -69,7 +69,7 @@
             android:id="@+id/shirt_color_button"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_weight="0.25"
+            android:layout_weight="1"
             android:background="@color/transparent"
             android:text="@string/shirt_color"
             android:textColor="@color/gray" />
@@ -95,10 +95,12 @@
         android:layout_width="wrap_content"
         android:layout_height="match_parent"
         android:layout_above="@id/continue_button"
+        android:gravity="center"
         android:layout_below="@id/style_menu"
         android:layout_centerHorizontal="true"
         android:layout_centerVertical="true"
-        android:layout_gravity="center"
         android:orientation="vertical"
-        android:padding="10dp" />
+        android:padding="10dp" >
+
+    </LinearLayout>
 </RelativeLayout>

@@ -26,13 +26,14 @@ import java.util.List;
 import java.util.UUID;
 
 import ie.ul.postgrad.socialanxietyapp.Avatar;
+import ie.ul.postgrad.socialanxietyapp.MoodEntry;
 import ie.ul.postgrad.socialanxietyapp.database.DBHelper;
 import ie.ul.postgrad.socialanxietyapp.database.WebDBHelper;
-import ie.ul.postgrad.socialanxietyapp.game.item.ChestItem;
-import ie.ul.postgrad.socialanxietyapp.game.item.FoodItem;
 import ie.ul.postgrad.socialanxietyapp.game.factory.ItemFactory;
 import ie.ul.postgrad.socialanxietyapp.game.factory.MarkerFactory;
 import ie.ul.postgrad.socialanxietyapp.game.factory.WeaponFactory;
+import ie.ul.postgrad.socialanxietyapp.game.item.ChestItem;
+import ie.ul.postgrad.socialanxietyapp.game.item.FoodItem;
 import ie.ul.postgrad.socialanxietyapp.game.item.WeaponItem;
 import ie.ul.postgrad.socialanxietyapp.receiver.AlarmReceiver;
 import ie.ul.postgrad.socialanxietyapp.screens.LevelUpActivity;
@@ -53,11 +54,10 @@ public class GameManager {
     private static final GameManager ourInstance = new GameManager();
 
     //Game stats (XP)
-    public static final int playerStartHP = 50;
-    public static final int playerLevelUpHP = 25;
+    private static final int playerStartHP = 50;
+    private static final int playerLevelUpHP = 25;
     public static final int villageXP = 150;
     public static final int blacksmithXP = 150;
-    public static final int villagerTalkXP = 25;
     public static final int craftingXP = 250;
     public static boolean TESTING = false;
 
@@ -122,7 +122,7 @@ public class GameManager {
     }
 
     public void testRemoteServer() {
-        new RemoteServerTask().execute();
+        new RemoteServerTask().execute(this);
     }
 
     public void updateWeaponInDatabase(WeaponItem weapon) {
@@ -135,7 +135,7 @@ public class GameManager {
         }
     }
 
-    public void printTables() {
+    private void printTables() {
         dbHelper.printAllTables();
     }
 
@@ -151,7 +151,7 @@ public class GameManager {
         return dbHelper;
     }
 
-    public void giveWeapon(Context context, WeaponItem weaponItem) {
+    public void giveWeapon(WeaponItem weaponItem) {
         weaponItem.setUUID(UUID.randomUUID().toString());
         weaponItem.setEquipped(false);
         if (getInventory().getEquippedWeapons().size() < 6) {
@@ -181,6 +181,7 @@ public class GameManager {
         player.setMaxHealth(player.getMaxHealth() + GameManager.playerLevelUpHP);
         player.setCurrHealth(player.getMaxHealth());
         awardChest(context);
+        awardMoney(100);
 
         try {
             Intent intent = new Intent(context, LevelUpActivity.class);
@@ -196,7 +197,7 @@ public class GameManager {
     }
 
     public int getSurveyQuestion() {
-        return dbHelper.getSurveyData(getPlayer().getId()).getCount() % 12;
+        return dbHelper.getSurveyData(getPlayer().getId()).getCount();
     }
 
     public void awardMoney(int money) {
@@ -237,7 +238,7 @@ public class GameManager {
         return countPMarkerTypes(MarkerFactory.ID_VILLAGE);
     }
 
-    public int getBlacksmithCount() {
+    int getBlacksmithCount() {
         return countPMarkerTypes(MarkerFactory.ID_BLACKSMITH);
     }
 
@@ -274,7 +275,7 @@ public class GameManager {
 
     public WeaponItem unlockWeapon(Context context, int rarity) {
         WeaponItem weaponReward = WeaponFactory.getRandomWeaponByRarity(context, rarity);
-        giveWeapon(context, weaponReward);
+        giveWeapon(weaponReward);
         return weaponReward;
     }
 
@@ -293,22 +294,22 @@ public class GameManager {
         dbHelper.deleteWeapon(UUID);
     }
 
-    private class RemoteServerTask extends AsyncTask<String, Integer, String> {
+    private static class RemoteServerTask extends AsyncTask<GameManager, Integer, String> {
 
         @Override
-        protected String doInBackground(String... params) {
-            return PostData(params);
+        protected String doInBackground(GameManager... params) {
+            return PostData(params[0]);
         }
 
         @Override
         protected void onPostExecute(String result) {
-
+            System.out.println(result);
         }
     }
 
-    private List<NameValuePair> list;
+    private static List<NameValuePair> list;
 
-    private String PostData(String[] values) {
+    private static String PostData(GameManager gm) {
         String response = "";
 
         //android.os.Debug.waitForDebugger();
@@ -317,7 +318,7 @@ public class GameManager {
             String servletName = WebDBHelper.URL + "UpdateTables";
             list = new ArrayList<>();
 
-            Player player = getPlayer();
+            Player player = gm.getPlayer();
             keyValuePair("id", player.getId());
             keyValuePair("name", player.getName());
             keyValuePair("level", String.valueOf(player.getLevel()));
@@ -327,7 +328,7 @@ public class GameManager {
             keyValuePair("curr_health", String.valueOf(player.getCurrHealth()));
             keyValuePair("sword_id", player.getBaseSword());
 
-            Inventory inventory = getInventory();
+            Inventory inventory = gm.getInventory();
             for (int i = 0; i < inventory.getItems().size(); i++) {
                 keyValuePair("item_id_" + i, String.valueOf(inventory.getItems().keyAt(i)));
                 keyValuePair("quantity_" + i, String.valueOf(inventory.getItems().valueAt(i)));
@@ -341,7 +342,7 @@ public class GameManager {
                 keyValuePair("weapon_equipped_" + i, w.getEquippedAsString());
             }
 
-            ArrayList<ConsumedLocation> locations = getLocations();
+            ArrayList<ConsumedLocation> locations = gm.getLocations();
             for (int i = 0; i < locations.size(); i++) {
                 ConsumedLocation l = locations.get(i);
                 keyValuePair("location_lat_" + i, String.valueOf(l.getLat()));
@@ -350,7 +351,7 @@ public class GameManager {
                 keyValuePair("location_time_" + i, String.valueOf(l.getTimeUsed()));
             }
 
-            ArrayList<ChestItem> chests = getChests();
+            ArrayList<ChestItem> chests = gm.getChests();
             for (int i = 0; i < chests.size(); i++) {
                 keyValuePair("chest_uid_" + i, chests.get(i).getUID());
                 keyValuePair("chest_id_" + i, String.valueOf(chests.get(i).getId()));
@@ -365,6 +366,14 @@ public class GameManager {
                 keyValuePair("survey_date_" + i, ans.getDate());
             }
 
+            ArrayList<MoodEntry> moodRatings = dbHelper.getMoodEntries();
+            for (int i = 0; i < moodRatings.size(); i++) {
+                MoodEntry rating = moodRatings.get(i);
+                keyValuePair("mood_rating_" + i, String.valueOf(rating.getRating()));
+                keyValuePair("mood_description_" + i, rating.getDescription());
+                keyValuePair("mood_date_" + i, rating.getDate());
+            }
+
             HttpPost httpPost = new HttpPost(servletName);
             httpPost.setEntity(new UrlEncodedFormEntity(list));
             HttpResponse httpResponse = httpClient.execute(httpPost);
@@ -376,7 +385,7 @@ public class GameManager {
         return response;
     }
 
-    private void keyValuePair(String key, String value) {
+    private static void keyValuePair(String key, String value) {
         list.add(new BasicNameValuePair(key, value));
     }
 
@@ -389,11 +398,11 @@ public class GameManager {
         }
     }
 
-    public ConsumedLocation hasUsedLocation(LatLng latLng) {
+    ConsumedLocation hasUsedLocation(LatLng latLng) {
         return dbHelper.getLocation(latLng.latitude, latLng.longitude);
     }
 
-    public ArrayList<ConsumedLocation> getLocations() {
+    private ArrayList<ConsumedLocation> getLocations() {
         return dbHelper.getLocations();
     }
 
@@ -433,13 +442,13 @@ public class GameManager {
         dbHelper.updateStats(getPlayer().getId(), stats);
     }
 
-    public void addSteps(int steps) {
+    /*public void addSteps(int steps) {
         Stats stats = dbHelper.getStats();
         stats.setTotalSteps(steps);
         dbHelper.updateStats(getPlayer().getId(), stats);
-    }
+    }*/
 
-    public Stats getStats() {
+    Stats getStats() {
         return dbHelper.getStats();
     }
 

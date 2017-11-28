@@ -35,7 +35,9 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="@string/health"
-                android:textSize="20sp" />
+                android:textColor="@color/text_dark"
+                android:lines="1"
+                android:textSize="14sp" />
 
             <ProgressBar
                 android:id="@+id/user_bar"
@@ -73,8 +75,10 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="end"
+                android:lines="1"
+                android:textColor="@color/text_dark"
                 android:text="Enemy Health"
-                android:textSize="20sp" />
+                android:textSize="14sp" />
 
             <ProgressBar
                 android:id="@+id/enemy_bar"

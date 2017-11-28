@@ -50,6 +50,7 @@ public class PlayerAvatarActivity extends AndroidApplication implements LibGdxIn
         //Setup button listeners.
         findViewById(R.id.edit_avatar).setOnClickListener(this);
         findViewById(R.id.back_button).setOnClickListener(this);
+        findViewById(R.id.mood_rating).setOnClickListener(this);
     }
 
     private void setupStats() {
@@ -69,11 +70,6 @@ public class PlayerAvatarActivity extends AndroidApplication implements LibGdxIn
     }
 
     @Override
-    public void collectResource() {
-
-    }
-
-    @Override
     public Avatar getAvatar() {
         return gm.getAvatar();
     }
@@ -81,6 +77,11 @@ public class PlayerAvatarActivity extends AndroidApplication implements LibGdxIn
     @Override
     public int getNPCId() {
         return 0;
+    }
+
+    @Override
+    public void swordGameWon(boolean success) {
+
     }
 
     @Override
@@ -94,6 +95,12 @@ public class PlayerAvatarActivity extends AndroidApplication implements LibGdxIn
             case R.id.edit_avatar:
                 Intent i = new Intent(getApplicationContext(), AvatarCustomizationActivity.class);
                 i.putExtra("edit", true);
+                startActivity(i);
+                finish();
+                SoundManager.getInstance(this).playSound(SoundManager.Sound.CLICK);
+                break;
+            case R.id.mood_rating:
+                i = new Intent(getApplicationContext(), MoodLogActivity.class);
                 startActivity(i);
                 finish();
                 SoundManager.getInstance(this).playSound(SoundManager.Sound.CLICK);

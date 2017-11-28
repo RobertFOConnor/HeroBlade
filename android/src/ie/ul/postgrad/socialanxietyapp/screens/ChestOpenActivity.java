@@ -26,7 +26,7 @@ public class ChestOpenActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_chest_open);
 
-        LinearLayout rewardList = (LinearLayout) findViewById(R.id.reward_list);
+        LinearLayout rewardList = findViewById(R.id.reward_list);
         int chestId = 76;
         int swordId = 1;
 

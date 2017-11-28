@@ -14,7 +14,7 @@ public interface LibGdxInterface {
 
     int getNPCId();
 
-    void collectResource();
+    void swordGameWon(boolean success);
 
     void finishGame();
 }

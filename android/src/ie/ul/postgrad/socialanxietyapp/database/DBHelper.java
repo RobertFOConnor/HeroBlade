@@ -12,14 +12,15 @@ import java.util.Calendar;
 import java.util.Date;
 
 import ie.ul.postgrad.socialanxietyapp.Avatar;
+import ie.ul.postgrad.socialanxietyapp.MoodEntry;
 import ie.ul.postgrad.socialanxietyapp.game.ConsumedLocation;
 import ie.ul.postgrad.socialanxietyapp.game.InventoryItemArray;
 import ie.ul.postgrad.socialanxietyapp.game.Player;
 import ie.ul.postgrad.socialanxietyapp.game.Stats;
 import ie.ul.postgrad.socialanxietyapp.game.SurveyAnswer;
-import ie.ul.postgrad.socialanxietyapp.game.item.ChestItem;
 import ie.ul.postgrad.socialanxietyapp.game.factory.ItemFactory;
 import ie.ul.postgrad.socialanxietyapp.game.factory.WeaponFactory;
+import ie.ul.postgrad.socialanxietyapp.game.item.ChestItem;
 import ie.ul.postgrad.socialanxietyapp.game.item.WeaponItem;
 
 /**
@@ -102,7 +103,7 @@ public class DBHelper extends SQLiteOpenHelper {
 
     private static final String MOOD_TABLE_NAME = "mood";
     private static final String MOOD_COLUMN_PLAYER_ID = "player_id";
-    private static final String MOOD_RATING= "rating";
+    private static final String MOOD_RATING = "rating";
     private static final String MOOD_DESCRIPTION = "description";
     private static final String MOOD_DATE_TIME = "date_time";
 
@@ -374,9 +375,28 @@ public class DBHelper extends SQLiteOpenHelper {
         return answers;
     }
 
+    public ArrayList<MoodEntry> getMoodEntries() {
+        ArrayList<MoodEntry> entries = new ArrayList<>();
+        db = this.getReadableDatabase();
+        Cursor res = getMoodData(getPlayer().getId());
+        res.moveToFirst();
+
+        while (!res.isAfterLast()) {
+            entries.add(new MoodEntry(res.getInt(res.getColumnIndex(MOOD_RATING)), res.getString(res.getColumnIndex(MOOD_DESCRIPTION)), res.getString(res.getColumnIndex(MOOD_DATE_TIME))));
+            res.moveToNext();
+        }
+        res.close();
+        return entries;
+    }
+
     public Cursor getSurveyData(String player_id) {
         db = this.getReadableDatabase();
         return db.rawQuery(selectAllQuery(SURVEY_TABLE_NAME) + " WHERE " + SURVEY_COLUMN_PLAYER_ID + "='" + player_id + "'", null);
+    }
+
+    public Cursor getMoodData(String player_id) {
+        db = this.getReadableDatabase();
+        return db.rawQuery(selectAllQuery(MOOD_TABLE_NAME) + " WHERE " + MOOD_COLUMN_PLAYER_ID + "='" + player_id + "'", null);
     }
 
     public Cursor getInventoryData(int id) {

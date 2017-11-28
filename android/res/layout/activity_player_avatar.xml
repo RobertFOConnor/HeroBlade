@@ -2,13 +2,13 @@
 <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:background="@color/bg_color">
 
     <LinearLayout
         android:id="@+id/activity_player_avatar"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="@color/bg_color"
         android:orientation="vertical"
         android:paddingBottom="@dimen/activity_vertical_margin"
         android:paddingLeft="@dimen/activity_horizontal_margin"
@@ -33,6 +33,19 @@
                 android:layout_width="0dp"
                 android:layout_height="0dp"
                 android:layout_weight="1" />
+
+            <ImageButton
+                android:id="@+id/mood_rating"
+                style="@style/SilentImageButton"
+                android:layout_width="30dp"
+                android:layout_height="30dp"
+                android:layout_gravity="end|center_vertical"
+                android:layout_marginEnd="20dp"
+                android:layout_marginStart="0dp"
+                android:maxHeight="30dp"
+                android:maxWidth="30dp"
+                android:src="@drawable/ic_face"
+                android:tint="@color/white" />
 
             <ImageButton
                 android:id="@+id/edit_avatar"
@@ -115,7 +128,7 @@
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
                 android:layout_margin="5dp"
-                android:layout_weight=".5"
+                android:layout_weight="1"
                 android:background="@color/half_transparent"
                 android:gravity="center"
                 android:orientation="vertical"
@@ -143,7 +156,7 @@
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_margin="5dp"
-                android:layout_weight=".5"
+                android:layout_weight="1"
                 android:background="@color/half_transparent"
                 android:gravity="center"
                 android:orientation="vertical"
@@ -152,12 +165,12 @@
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="SWORDS"
+                    android:text="CASH"
                     android:textColor="@color/white"
                     android:textSize="14sp" />
 
                 <TextView
-                    android:id="@+id/sword_field"
+                    android:id="@+id/cash_field"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="0"
@@ -166,6 +179,8 @@
                     android:textStyle="bold" />
 
             </LinearLayout>
+
+
         </LinearLayout>
 
         <LinearLayout
@@ -182,7 +197,7 @@
                 android:layout_height="wrap_content"
                 android:layout_margin="5dp"
                 android:layout_marginBottom="20dp"
-                android:layout_weight=".5"
+                android:layout_weight="1"
                 android:background="@color/half_transparent"
                 android:gravity="center"
                 android:orientation="vertical"
@@ -210,7 +225,7 @@
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_margin="5dp"
-                android:layout_weight=".5"
+                android:layout_weight="1"
                 android:background="@color/half_transparent"
                 android:gravity="center"
                 android:orientation="vertical"
@@ -219,12 +234,12 @@
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="CASH"
+                    android:text="SWORDS"
                     android:textColor="@color/white"
                     android:textSize="14sp" />
 
                 <TextView
-                    android:id="@+id/cash_field"
+                    android:id="@+id/sword_field"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="0"
@@ -233,6 +248,7 @@
                     android:textStyle="bold" />
 
             </LinearLayout>
+
         </LinearLayout>
     </LinearLayout>
 </ScrollView>

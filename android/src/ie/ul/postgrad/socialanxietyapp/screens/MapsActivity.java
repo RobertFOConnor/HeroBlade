@@ -2,14 +2,13 @@ package ie.ul.postgrad.socialanxietyapp.screens;
 
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.content.res.Resources;
 import android.graphics.Color;
-import android.graphics.PixelFormat;
 import android.graphics.PorterDuff;
 import android.location.Location;
 import android.media.MediaPlayer;
-import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -17,13 +16,12 @@ import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.util.TypedValue;
 import android.view.Gravity;
-import android.view.LayoutInflater;
-import android.view.SurfaceView;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
@@ -33,16 +31,25 @@ import android.widget.ListView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
-import com.badlogic.gdx.backends.android.AndroidApplicationConfiguration;
 import com.badlogic.gdx.backends.android.AndroidFragmentApplication;
 import com.bumptech.glide.Glide;
+import com.google.android.gms.auth.api.Auth;
+import com.google.android.gms.auth.api.signin.GoogleSignIn;
+import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
+import com.google.android.gms.auth.api.signin.GoogleSignInClient;
+import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
+import com.google.android.gms.auth.api.signin.GoogleSignInResult;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.common.api.PendingResult;
 import com.google.android.gms.common.api.ResultCallback;
 import com.google.android.gms.games.Games;
+import com.google.android.gms.games.LeaderboardsClient;
+import com.google.android.gms.location.FusedLocationProviderClient;
+import com.google.android.gms.location.LocationCallback;
 import com.google.android.gms.location.LocationListener;
 import com.google.android.gms.location.LocationRequest;
+import com.google.android.gms.location.LocationResult;
 import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.location.places.PlaceLikelihood;
 import com.google.android.gms.location.places.PlaceLikelihoodBuffer;
@@ -55,13 +62,13 @@ import com.google.android.gms.maps.model.CameraPosition;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MapStyleOptions;
 import com.google.android.gms.maps.model.Marker;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.android.gms.tasks.Task;
 
 import java.util.ArrayList;
 
 import ie.ul.postgrad.socialanxietyapp.App;
-import ie.ul.postgrad.socialanxietyapp.Avatar;
-import ie.ul.postgrad.socialanxietyapp.LibGdxInterface;
-import ie.ul.postgrad.socialanxietyapp.MainGame;
 import ie.ul.postgrad.socialanxietyapp.R;
 import ie.ul.postgrad.socialanxietyapp.adapter.NavigationDrawerListAdapter;
 import ie.ul.postgrad.socialanxietyapp.game.AchievementManager;
@@ -80,13 +87,19 @@ import ie.ul.postgrad.socialanxietyapp.sync.SyncManager;
 
 import static ie.ul.postgrad.socialanxietyapp.adapter.NavigationDrawerListAdapter.ACHIEVEMENTS;
 import static ie.ul.postgrad.socialanxietyapp.adapter.NavigationDrawerListAdapter.CRAFTING;
+import static ie.ul.postgrad.socialanxietyapp.adapter.NavigationDrawerListAdapter.HELP;
 import static ie.ul.postgrad.socialanxietyapp.adapter.NavigationDrawerListAdapter.INDEX;
 import static ie.ul.postgrad.socialanxietyapp.adapter.NavigationDrawerListAdapter.INVENTORY;
+import static ie.ul.postgrad.socialanxietyapp.adapter.NavigationDrawerListAdapter.LEADERBOARD;
 import static ie.ul.postgrad.socialanxietyapp.adapter.NavigationDrawerListAdapter.PROFILE_TEXT;
 import static ie.ul.postgrad.socialanxietyapp.adapter.NavigationDrawerListAdapter.SETTINGS;
 import static ie.ul.postgrad.socialanxietyapp.adapter.NavigationDrawerListAdapter.WEAPONS;
 import static ie.ul.postgrad.socialanxietyapp.game.GameManager.blacksmithXP;
 import static ie.ul.postgrad.socialanxietyapp.game.GameManager.villageXP;
+import static ie.ul.postgrad.socialanxietyapp.screens.HelpActivity.INFO_KEY;
+import static ie.ul.postgrad.socialanxietyapp.screens.HelpActivity.MAP_INFO;
+import static ie.ul.postgrad.socialanxietyapp.screens.HelpActivity.REVIEW_KEY;
+import static ie.ul.postgrad.socialanxietyapp.screens.HelpActivity.TRANSPARENT_KEY;
 
 public class MapsActivity extends AppCompatActivity implements OnMapReadyCallback, AndroidFragmentApplication.Callbacks, View.OnClickListener, GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener, LocationListener {
 
@@ -97,6 +110,8 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
     private LocationRequest mLocationRequest; //Request object for FusedLocationProviderApi.
     private final LatLng mDefaultLocation = new LatLng(-33.8523341, 151.2106085); //Default location.
     private boolean mLocationPermissionGranted;
+    private FusedLocationProviderClient mFusedLocationClient;
+    private LocationCallback mLocationCallback;
     private Location mCurrentLocation; //Current location of device.
     private ArrayList<Marker> markers;
     private DrawerLayout mDrawerLayout;
@@ -117,18 +132,16 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
     public static final int markerRadius = 1000;
     public static final int markerUsableRadius = 60;
     private GoogleApiClient mGoogleApiClient;
-    private boolean usingGames = true;
-    private AvatarFragment avatarFrag;
-    private AsyncTask bgMusic;
+    MediaPlayer mediaPlayer;
+    private int signInAttempts = 0;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_maps);
-        mDrawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
+        mDrawerLayout = findViewById(R.id.drawer_layout);
 
-        avatarFrag = new AvatarFragment();
-        mDrawerList = (ListView) findViewById(R.id.left_drawer);
+        mDrawerList = findViewById(R.id.left_drawer);
         gm = GameManager.getInstance();
         gm.initDatabaseHelper(this);
 
@@ -138,11 +151,23 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
             mCameraPosition = savedInstanceState.getParcelable(KEY_CAMERA_POSITION);
         }
 
-        buildGoogleGamesApiClient();
+        mFusedLocationClient = LocationServices.getFusedLocationProviderClient(this);
+        mLocationCallback = new LocationCallback() {
+            @Override
+            public void onLocationResult(LocationResult locationResult) {
+                mCurrentLocation = locationResult.getLastLocation();
+                if (mMap != null) {
+                    moveUser(mCurrentLocation);
+                    updateMarkers();
+                }
+            }
+        };
+
+        buildGoogleApiClient();
         mGoogleApiClient.connect();
         markers = new ArrayList<>();
 
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        Toolbar toolbar = findViewById(R.id.toolbar);
         toolbar.setTitle("");
         setSupportActionBar(toolbar);
 
@@ -151,75 +176,28 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
         findViewById(R.id.updates_button).setOnClickListener(this);
         Glide.with(this).load(R.drawable.loading_map).into((ImageView) findViewById(R.id.loading_gif));
 
-        // Finally, replace the AndroidLauncher activity content with the Libgdx Fragment.
-        /*FragmentTransaction trans = getSupportFragmentManager().beginTransaction();
-        trans.add(R.id.avatar_fragment, avatarFrag);
-        trans.addToBackStack(null);
-        trans.commit();*/
-
         SyncManager.getInstance().startSyncAdapter(this);
         GameManager.getInstance().setMoodRatingAlarm(this);
 
         //Start step counter and location service
         Intent mStepsIntent = new Intent(getApplicationContext(), StepsService.class);
         startService(mStepsIntent);
+
+        setupMusic();
     }
 
-    public static class AvatarFragment extends AndroidFragmentApplication implements LibGdxInterface {
-
-        MainGame game;
-
-        @Override
-        public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-            // Inflate the layout for this fragment
-
-            AndroidApplicationConfiguration cfg = new AndroidApplicationConfiguration();
-            cfg.r = cfg.g = cfg.b = cfg.a = 8;
-
-            game = new MainGame(this, MainGame.AVATAR_SCREEN);
-            View view = initializeForView(game, cfg);
-
-            if (graphics.getView() instanceof SurfaceView) {
-                SurfaceView glView = (SurfaceView) graphics.getView();
-                glView.getHolder().setFormat(PixelFormat.TRANSLUCENT);
-                glView.setZOrderOnTop(true);
-            }
-            return view;
-        }
-
-        @Override
-        public void saveAvatar(Avatar avatar) {
-
-        }
-
-        @Override
-        public Avatar getAvatar() {
-            return GameManager.getInstance().getAvatar();
-        }
-
-        @Override
-        public int getNPCId() {
-            return 0;
-        }
-
-        @Override
-        public void collectResource() {
-
-        }
-
-        @Override
-        public void finishGame() {
-
-        }
+    private void setupMusic() {
+        mediaPlayer = MediaPlayer.create(this, R.raw.bg_music_map);
+        mediaPlayer.setLooping(true); // Set looping
+        mediaPlayer.setVolume(100, 100);
+        mediaPlayer.start();
     }
-
 
     @Override
     protected void onStart() {
         super.onStart();
         active = true;
         setupNavDrawer();
-        bgMusic = new BackgroundMusic().execute(getApplicationContext());
     }
 
     /**
@@ -227,7 +205,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
      */
     private void setupNavDrawer() {
         final String[] menuTitles = getResources().getStringArray(R.array.nav_items);
-        int[] menuIcons = new int[]{R.drawable.ic_settings, R.drawable.ic_backpack, R.drawable.ic_quest, R.drawable.ic_crafting, R.drawable.ic_backpack, R.drawable.ic_achievements, R.drawable.ic_settings};
+        int[] menuIcons = new int[]{R.drawable.ic_prof, R.drawable.ic_backpack, R.drawable.ic_weapons, R.drawable.ic_crafting, R.drawable.ic_index, R.drawable.ic_achievements, R.drawable.ic_leaderboard, R.drawable.ic_quest};
         mDrawerList.setAdapter(new NavigationDrawerListAdapter(this, menuTitles, menuIcons));
         mDrawerList.setOnItemClickListener(new DrawerItemClickListener(this));
     }
@@ -240,16 +218,16 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
     public void onMapReady(GoogleMap map) {
         mMap = map;
         mMap.setMinZoomPreference(16f);
-        final MapWrapperLayout mapWrapperLayout = (MapWrapperLayout) findViewById(R.id.map_wrapper);
+        final MapWrapperLayout mapWrapperLayout = findViewById(R.id.map_wrapper);
         mapWrapperLayout.init(map, getPixelsFromDp(this, 59)); // Setup wrapper with default offset.
 
         // We want to reuse the info window for all the markers,
         // so create only one class member instance
         this.infoWindow = (ViewGroup) getLayoutInflater().inflate(R.layout.custom_info_window_quick, null);
-        this.infoTitle = (TextView) infoWindow.findViewById(R.id.title);
-        this.infoSnippet = (TextView) infoWindow.findViewById(R.id.snippet);
-        this.infoImg = (ImageView) infoWindow.findViewById(R.id.info_img);
-        this.infoButton = (Button) infoWindow.findViewById(R.id.collect_button);
+        this.infoTitle = infoWindow.findViewById(R.id.title);
+        this.infoSnippet = infoWindow.findViewById(R.id.snippet);
+        this.infoImg = infoWindow.findViewById(R.id.info_img);
+        this.infoButton = infoWindow.findViewById(R.id.collect_button);
 
         map.setOnMarkerClickListener(new GoogleMap.OnMarkerClickListener() {
             @Override
@@ -310,8 +288,6 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
 
         // Turn on the My Location layer and the related control on the map.
         updateLocationUI();
-
-        // Add markers for nearby places.
         updateMarkers();
 
         if (mCameraPosition != null) {
@@ -327,14 +303,6 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
         mMap.getUiSettings().setScrollGesturesEnabled(false);
         mMap.getUiSettings().setMyLocationButtonEnabled(false);
         findViewById(R.id.loading).setVisibility(View.GONE);
-        try {
-            if (gm.getPlayer().getXp() == 0) {//Show walking instructions only first time.
-                Intent i = new Intent(getApplicationContext(), TimeToWalkActivity.class);
-                startActivity(i);
-            }
-        } catch (NullPointerException e) {
-            e.printStackTrace();
-        }
     }
 
     private GoogleMap.InfoWindowAdapter getInfoWindowAdapter(final MapWrapperLayout mapWrapperLayout) {
@@ -445,6 +413,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
     protected void onStop() {
         super.onStop();
         active = false;
+        mediaPlayer.pause();
     }
 
     /**
@@ -453,19 +422,75 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
     @Override
     protected void onResume() {
         super.onResume();
-        if (mGoogleApiClient.isConnected()) {
-            getDeviceLocation();
-
-            if (mGoogleApiClient.hasConnectedApi(Games.API)) {
-                AchievementManager.checkAllAchievements(this, mGoogleApiClient);
-            }
+        if (mediaPlayer != null) {
+            mediaPlayer.start();
+        } else {
+            setupMusic();
         }
+
         updateMarkers();
         ((TextView) findViewById(R.id.level_num)).setText(String.valueOf(gm.getPlayer().getLevel()));
-        ProgressBar xpBar = (ProgressBar) findViewById(R.id.xp_bar);
+        ProgressBar xpBar = findViewById(R.id.xp_bar);
         xpBar.setMax(XPLevels.XP_LEVELS[gm.getPlayer().getLevel()]);
         xpBar.setProgress(gm.getPlayer().getXp());
         xpBar.getIndeterminateDrawable().setColorFilter(Color.WHITE, PorterDuff.Mode.MULTIPLY);
+
+        signInSilently();
+
+        getDeviceLocation();
+    }
+
+    private boolean isSignedIn() {
+        return GoogleSignIn.getLastSignedInAccount(this) != null;
+    }
+
+    private void signInSilently() {
+        GoogleSignInClient signInClient = GoogleSignIn.getClient(this,
+                GoogleSignInOptions.DEFAULT_GAMES_SIGN_IN);
+        signInClient.silentSignIn().addOnCompleteListener(this,
+                new OnCompleteListener<GoogleSignInAccount>() {
+                    @Override
+                    public void onComplete(@NonNull Task<GoogleSignInAccount> task) {
+                        if (task.isSuccessful()) {
+                            // The signed in account is stored in the task's result.
+                            GoogleSignInAccount signedInAccount = task.getResult();
+                            AchievementManager.checkAllAchievements(getApplicationContext());
+                        } else {
+                            // Player will need to sign-in explicitly using via UI
+                            startSignInIntent();
+                        }
+                    }
+                });
+    }
+    final int RC_SIGN_IN = 1004;
+
+    private void startSignInIntent() {
+        if (signInAttempts < 1) {
+            GoogleSignInClient signInClient = GoogleSignIn.getClient(this,
+                    GoogleSignInOptions.DEFAULT_GAMES_SIGN_IN);
+            Intent intent = signInClient.getSignInIntent();
+            startActivityForResult(intent, RC_SIGN_IN);
+            signInAttempts++;
+        }
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (requestCode == RC_SIGN_IN) {
+            GoogleSignInResult result = Auth.GoogleSignInApi.getSignInResultFromIntent(data);
+            if (result.isSuccess()) {
+                // The signed in account is stored in the result.
+                GoogleSignInAccount signedInAccount = result.getSignInAccount();
+            } else {
+                String message = result.getStatus().getStatusMessage();
+                if (message == null || message.isEmpty()) {
+                    message = getString(R.string.signin_other_error);
+                }
+                new AlertDialog.Builder(this).setMessage(message)
+                        .setNeutralButton(android.R.string.ok, null).show();
+            }
+        }
     }
 
     @Override
@@ -493,16 +518,17 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
     @Override
     protected void onPause() {
         super.onPause();
-        if (mGoogleApiClient.isConnected()) {
-            LocationServices.FusedLocationApi.removeLocationUpdates(mGoogleApiClient, this);
-        }
+        stopLocationUpdates();
+    }
+
+    private void stopLocationUpdates() {
+        mFusedLocationClient.removeLocationUpdates(mLocationCallback);
     }
 
     @Override
     protected void onDestroy() {
         gm.closeDatabase();
         super.onDestroy();
-        bgMusic.cancel(true);
     }
 
     /**
@@ -522,9 +548,6 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
      */
     @Override
     public void onLocationChanged(Location location) {
-        mCurrentLocation = location;
-        moveUser(mCurrentLocation);
-        updateMarkers();
     }
 
 
@@ -557,8 +580,18 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
         //Get the best and most recent location of the device, which may be null in rare cases when a location is not available.
         // Also request regular updates about the device location.
         if (mLocationPermissionGranted) {
-            mCurrentLocation = LocationServices.FusedLocationApi.getLastLocation(mGoogleApiClient);
-            LocationServices.FusedLocationApi.requestLocationUpdates(mGoogleApiClient, mLocationRequest, this);
+            mFusedLocationClient.getLastLocation()
+                    .addOnSuccessListener(this, new OnSuccessListener<Location>() {
+                        @Override
+                        public void onSuccess(Location location) {
+                            // Got last known location. In some rare situations this can be null.
+                            if (location != null) {
+                                // Logic to handle location object
+                                mCurrentLocation = location;
+                            }
+                        }
+                    });
+            startLocationUpdates();
         }
     }
 
@@ -574,10 +607,27 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
                 if (grantResults.length > 0
                         && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
                     mLocationPermissionGranted = true;
+                    showHelpInfo();
                 }
             }
         }
         updateLocationUI();
+    }
+
+    private void showHelpInfo() {
+        SharedPreferences prefs = this.getSharedPreferences("ie.ul.postgrad.socialanxietyapp", Context.MODE_PRIVATE);
+
+        final String firstTimeMapKey = "firstTimeMap";
+        boolean firstTimeMap = prefs.getBoolean(firstTimeMapKey, true);
+        if (firstTimeMap) {
+            Intent tutorialIntent = new Intent(this, HelpActivity.class);
+            //bundle here...
+            tutorialIntent.putExtra(INFO_KEY, MAP_INFO);
+            tutorialIntent.putExtra(REVIEW_KEY, false);
+            tutorialIntent.putExtra(TRANSPARENT_KEY, true);
+            startActivity(tutorialIntent);
+            prefs.edit().putBoolean(firstTimeMapKey, false).apply();
+        }
     }
 
     /**
@@ -592,20 +642,6 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
                 .addApi(LocationServices.API)
                 .addApi(Places.GEO_DATA_API)
                 .addApi(Places.PLACE_DETECTION_API)
-                //.addApi(Games.API).addScope(Games.SCOPE_GAMES)
-                .build();
-        createLocationRequest();
-    }
-
-    private synchronized void buildGoogleGamesApiClient() {
-        mGoogleApiClient = new GoogleApiClient.Builder(this)
-                .enableAutoManage(this /* FragmentActivity */,
-                        this /* OnConnectionFailedListener */)
-                .addConnectionCallbacks(this)
-                .addApi(LocationServices.API)
-                .addApi(Places.GEO_DATA_API)
-                .addApi(Places.PLACE_DETECTION_API)
-                .addApi(Games.API).addScope(Games.SCOPE_GAMES)
                 .build();
         createLocationRequest();
     }
@@ -638,17 +674,30 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
         }
     }
 
+    private void startLocationUpdates() {
+        try {
+            mFusedLocationClient.requestLocationUpdates(mLocationRequest,
+                    mLocationCallback,
+                    null);
+        } catch (SecurityException e) {
+            e.printStackTrace();
+        }
+    }
+
     @Override
     public void onConnected(@Nullable Bundle bundle) {
         getDeviceLocation();
         SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager().findFragmentById(R.id.map);
         mapFragment.getMapAsync(this);
-        System.out.println("CONNECT SUCCESS");
     }
 
     private void moveUser(Location location) {
         LatLng latLng = new LatLng(location.getLatitude(), location.getLongitude());
-        mMap.animateCamera(CameraUpdateFactory.newLatLng(latLng));
+        CameraPosition currentPlace = new CameraPosition.Builder()
+                .target(latLng)
+                .bearing(location.getBearing()).tilt(65.5f).zoom(18f).build();
+
+        mMap.animateCamera(CameraUpdateFactory.newCameraPosition(currentPlace));
     }
 
     /**
@@ -659,13 +708,6 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
         // Refer to the reference doc for ConnectionResult to see what error codes might
         // be returned in onConnectionFailed.
         Log.d(TAG, getString(R.string.play_services_failed_connection) + result.getErrorCode());
-
-        if (usingGames) {
-            usingGames = false;
-            buildGoogleApiClient();
-            mGoogleApiClient.connect();
-            Log.d(TAG, "Can't sign in to games. Using maps only." + result.getErrorCode());
-        }
     }
 
     /**
@@ -718,55 +760,57 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
                     playClick();
                     break;
                 case ACHIEVEMENTS:
-                    if (mGoogleApiClient.hasConnectedApi(Games.API)) {
-                        AchievementManager.showAchievements(context, mGoogleApiClient);
+                    if (isSignedIn()) {
+                        Games.getAchievementsClient(context, GoogleSignIn.getLastSignedInAccount(context))
+                                .getAchievementsIntent()
+                                .addOnSuccessListener(new OnSuccessListener<Intent>() {
+                                    @Override
+                                    public void onSuccess(Intent intent) {
+                                        startActivityForResult(intent, 1002);
+                                    }
+                                });
                         playClick();
                     } else {
                         App.showToast(getApplicationContext(), getString(R.string.no_google_play_achievements));
                     }
                     break;
-                case SETTINGS:
-                    //i = new Intent(context, DeveloperSettingsActivity.class);
-                    //context.startActivity(i);
+                case LEADERBOARD:
 
-                    if (mGoogleApiClient.hasConnectedApi(Games.API)) {
+                    if (isSignedIn()) {
                         int totalXP = 0;
                         for (int j = 0; j < gm.getPlayer().getLevel(); j++) {
                             totalXP += XPLevels.XP_LEVELS[j];
                         }
                         totalXP += gm.getPlayer().getXp();
-                        Games.Leaderboards.submitScore(mGoogleApiClient, getString(R.string.leaderboard_top_players), totalXP);
-                        startActivityForResult(Games.Leaderboards.getLeaderboardIntent(mGoogleApiClient,
-                                getString(R.string.leaderboard_top_players)), 122);
+
+                        LeaderboardsClient leaderboardsClient = Games.getLeaderboardsClient(context, GoogleSignIn.getLastSignedInAccount(context));
+                        leaderboardsClient.submitScore(getString(R.string.leaderboard_top_players), totalXP);
+                        leaderboardsClient.getLeaderboardIntent(getString(R.string.leaderboard_top_players)).addOnSuccessListener(new OnSuccessListener<Intent>() {
+                            @Override
+                            public void onSuccess(Intent intent) {
+                                startActivityForResult(intent, 1001);
+                            }
+                        });
                         playClick();
+
                     } else {
                         App.showToast(getApplicationContext(), getString(R.string.no_google_play_leaderboard));
                     }
                     break;
+
+                case HELP:
+                    i = new Intent(context, HelpMenuActivity.class);
+                    startActivity(i);
+                    playClick();
+                    break;
+                /*case SETTINGS:
+                    i = new Intent(context, DeveloperSettingsActivity.class);
+                    startActivity(i);
+                    break;*/
             }
 
-            DrawerLayout drawer = (DrawerLayout) ((AppCompatActivity) context).findViewById(R.id.drawer_layout);
+            DrawerLayout drawer = ((AppCompatActivity) context).findViewById(R.id.drawer_layout);
             drawer.closeDrawer(GravityCompat.START);
-        }
-    }
-
-    public static class BackgroundMusic extends AsyncTask<Context, Void, Void> {
-        MediaPlayer mediaPlayer;
-
-        @Override
-        protected Void doInBackground(Context... params) {
-            mediaPlayer = MediaPlayer.create(params[0], R.raw.bg_music_map);
-            mediaPlayer.setLooping(true); // Set looping
-            mediaPlayer.setVolume(100, 100);
-            mediaPlayer.start();
-
-            return null;
-        }
-
-        @Override
-        protected void onCancelled() {
-            super.onCancelled();
-            mediaPlayer.stop();
         }
     }
 

@@ -3,6 +3,7 @@ package ie.ul.postgrad.socialanxietyapp.game;
 import android.content.Context;
 import android.support.v4.app.FragmentActivity;
 
+import com.google.android.gms.auth.api.signin.GoogleSignIn;
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.games.Games;
 
@@ -15,88 +16,81 @@ import ie.ul.postgrad.socialanxietyapp.game.factory.WeaponFactory;
  */
 
 public class AchievementManager {
-    private static final int REQUEST_ACHIEVEMENTS = 101;
 
-    public static void checkSwordAchievements(Context context, GoogleApiClient mGoogleApiClient) {
+    private static void checkSwordAchievements(Context context) {
         GameManager gm = GameManager.getInstance();
         //Unlock any appropriate achievements.
 
         if (gm.getFoundWeapons().size() >= WeaponFactory.SWORD_COUNT) {
-            unlockAchievement(context.getString(R.string.achievement_the_true_sword_master), mGoogleApiClient);
+            unlockAchievement(context.getString(R.string.achievement_the_true_sword_master), context);
         } else if (gm.getFoundWeapons().size() >= 20) {
-            unlockAchievement(context.getString(R.string.achievement_20_sword_ninja), mGoogleApiClient);
+            unlockAchievement(context.getString(R.string.achievement_20_sword_ninja), context);
         } else if (gm.getFoundWeapons().size() >= 10) {
-            unlockAchievement(context.getString(R.string.achievement_10_sword_knight), mGoogleApiClient);
+            unlockAchievement(context.getString(R.string.achievement_10_sword_knight), context);
         } else if (gm.getFoundWeapons().size() >= 5) {
-            unlockAchievement(context.getString(R.string.achievement_5_sword_apprentice), mGoogleApiClient);
+            unlockAchievement(context.getString(R.string.achievement_5_sword_apprentice), context);
         }
     }
 
-    public static void checkBattleAchievements(Context context, GoogleApiClient mGoogleApiClient) {
+    private static void checkBattleAchievements(Context context) {
         GameManager gm = GameManager.getInstance();
 
         if (gm.getStats().getWins() >= 100) {
-            unlockAchievement(context.getString(R.string.achievement_the_legend_is_real), mGoogleApiClient);
+            unlockAchievement(context.getString(R.string.achievement_the_legend_is_real), context);
         } else if (gm.getStats().getWins() >= 10) {
-            unlockAchievement(context.getString(R.string.achievement_this_is_too_easy), mGoogleApiClient);
+            unlockAchievement(context.getString(R.string.achievement_this_is_too_easy), context);
         } else if (gm.getStats().getWins() >= 1) {
-            unlockAchievement(context.getString(R.string.achievement_a_hero_is_born), mGoogleApiClient);
+            unlockAchievement(context.getString(R.string.achievement_a_hero_is_born), context);
         }
     }
 
-    public static void checkChestAchievements(Context context, GoogleApiClient mGoogleApiClient) {
+    private static void checkChestAchievements(Context context) {
         GameManager gm = GameManager.getInstance();
 
         if (gm.getStats().getChestsOpened() >= 10) {
-            unlockAchievement(context.getString(R.string.achievement_you_are_a_pirate), mGoogleApiClient);
+            unlockAchievement(context.getString(R.string.achievement_you_are_a_pirate), context);
         } else if (gm.getStats().getChestsOpened() >= 1) {
-            unlockAchievement(context.getString(R.string.achievement_inside_the_chest), mGoogleApiClient);
+            unlockAchievement(context.getString(R.string.achievement_inside_the_chest), context);
         }
     }
 
-    public static void checkLevelAchievements(Context context, GoogleApiClient mGoogleApiClient) {
+    private static void checkLevelAchievements(Context context) {
         GameManager gm = GameManager.getInstance();
         if (gm.getPlayer().getLevel() >= 40) {
-            unlockAchievement(context.getString(R.string.achievement_impossible_hero), mGoogleApiClient);
+            unlockAchievement(context.getString(R.string.achievement_impossible_hero), context);
         } else if (gm.getPlayer().getLevel() >= 10) {
-            unlockAchievement(context.getString(R.string.achievement_quartersized_hero), mGoogleApiClient);
+            unlockAchievement(context.getString(R.string.achievement_quartersized_hero), context);
         } else if (gm.getPlayer().getLevel() >= 5) {
-            unlockAchievement(context.getString(R.string.achievement_experience_is_knowledge), mGoogleApiClient);
+            unlockAchievement(context.getString(R.string.achievement_experience_is_knowledge), context);
         } else if (gm.getPlayer().getLevel() >= 2) {
-            unlockAchievement(context.getString(R.string.achievement_moving_on_up), mGoogleApiClient);
+            unlockAchievement(context.getString(R.string.achievement_moving_on_up), context);
         }
     }
 
-    public static void checkMarkerAchievements(Context context, GoogleApiClient mGoogleApiClient) {
+    private static void checkMarkerAchievements(Context context) {
         GameManager gm = GameManager.getInstance();
         if (gm.getVillageCount() >= 10) {
-            unlockAchievement(context.getString(R.string.achievement_mr_ms__popular), mGoogleApiClient);
+            unlockAchievement(context.getString(R.string.achievement_mr_ms__popular), context);
         }
 
         if (gm.getBlacksmithCount() >= 10) {
-            unlockAchievement(context.getString(R.string.achievement_repairs_all_round), mGoogleApiClient);
+            unlockAchievement(context.getString(R.string.achievement_repairs_all_round), context);
         }
     }
 
 
-    public static void checkAllAchievements(Context context, GoogleApiClient mGoogleApiClient) {
-        unlockAchievement(context.getString(R.string.achievement_the_journey_begins), mGoogleApiClient);
-        checkLevelAchievements(context, mGoogleApiClient);
-        checkChestAchievements(context, mGoogleApiClient);
-        checkBattleAchievements(context, mGoogleApiClient);
-        checkSwordAchievements(context, mGoogleApiClient);
-        checkMarkerAchievements(context, mGoogleApiClient);
+    public static void checkAllAchievements(Context context) {
+        unlockAchievement(context.getString(R.string.achievement_the_journey_begins), context);
+        checkLevelAchievements(context);
+        checkChestAchievements(context);
+        checkBattleAchievements(context);
+        checkSwordAchievements(context);
+        checkMarkerAchievements(context);
     }
 
-    private static void unlockAchievement(String s, GoogleApiClient mGoogleApiClient) {
-        Games.Achievements.unlock(mGoogleApiClient, s);
-    }
-
-    public static void showAchievements(Context context, GoogleApiClient mGoogleApiClient) {
-        if (mGoogleApiClient != null && mGoogleApiClient.isConnected()) {
-            ((FragmentActivity) context).startActivityForResult(Games.Achievements.getAchievementsIntent(mGoogleApiClient), REQUEST_ACHIEVEMENTS);
-        } else {
-            App.showToast(context, context.getString(R.string.no_google_play_achievements));
+    private static void unlockAchievement(String s, Context context) {
+        if(GoogleSignIn.getLastSignedInAccount(context) != null) {
+            Games.getAchievementsClient(context, GoogleSignIn.getLastSignedInAccount(context)).unlock(s);
         }
     }
 }

@@ -38,8 +38,8 @@ public class InventoryActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_inventory);
 
-        itemList = (ListView) findViewById(R.id.item_list);
-        emptyMessage = (TextView) findViewById(R.id.empty_message);
+        itemList = findViewById(R.id.item_list);
+        emptyMessage = findViewById(R.id.empty_message);
 
         Inventory inventory = GameManager.getInstance().getInventory();
         SparseIntArray itemArray = inventory.getItems();

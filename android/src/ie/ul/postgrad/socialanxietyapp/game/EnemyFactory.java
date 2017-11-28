@@ -38,6 +38,11 @@ public class EnemyFactory {
             if (level < 1) {
                 level = 1;
             }
+
+            if (player.getLevel() < 3) {
+                level = 1;
+            }
+
             int health = 5 + ((level - 1) * 5) + ((int) (Math.random() * 31));
 
             ta.recycle();

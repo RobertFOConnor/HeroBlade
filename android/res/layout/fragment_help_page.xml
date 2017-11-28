@@ -16,9 +16,18 @@
             android:layout_height="wrap_content"
             android:layout_gravity="center"
             android:layout_marginBottom="10dp"
+            android:layout_marginLeft="20dp"
+            android:layout_marginRight="20dp"
             android:gravity="center"
             android:textColor="@color/white"
             android:textSize="16sp" />
+
+        <ImageView
+            android:id="@+id/help_img"
+            android:layout_width="150dp"
+            android:layout_height="150dp"
+            android:layout_gravity="center"
+            android:visibility="gone" />
 
         <TextView
             android:id="@+id/swipe_label"
@@ -28,7 +37,8 @@
             android:layout_margin="20dp"
             android:gravity="center"
             android:text="(swipe to continue)"
-            android:textColor="@color/white" />
+            android:textColor="@color/white"
+            android:textStyle="italic" />
 
         <Button
             android:id="@+id/continue_button"

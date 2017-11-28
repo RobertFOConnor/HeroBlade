@@ -145,7 +145,7 @@ public class StepsService extends Service implements SensorEventListener {
 
         NotificationCompat.Builder mBuilder =
                 new NotificationCompat.Builder(this)
-                        .setSmallIcon(R.drawable.ic_chest_open)
+                        .setSmallIcon(chest.getImageID())
                         .setContentTitle(getString(R.string.notify_chest, chest.getName()))
                         .setContentText(getString(R.string.notify_chest_body, (int) (chest.getMaxDistance() / 1000), chest.getName()))
                         .setVibrate(new long[]{1000, 1000})

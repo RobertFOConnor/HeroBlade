@@ -198,7 +198,7 @@ public class ItemSelectActivity extends AppCompatActivity {
                     public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                         WeaponItem weaponItem = (WeaponItem) adapter.getItem(position);
                         if (player.getMoney() >= weaponItem.getWorth()) {
-                            gm.giveWeapon(getApplicationContext(), weaponItem);
+                            gm.giveWeapon(weaponItem);
                             player.setMoney(player.getMoney() - weaponItem.getWorth());
                             gm.updatePlayerInDatabase(player);
                             setListTitle();

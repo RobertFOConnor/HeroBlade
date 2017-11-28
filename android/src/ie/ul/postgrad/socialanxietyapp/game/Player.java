@@ -1,5 +1,7 @@
 package ie.ul.postgrad.socialanxietyapp.game;
 
+import static ie.ul.postgrad.socialanxietyapp.game.XPLevels.XP_LEVELS;
+
 /**
  * Created by Robert on 22-Feb-17.
  * <p>
@@ -64,7 +66,8 @@ public class Player {
 
     public boolean setXp(int xp) {
         this.xp = xp;
-        return (this.xp >= XPLevels.XP_LEVELS[level]);//Check for level up
+        //Check for level up
+        return level < XP_LEVELS.length && (this.xp >= XP_LEVELS[level]);
     }
 
     public int getLevel() {

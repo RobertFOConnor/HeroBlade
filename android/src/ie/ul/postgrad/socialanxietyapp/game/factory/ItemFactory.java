@@ -23,7 +23,7 @@ public class ItemFactory {
     private static final int DAMAGE = 3;
     private static final int ENERGY = 4;
 
-    public static final int[] CRAFTABLES = {11, 12, 13, 14, 15};
+    public static final int[] CRAFTABLES = {11, 15, 12, 13, 14};
     private static final int INGREDIENT_1_ID = 5; //Index of first ingredient. (if item can be crafted)
     //INFO: Ingredients refer to items which are combined in recipes to craft other items (e.g. string and sticks make a bow etc.)
 

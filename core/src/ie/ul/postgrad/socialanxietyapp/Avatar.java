@@ -24,8 +24,8 @@ public class Avatar {
     private static final float[] RED = RGB(255f, 59f, 96f);
 
     private static float[][] skinColorArray = new float[][]{PEACH, TAN, BROWN};
-    static float[][] hairColorArray = new float[][]{BLOND, BLACK, GRAY, DARK_BROWN, GINGER, WHITE};
-    static float[][] shirtColorArray = new float[][]{BLOND, GREEN, RED, BLACK, WHITE};
+    private static float[][] hairColorArray = new float[][]{BLOND, BLACK, GRAY, DARK_BROWN, GINGER, WHITE};
+    private static float[][] shirtColorArray = new float[][]{BLOND, GREEN, RED, BLACK, WHITE};
     private int hairTypes = 9;
 
     private int shirtColor;
@@ -91,15 +91,15 @@ public class Avatar {
         this.skinColor = skinColor;
     }
 
-    public float[] getSkinRGB() {
+    private float[] getSkinRGB() {
         return new float[]{skinColorArray[skinColor][0], skinColorArray[skinColor][1], skinColorArray[skinColor][2]};
     }
 
-    public float[] getHairRGB() {
+    private float[] getHairRGB() {
         return new float[]{hairColorArray[hairColor][0], hairColorArray[hairColor][1], hairColorArray[hairColor][2]};
     }
 
-    public float[] getShirtRGB() {
+    private float[] getShirtRGB() {
         return new float[]{shirtColorArray[shirtColor][0], shirtColorArray[shirtColor][1], shirtColorArray[shirtColor][2]};
     }
 

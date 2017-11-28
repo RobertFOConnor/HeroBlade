@@ -1,9 +1,10 @@
 package ie.ul.postgrad.socialanxietyapp.screens;
 
+import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.os.Handler;
-import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.widget.Button;
 import android.widget.LinearLayout;
@@ -14,13 +15,17 @@ import com.badlogic.gdx.backends.android.AndroidApplicationConfiguration;
 
 import java.util.ArrayList;
 
-import ie.ul.postgrad.socialanxietyapp.App;
 import ie.ul.postgrad.socialanxietyapp.Avatar;
 import ie.ul.postgrad.socialanxietyapp.LibGdxInterface;
 import ie.ul.postgrad.socialanxietyapp.MainGame;
 import ie.ul.postgrad.socialanxietyapp.R;
 import ie.ul.postgrad.socialanxietyapp.game.GameManager;
+import ie.ul.postgrad.socialanxietyapp.game.SurveyAnswer;
 
+import static ie.ul.postgrad.socialanxietyapp.screens.HelpActivity.INFO_KEY;
+import static ie.ul.postgrad.socialanxietyapp.screens.HelpActivity.REVIEW_KEY;
+import static ie.ul.postgrad.socialanxietyapp.screens.HelpActivity.TRANSPARENT_KEY;
+import static ie.ul.postgrad.socialanxietyapp.screens.HelpActivity.VILLAGE_INFO;
 import static ie.ul.postgrad.socialanxietyapp.screens.ItemSelectActivity.BUY_KEY;
 import static ie.ul.postgrad.socialanxietyapp.screens.ItemSelectActivity.SELL_KEY;
 
@@ -31,8 +36,6 @@ public class VillageActivity extends AndroidApplication implements LibGdxInterfa
     private LinearLayout textDisplay;//Where text is displayed on screen.
     private LinearLayout questionOptions;//Options for answering npc questions
     private TextView dialogue;//npc dialog text
-    private int talkCount = 0;//number of times npc has been talked to.
-    private boolean doneTalking = false;//true if users already answered npc question
     private boolean leaving = false;//true if user is leaving conversation
     public static ArrayList<Integer> itemIdsForSale;//ids of items user can buy from this village
     private Button nextButton;
@@ -44,11 +47,11 @@ public class VillageActivity extends AndroidApplication implements LibGdxInterfa
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_village);
-        optionMenu = (LinearLayout) findViewById(R.id.option_menu);
-        textDisplay = (LinearLayout) findViewById(R.id.text_display);
-        questionOptions = (LinearLayout) findViewById(R.id.question_options);
-        dialogue = (TextView) findViewById(R.id.dialogue);
-        nextButton = (Button) findViewById(R.id.next_button);
+        optionMenu = findViewById(R.id.option_menu);
+        textDisplay = findViewById(R.id.text_display);
+        questionOptions = findViewById(R.id.question_options);
+        dialogue = findViewById(R.id.dialogue);
+        nextButton = findViewById(R.id.next_button);
         gm = GameManager.getInstance();
         gm.initDatabaseHelper(this);
 
@@ -81,7 +84,23 @@ public class VillageActivity extends AndroidApplication implements LibGdxInterfa
         findViewById(R.id.next_button).setOnClickListener(this);
 
         scrollText(getString(R.string.village_welcome, GameManager.villageXP));
+        showHelpInfo();
+    }
 
+    private void showHelpInfo() {
+        SharedPreferences prefs = this.getSharedPreferences("ie.ul.postgrad.socialanxietyapp", Context.MODE_PRIVATE);
+
+        final String firstTimeVillageKey = "firstTimeVillage";
+        boolean firstTimeMap = prefs.getBoolean(firstTimeVillageKey, true);
+        if (firstTimeMap) {
+            Intent tutorialIntent = new Intent(this, HelpActivity.class);
+            //bundle here...
+            tutorialIntent.putExtra(INFO_KEY, VILLAGE_INFO);
+            tutorialIntent.putExtra(REVIEW_KEY, false);
+            tutorialIntent.putExtra(TRANSPARENT_KEY, true);
+            startActivity(tutorialIntent);
+            prefs.edit().putBoolean(firstTimeVillageKey, false).apply();
+        }
     }
 
     @Override
@@ -106,21 +125,7 @@ public class VillageActivity extends AndroidApplication implements LibGdxInterfa
                 startActivity(intent);
                 break;
             case R.id.talk_button:
-                    showText();
-                    if (doneTalking) {
-                        scrollText(getString(R.string.village_done_talking));
-                    } else {
-                        surveying = true;
-                        questionNo = gm.getSurveyQuestion();
-                        if (questionNo >= 20) {
-                            doneTalking = true;
-                            surveying = false;
-                        }
-
-                        String[] array = getResources().getStringArray(R.array.anxiety_questions);
-                        scrollText(array[questionNo] + " " + getString(R.string.question_part_2));
-                    }
-
+                showQuestion();
                 break;
             case R.id.run_button:
                 leaving = true;
@@ -150,17 +155,46 @@ public class VillageActivity extends AndroidApplication implements LibGdxInterfa
         }
     }
 
-    private void answerQuestion(int answer) {
-        showText();
-        scrollText(getString(R.string.village_reaction, GameManager.villagerTalkXP));
-        gm.awardXP(this, GameManager.villagerTalkXP);
-        talkCount++;
-        if (talkCount > 2) {
-            doneTalking = true;
-        }
+    private void showQuestion() {
+        try {
+            surveying = true;
+            questionNo = gm.getSurveyQuestion();
+            String[] array = getResources().getStringArray(R.array.mini_spin);
+            if (questionNo < array.length) {
+                scrollText(array[questionNo]);
+                showText();
+            } else {
+                ArrayList<SurveyAnswer> answers = gm.initDatabaseHelper(this).getSurveyAnswers();
+                int total = 0;
+                for (SurveyAnswer answer : answers) {
+                    total += answer.getAnswer();
+                }
+                if (total >= 6) {
+                    scrollText("Based on your answers, you may have have some signs of something called Social Anxiety Disorder.");
+                } else {
+                    scrollText("Based on your answers, it seems that you do not have any signs of social anxiety.");
+                }
+                surveying = false;
+                showText();
 
+                SharedPreferences prefs = this.getSharedPreferences("ie.ul.postgrad.socialanxietyapp", Context.MODE_PRIVATE);
+
+                final String key = "firstTimeSurvey";
+                boolean firstTimeSurvey = prefs.getBoolean(key, true);
+                if (firstTimeSurvey) {
+                    gm.awardXP(this, 500);
+                    prefs.edit().putBoolean(key, false).apply();
+                }
+            }
+
+        } catch (Exception e) {
+            showMenu();
+        }
+    }
+
+    private void answerQuestion(int answer) {
         gm.answerSurveyQuestion(questionNo, answer);
-        surveying = false;
+        showQuestion();
     }
 
     private void showText() {
@@ -185,11 +219,6 @@ public class VillageActivity extends AndroidApplication implements LibGdxInterfa
     }
 
     @Override
-    public void collectResource() {
-        //empty method. (This isn't called from this activity. (used for changing avatar appearance.))
-    }
-
-    @Override
     public Avatar getAvatar() {
         return new Avatar(1, 1, 1, 1);
         //return gm.getAvatar();
@@ -198,6 +227,11 @@ public class VillageActivity extends AndroidApplication implements LibGdxInterfa
     @Override
     public int getNPCId() {
         return 2;
+    }
+
+    @Override
+    public void swordGameWon(boolean success) {
+
     }
 
     @Override

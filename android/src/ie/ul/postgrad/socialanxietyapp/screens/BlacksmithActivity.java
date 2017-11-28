@@ -1,6 +1,8 @@
 package ie.ul.postgrad.socialanxietyapp.screens;
 
+import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.os.Handler;
 import android.view.View;
@@ -20,6 +22,10 @@ import ie.ul.postgrad.socialanxietyapp.R;
 import ie.ul.postgrad.socialanxietyapp.game.GameManager;
 import ie.ul.postgrad.socialanxietyapp.game.factory.WeaponFactory;
 
+import static ie.ul.postgrad.socialanxietyapp.screens.HelpActivity.BLACKSMITH_INFO;
+import static ie.ul.postgrad.socialanxietyapp.screens.HelpActivity.INFO_KEY;
+import static ie.ul.postgrad.socialanxietyapp.screens.HelpActivity.REVIEW_KEY;
+import static ie.ul.postgrad.socialanxietyapp.screens.HelpActivity.TRANSPARENT_KEY;
 import static ie.ul.postgrad.socialanxietyapp.screens.ItemSelectActivity.BUY_WEAPON_KEY;
 import static ie.ul.postgrad.socialanxietyapp.screens.ItemSelectActivity.SELL_WEAPON_KEY;
 
@@ -80,6 +86,23 @@ public class BlacksmithActivity extends AndroidApplication implements LibGdxInte
         findViewById(R.id.sell_button).setOnClickListener(this);
         findViewById(R.id.talk_button).setOnClickListener(this);
         findViewById(R.id.run_button).setOnClickListener(this);
+        showHelpInfo();
+    }
+
+    private void showHelpInfo() {
+        SharedPreferences prefs = this.getSharedPreferences("ie.ul.postgrad.socialanxietyapp", Context.MODE_PRIVATE);
+
+        final String key = "firstTimeBlacksmith";
+        boolean firstTimeMap = prefs.getBoolean(key, true);
+        if (firstTimeMap) {
+            Intent tutorialIntent = new Intent(this, HelpActivity.class);
+            //bundle here...
+            tutorialIntent.putExtra(INFO_KEY, BLACKSMITH_INFO);
+            tutorialIntent.putExtra(REVIEW_KEY, false);
+            tutorialIntent.putExtra(TRANSPARENT_KEY, true);
+            startActivity(tutorialIntent);
+            prefs.edit().putBoolean(key, false).apply();
+        }
     }
 
     @Override
@@ -97,10 +120,9 @@ public class BlacksmithActivity extends AndroidApplication implements LibGdxInte
                 startActivity(intent);
                 break;
             case R.id.talk_button:
-                talking = true;
-                showText();
-                String tips[] = getResources().getStringArray(R.array.game_tips);
-                scrollText(tips[(int) (Math.random() * tips.length)]);
+                intent = new Intent(getApplicationContext(), MoodRatingActivity.class);
+                startActivity(intent);
+                (findViewById(R.id.talk_button)).setEnabled(false);
                 break;
             case R.id.run_button:
                 leaving = true;
@@ -127,11 +149,6 @@ public class BlacksmithActivity extends AndroidApplication implements LibGdxInte
     }
 
     @Override
-    public void collectResource() {
-        //empty method. (This isn't called from this activity. (used for changing avatar appearance.))
-    }
-
-    @Override
     public Avatar getAvatar() {
         return new Avatar(1, 1, 1, 1);
         //return GameManager.getInstance().getAvatar();
@@ -140,6 +157,11 @@ public class BlacksmithActivity extends AndroidApplication implements LibGdxInte
     @Override
     public int getNPCId() {
         return 1;
+    }
+
+    @Override
+    public void swordGameWon(boolean success) {
+
     }
 
     @Override
