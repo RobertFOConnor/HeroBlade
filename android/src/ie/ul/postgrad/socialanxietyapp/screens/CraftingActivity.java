@@ -27,11 +27,20 @@ import static ie.ul.postgrad.socialanxietyapp.screens.HelpActivity.TRANSPARENT_K
 
 public class CraftingActivity extends AppCompatActivity {
 
+    private ArrayList<Item> items;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_crafting);
-        ArrayList<Item> items = new ArrayList<>();
+        addCraftingItemsToList();
+        setupListAdapter();
+        setupBars();
+        showHelpInfo();
+    }
+
+    private void addCraftingItemsToList() {
+        items = new ArrayList<>();
         int[] craftItems = ItemFactory.CRAFTABLES;
         int level = GameManager.getInstance().getPlayer().getLevel();
         for (int i = 0; i < craftItems.length; i++) {
@@ -43,15 +52,18 @@ public class CraftingActivity extends AppCompatActivity {
                 }
             }
         }
-
         if (items.size() > 0) {
             findViewById(R.id.empty_message).setVisibility(View.GONE);
         }
+    }
 
+    private void setupListAdapter() {
         ListView itemList = findViewById(R.id.craft_item_list);
         CraftableListAdapter adapter = new CraftableListAdapter(this, items);
         itemList.setAdapter(adapter);
+    }
 
+    private void setupBars() {
         ActionBar actionBar = getSupportActionBar();
         if (actionBar != null) {
             actionBar.setTitle(getString(R.string.crafting));
@@ -59,7 +71,6 @@ public class CraftingActivity extends AppCompatActivity {
             actionBar.setDisplayHomeAsUpEnabled(true);
         }
         App.setStatusBarColor(this);
-        showHelpInfo();
     }
 
     private void showHelpInfo() {

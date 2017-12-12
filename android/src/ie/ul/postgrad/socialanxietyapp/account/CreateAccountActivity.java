@@ -78,7 +78,7 @@ public class CreateAccountActivity extends AppCompatActivity {
         @Override
         protected void onPostExecute(String result) {
             if (result.contains("success")) {
-                //GameManager.getInstance().initDatabaseHelper(getApplicationContext(), id, name, email, password);
+                //GameManager.getInstance().initDatabase(getApplicationContext(), id, name, email, password);
 
                 Intent intent = new Intent(getApplicationContext(), MapsActivity.class);
                 startActivity(intent);

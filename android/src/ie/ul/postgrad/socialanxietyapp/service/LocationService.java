@@ -16,7 +16,7 @@ import android.support.v4.app.ActivityCompat;
 import android.util.Log;
 
 /**
- * Created by roberto on 9/29/16.
+ * Created by robert on 9/29/16.
  */
 
 public class LocationService extends Service {

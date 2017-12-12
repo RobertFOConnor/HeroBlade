@@ -68,28 +68,27 @@ public class BattleActivity extends AndroidApplication implements LibGdxInterfac
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_battle);
         initViews();
-
-        gm = GameManager.getInstance();
-        gm.initDatabaseHelper(this);
-        player = gm.getPlayer();
-        ((TextView) findViewById(R.id.player_name)).setText(getString(R.string.name_with_level, player.getName(), player.getLevel()));
-
-        enemies = new ArrayList<>();
+        setupPlayer();
         setupEnemyArray();
+        setupPlayerWeapon();
+        setupHealthUI();
+        setupListeners();
+        StartState startState = new StartState();
+        battleContext.setState(startState);
+        game = new MainGame(this, MainGame.BATTLE_SCREEN);
+        View v = initializeForView(game, new AndroidApplicationConfiguration());
+        ((LinearLayout) findViewById(R.id.character_layout)).addView(v);
+        showHelpInfo();
+    }
 
-        ArrayList<WeaponItem> weapons = gm.getInventory().getEquippedWeapons();
-        if (weapons.size() > 0 && player.getCurrHealth() > 0 && gm.getInventory().hasUsableWeapons()) {
+    private void setupPlayer() {
+        gm = GameManager.getInstance();
+        gm.initDatabase(this);
+        player = gm.getPlayer();
+    }
 
-            for (int i = weapons.size() - 1; i >= 0; i--) {
-                if (weapons.get(i).getCurrHealth() > 0) {
-                    weapon = weapons.get(i);
-                    weaponType.setImageResource(weapons.get(i).getTypeDrawableRes());
-                }
-            }
-        } else {
-            weapon = WeaponFactory.buildWeapon(this, 1);
-        }
-
+    private void setupHealthUI() {
+        ((TextView) findViewById(R.id.player_name)).setText(getString(R.string.name_with_level, player.getName(), player.getLevel()));
         ProgressBar userHealthBar = findViewById(R.id.user_bar);
         TextView userHealthText = findViewById(R.id.player_health);
         userHealthBar.setMax(player.getMaxHealth());
@@ -102,16 +101,21 @@ public class BattleActivity extends AndroidApplication implements LibGdxInterfac
         enemyHealthBar.setRotation(180f);
         enemyUI = new PlayerUI(enemyHealthBar, enemyHealthText);
         initEnemyUI();
+    }
 
-        StartState startState = new StartState();
-        battleContext.setState(startState);
+    private void setupPlayerWeapon() {
+        ArrayList<WeaponItem> weapons = gm.getInventory().getEquippedWeapons();
+        if (weapons.size() > 0 && player.getCurrHealth() > 0 && gm.getInventory().hasUsableWeapons()) {
 
-        setupListeners();
-
-        game = new MainGame(this, MainGame.BATTLE_SCREEN);
-        View v = initializeForView(game, new AndroidApplicationConfiguration());
-        ((LinearLayout) findViewById(R.id.character_layout)).addView(v);
-        showHelpInfo();
+            for (int i = weapons.size() - 1; i >= 0; i--) {
+                if (weapons.get(i).getCurrHealth() > 0) {
+                    weapon = weapons.get(i);
+                    weaponType.setImageResource(weapons.get(i).getTypeDrawableRes());
+                }
+            }
+        } else {
+            weapon = WeaponFactory.buildWeapon(this, 1);
+        }
     }
 
     private void showHelpInfo() {
@@ -131,6 +135,7 @@ public class BattleActivity extends AndroidApplication implements LibGdxInterfac
     }
 
     private void setupEnemyArray() {
+        enemies = new ArrayList<>();
         int enemyCount = 5;
         if (player.getLevel() < 4) {
             enemyCount = 1;

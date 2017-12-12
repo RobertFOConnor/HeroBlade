@@ -2,6 +2,7 @@ package ie.ul.postgrad.socialanxietyapp.screen;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
+import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.OrthographicCamera;
@@ -71,6 +72,8 @@ public class BattleScreen implements Screen {
     private LibGdxInterface libGdxInterface;
     private OrthographicCamera camera;
 
+    private Sound swordHitSound, swordMissSound, arrowHitSound;
+
     public BattleScreen(LibGdxInterface libGdxInterface, OrthographicCamera camera, SpriteBatch sb) {
         this.libGdxInterface = libGdxInterface;
         this.camera = camera;
@@ -79,6 +82,10 @@ public class BattleScreen implements Screen {
         avatar = libGdxInterface.getAvatar();
         playerSwordId = libGdxInterface.getNPCId() - 1;
         enemyAvatar = new Avatar();
+
+        swordHitSound = Gdx.audio.newSound(Gdx.files.internal("sword_hit.wav"));
+        swordMissSound = Gdx.audio.newSound(Gdx.files.internal("sword_miss.wav"));
+        arrowHitSound = Gdx.audio.newSound(Gdx.files.internal("arrow_sound.wav"));
     }
 
     @Override
@@ -149,16 +156,16 @@ public class BattleScreen implements Screen {
     private void updateArrows() {
         if (attacking) {
             if (Gdx.input.isKeyJustPressed(Input.Keys.LEFT)) {
-                hitTree(0);
+                hitArrow(0);
             } else if (Gdx.input.isKeyJustPressed(Input.Keys.RIGHT)) {
-                hitTree(1);
+                hitArrow(1);
             }
             if (Gdx.input.justTouched()) {
                 touch = new Vector2(Gdx.input.getX(), Gdx.input.getY());
                 if (touch.x > WIDTH / 2) {
-                    hitTree(1);
+                    hitArrow(1);
                 } else {
-                    hitTree(0);
+                    hitArrow(0);
                 }
             }
             currTime = System.nanoTime();
@@ -177,7 +184,7 @@ public class BattleScreen implements Screen {
         if (weaponDamage < 8) {
             seqLength = weaponDamage;
         }
-        if (weaponDamage < 2) {
+        if (weaponDamage <= 2) {
             seqLength = 3;
         }
         sequence = new int[seqLength];
@@ -186,10 +193,11 @@ public class BattleScreen implements Screen {
         }
     }
 
-    private void hitTree(int dir) {
+    private void hitArrow(int dir) {
         if (sequence.length != seqPos && !paused) {
             if (sequence[seqPos] == dir) {
                 seqPos++;
+                arrowHitSound.play();
             } else {
                 attacking = false;
                 successfulStrike(false);
@@ -267,6 +275,7 @@ public class BattleScreen implements Screen {
             initializeGame();
         } else {
             swordStrike(npcPlayer);
+            swordHitSound.play();
         }
     }
 
@@ -305,6 +314,12 @@ public class BattleScreen implements Screen {
     }
 
     private void successfulStrike(boolean success) {
+        if (success) {
+            swordHitSound.play();
+        } else {
+            swordMissSound.play();
+        }
+
         attacking = false;
         swordStrike(player);
         libGdxInterface.swordGameWon(success);

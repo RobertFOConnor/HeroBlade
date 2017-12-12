@@ -17,6 +17,7 @@ import ie.ul.postgrad.socialanxietyapp.game.ConsumedLocation;
 import ie.ul.postgrad.socialanxietyapp.game.InventoryItemArray;
 import ie.ul.postgrad.socialanxietyapp.game.Player;
 import ie.ul.postgrad.socialanxietyapp.game.Stats;
+import ie.ul.postgrad.socialanxietyapp.game.StepEntry;
 import ie.ul.postgrad.socialanxietyapp.game.SurveyAnswer;
 import ie.ul.postgrad.socialanxietyapp.game.factory.ItemFactory;
 import ie.ul.postgrad.socialanxietyapp.game.factory.WeaponFactory;
@@ -31,7 +32,7 @@ import ie.ul.postgrad.socialanxietyapp.game.item.WeaponItem;
 
 public class DBHelper extends SQLiteOpenHelper {
 
-    private static final int DATABASE_VERSION = 66;
+    private static final int DATABASE_VERSION = 68;
 
     private static final String DATABASE_NAME = "AnxietyApp.db";
 
@@ -120,15 +121,15 @@ public class DBHelper extends SQLiteOpenHelper {
     public void onCreate(SQLiteDatabase db) {
         db.execSQL("CREATE TABLE " + USER_TABLE_NAME + " (id text primary key, name text, email text, password text)");
         db.execSQL("CREATE TABLE " + PLAYERS_TABLE_NAME + " (id text primary key, name text, xp integer, level integer, money integer, max_health integer, curr_health integer, villages_found integer, win_count integer, sword_id text)");
-        db.execSQL("CREATE TABLE " + ITEM_TABLE_NAME + " (player_id text key, item_id integer, quantity integer)");
-        db.execSQL("CREATE TABLE " + WEAPON_TABLE_NAME + " (player_id text key, weapon_uuid text, weapon_id integer, curr_health integer, equipped integer)");
-        db.execSQL("CREATE TABLE " + CHEST_TABLE_NAME + " (player_id text key, chest_uuid text, chest_id integer, distance_left real)");
-        db.execSQL("CREATE TABLE " + TRAVEL_TABLE_NAME + " (player_id text key, creation_date text, step_count integer, distance integer)");
-        db.execSQL("CREATE TABLE " + AVATAR_TABLE_NAME + " (player_id text key, shirt_color integer, skin_color integer, hair_type integer, hair_color integer)");
-        db.execSQL("CREATE TABLE " + LOCATION_TABLE_NAME + " (player_id text key, lat real, lng real, type integer, timeofvisit long)");
-        db.execSQL("CREATE TABLE " + SURVEY_TABLE_NAME + " (player_id text key, question integer, answer integer, date text)");
-        db.execSQL("CREATE TABLE " + STATS_TABLE_NAME + " (player_id text key, win_count integer, chests_opened integer, total_steps integer)");
-        db.execSQL("CREATE TABLE " + MOOD_TABLE_NAME + " (player_id text key, rating integer, description text, date_time text)");
+        db.execSQL("CREATE TABLE " + ITEM_TABLE_NAME + " (player_id text, item_id integer, quantity integer)");
+        db.execSQL("CREATE TABLE " + WEAPON_TABLE_NAME + " (player_id text, weapon_uuid text, weapon_id integer, curr_health integer, equipped integer)");
+        db.execSQL("CREATE TABLE " + CHEST_TABLE_NAME + " (player_id text, chest_uuid text, chest_id integer, distance_left real)");
+        db.execSQL("CREATE TABLE " + TRAVEL_TABLE_NAME + " (player_id text, creation_date text, step_count integer, distance integer)");
+        db.execSQL("CREATE TABLE " + AVATAR_TABLE_NAME + " (player_id text, shirt_color integer, skin_color integer, hair_type integer, hair_color integer)");
+        db.execSQL("CREATE TABLE " + LOCATION_TABLE_NAME + " (player_id text, lat real, lng real, type integer, timeofvisit long)");
+        db.execSQL("CREATE TABLE " + SURVEY_TABLE_NAME + " (player_id text, question integer, answer integer, date text)");
+        db.execSQL("CREATE TABLE " + STATS_TABLE_NAME + " (player_id text, win_count integer, chests_opened integer, total_steps integer)");
+        db.execSQL("CREATE TABLE " + MOOD_TABLE_NAME + " (player_id text, rating integer, description text, date_time text)");
     }
 
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
@@ -142,7 +143,7 @@ public class DBHelper extends SQLiteOpenHelper {
         onUpgrade(db, oldVersion, newVersion);
     }
 
-    public boolean insertUser(String id, String name, String email, String password) {
+    public void insertUser(String id, String name, String email, String password) {
         db = this.getWritableDatabase();
         ContentValues contentValues = new ContentValues();
         contentValues.put(USER_COLUMN_ID, id);
@@ -150,10 +151,10 @@ public class DBHelper extends SQLiteOpenHelper {
         contentValues.put(USER_COLUMN_EMAIL, email);
         contentValues.put(USER_COLUMN_PASSWORD, password);
         db.insert(USER_TABLE_NAME, null, contentValues);
-        return true;
+
     }
 
-    public boolean insertPlayer(Player player) {
+    public void insertPlayer(Player player) {
         db = this.getWritableDatabase();
         ContentValues contentValues = new ContentValues();
         contentValues.put(PLAYERS_COLUMN_ID, player.getId());
@@ -165,10 +166,10 @@ public class DBHelper extends SQLiteOpenHelper {
         contentValues.put(PLAYERS_COLUMN_CURR_HEALTH, player.getCurrHealth());
         contentValues.put(PLAYERS_COLUMN_BASE_SWORD_ID, player.getBaseSword());
         db.insert(PLAYERS_TABLE_NAME, null, contentValues);
-        return true;
+
     }
 
-    public boolean insertAvatar(Avatar avatar) {
+    public void insertAvatar(Avatar avatar) {
         db = this.getWritableDatabase();
         ContentValues contentValues = new ContentValues();
         contentValues.put(AVATAR_COLUMN_PLAYER_ID, getPlayer().getId());
@@ -177,47 +178,47 @@ public class DBHelper extends SQLiteOpenHelper {
         contentValues.put(AVATAR_COLUMN_HAIR_TYPE, avatar.getHairtype());
         contentValues.put(AVATAR_COLUMN_HAIR_COLOR, avatar.getHairColor());
         db.insert(AVATAR_TABLE_NAME, null, contentValues);
-        return true;
+
     }
 
-    public boolean insertItem(String player_id, int item_id, int quantity) {
+    public void insertItem(String player_id, int item_id, int quantity) {
         db = this.getWritableDatabase();
         ContentValues contentValues = new ContentValues();
         contentValues.put(ITEM_COLUMN_PLAYER_ID, player_id);
         contentValues.put(ITEM_COLUMN_ID, item_id);
         contentValues.put(ITEM_COLUMN_QUANTITY, quantity);
         db.insert(ITEM_TABLE_NAME, null, contentValues);
-        return true;
+
     }
 
-    public boolean insertWeapon(String player_id, String UUID, int weapon_id, int curr_health, boolean equipped) {
+    public void insertWeapon(String player_id, WeaponItem weapon) {
         db = this.getWritableDatabase();
         ContentValues contentValues = new ContentValues();
         contentValues.put(WEAPON_COLUMN_PLAYER_ID, player_id);
-        contentValues.put(WEAPON_COLUMN_UUID, UUID);
-        contentValues.put(WEAPON_COLUMN_ID, weapon_id);
-        contentValues.put(WEAPON_COLUMN_CURR_HEALTH, curr_health);
-        if (equipped) {
+        contentValues.put(WEAPON_COLUMN_UUID, weapon.getUUID());
+        contentValues.put(WEAPON_COLUMN_ID, weapon.getId());
+        contentValues.put(WEAPON_COLUMN_CURR_HEALTH, weapon.getCurrHealth());
+        if (weapon.isEquipped()) {
             contentValues.put(WEAPON_COLUMN_EQUIPPED, 1);
         } else {
             contentValues.put(WEAPON_COLUMN_EQUIPPED, 0);
         }
         db.insert(WEAPON_TABLE_NAME, null, contentValues);
-        return true;
+
     }
 
-    public boolean insertChest(String player_id, String UUID, int chest_id, float distance_left) {
+    public void insertChest(String player_id, ChestItem chest) {
         db = this.getWritableDatabase();
         ContentValues contentValues = new ContentValues();
         contentValues.put(CHEST_COLUMN_PLAYER_ID, player_id);
-        contentValues.put(CHEST_COLUMN_UUID, UUID);
-        contentValues.put(CHEST_COLUMN_ID, chest_id);
-        contentValues.put(CHEST_COLUMN_DISTANCE_LEFT, distance_left);
+        contentValues.put(CHEST_COLUMN_UUID, chest.getUID());
+        contentValues.put(CHEST_COLUMN_ID, chest.getId());
+        contentValues.put(CHEST_COLUMN_DISTANCE_LEFT, chest.getCurrDistance());
         db.insert(CHEST_TABLE_NAME, null, contentValues);
-        return true;
+
     }
 
-    public boolean insertLocation(String player_id, double lat, double lng, int type, long visitTime) {
+    public void insertLocation(String player_id, double lat, double lng, int type, long visitTime) {
         db = this.getWritableDatabase();
         ContentValues contentValues = new ContentValues();
         contentValues.put(LOCATION_COLUMN_PLAYER_ID, player_id);
@@ -226,10 +227,10 @@ public class DBHelper extends SQLiteOpenHelper {
         contentValues.put(LOCATION_COLUMN_TYPE, type);
         contentValues.put(LOCATION_COLUMN_LAST_TIME_VISITED, visitTime);
         db.insert(LOCATION_TABLE_NAME, null, contentValues);
-        return true;
+
     }
 
-    public boolean insertSurveyAnswer(String player_id, int question, int answer) {
+    public void insertSurveyAnswer(String player_id, int question, int answer) {
         db = this.getWritableDatabase();
         ContentValues contentValues = new ContentValues();
         contentValues.put(SURVEY_COLUMN_PLAYER_ID, player_id);
@@ -237,10 +238,10 @@ public class DBHelper extends SQLiteOpenHelper {
         contentValues.put(SURVEY_COLUMN_ANSWER, answer);
         contentValues.put(SURVEY_COLUMN_DATE, DateFormat.getDateTimeInstance().format(new Date()));
         db.insert(SURVEY_TABLE_NAME, null, contentValues);
-        return true;
+
     }
 
-    public boolean insertMoodRating(String player_id, int rating, String description) {
+    public void insertMoodRating(String player_id, int rating, String description) {
         db = this.getWritableDatabase();
         ContentValues contentValues = new ContentValues();
         contentValues.put(MOOD_COLUMN_PLAYER_ID, player_id);
@@ -248,10 +249,10 @@ public class DBHelper extends SQLiteOpenHelper {
         contentValues.put(MOOD_DESCRIPTION, description);
         contentValues.put(MOOD_DATE_TIME, DateFormat.getDateTimeInstance().format(new Date()));
         db.insert(MOOD_TABLE_NAME, null, contentValues);
-        return true;
+
     }
 
-    public boolean insertStats(String id) {
+    public void insertStats(String id) {
         db = this.getWritableDatabase();
         ContentValues contentValues = new ContentValues();
         contentValues.put(STATS_COLUMN_PLAYER_ID, id);
@@ -259,11 +260,11 @@ public class DBHelper extends SQLiteOpenHelper {
         contentValues.put(STATS_COLUMN_WINS, 0);
         contentValues.put(STATS_TOTAL_STEPS, 0);
         db.insert(STATS_TABLE_NAME, null, contentValues);
-        return true;
+
     }
 
 
-    public boolean updatePlayer(Player player) {
+    public void updatePlayer(Player player) {
         db = this.getWritableDatabase();
         ContentValues contentValues = new ContentValues();
         contentValues.put(PLAYERS_COLUMN_NAME, player.getName());
@@ -273,10 +274,10 @@ public class DBHelper extends SQLiteOpenHelper {
         contentValues.put(PLAYERS_COLUMN_MAX_HEALTH, player.getMaxHealth());
         contentValues.put(PLAYERS_COLUMN_CURR_HEALTH, player.getCurrHealth());
         db.update(PLAYERS_TABLE_NAME, contentValues, PLAYERS_COLUMN_ID + " = ? ", new String[]{player.getId()});
-        return true;
+
     }
 
-    public boolean updateAvatar(Avatar avatar) {
+    public void updateAvatar(Avatar avatar) {
         db = this.getWritableDatabase();
         ContentValues contentValues = new ContentValues();
         contentValues.put(AVATAR_COLUMN_SHIRT_COLOR, avatar.getShirtColor());
@@ -284,47 +285,45 @@ public class DBHelper extends SQLiteOpenHelper {
         contentValues.put(AVATAR_COLUMN_HAIR_TYPE, avatar.getHairtype());
         contentValues.put(AVATAR_COLUMN_HAIR_COLOR, avatar.getHairColor());
         db.update(AVATAR_TABLE_NAME, contentValues, AVATAR_COLUMN_PLAYER_ID + " = ? ", new String[]{getPlayer().getId()});
-        return true;
+
     }
 
-    public boolean updateItem(String player_id, int item_id, int quantity) {
+    public void updateItem(String player_id, int item_id, int quantity) {
         db = this.getWritableDatabase();
         ContentValues contentValues = new ContentValues();
         contentValues.put(ITEM_COLUMN_PLAYER_ID, player_id);
         contentValues.put(ITEM_COLUMN_ID, item_id);
         contentValues.put(ITEM_COLUMN_QUANTITY, quantity);
         db.update(ITEM_TABLE_NAME, contentValues, ITEM_COLUMN_ID + " = ? ", new String[]{Integer.toString(item_id)});
-        return true;
+
     }
 
-    public boolean updateWeapon(String player_id, String UUID, int weapon_id, int curr_health, boolean equipped) {
+    public void updateWeapon(String player_id, WeaponItem weapon) {
         db = this.getWritableDatabase();
         ContentValues contentValues = new ContentValues();
         contentValues.put(WEAPON_COLUMN_PLAYER_ID, player_id);
-        contentValues.put(WEAPON_COLUMN_UUID, UUID);
-        contentValues.put(WEAPON_COLUMN_ID, weapon_id);
-        contentValues.put(WEAPON_COLUMN_CURR_HEALTH, curr_health);
-        if (equipped) {
+        contentValues.put(WEAPON_COLUMN_UUID, weapon.getUUID());
+        contentValues.put(WEAPON_COLUMN_ID, weapon.getId());
+        contentValues.put(WEAPON_COLUMN_CURR_HEALTH, weapon.getCurrHealth());
+        if (weapon.isEquipped()) {
             contentValues.put(WEAPON_COLUMN_EQUIPPED, 1);
         } else {
             contentValues.put(WEAPON_COLUMN_EQUIPPED, 0);
         }
-        db.update(WEAPON_TABLE_NAME, contentValues, WEAPON_COLUMN_UUID + " = ? ", new String[]{UUID});
-        return true;
+        db.update(WEAPON_TABLE_NAME, contentValues, WEAPON_COLUMN_UUID + " = ? ", new String[]{weapon.getUUID()});
     }
 
-    public boolean updateChest(String player_id, String UID, int chest_id, float distance_left) {
+    public void updateChest(String player_id, ChestItem chest) {
         db = this.getWritableDatabase();
         ContentValues contentValues = new ContentValues();
         contentValues.put(CHEST_COLUMN_PLAYER_ID, player_id);
-        contentValues.put(CHEST_COLUMN_UUID, UID);
-        contentValues.put(CHEST_COLUMN_ID, chest_id);
-        contentValues.put(CHEST_COLUMN_DISTANCE_LEFT, distance_left);
-        db.update(CHEST_TABLE_NAME, contentValues, CHEST_COLUMN_UUID + " = ? ", new String[]{UID});
-        return true;
+        contentValues.put(CHEST_COLUMN_UUID, chest.getUID());
+        contentValues.put(CHEST_COLUMN_ID, chest.getId());
+        contentValues.put(CHEST_COLUMN_DISTANCE_LEFT, chest.getCurrDistance());
+        db.update(CHEST_TABLE_NAME, contentValues, CHEST_COLUMN_UUID + " = ? ", new String[]{chest.getUID()});
     }
 
-    public boolean updateLocation(String player_id, double lat, double lng, int type, long time) {
+    public void updateLocation(String player_id, double lat, double lng, int type, long time) {
         db = this.getWritableDatabase();
         ContentValues contentValues = new ContentValues();
         contentValues.put(LOCATION_COLUMN_PLAYER_ID, player_id);
@@ -333,18 +332,15 @@ public class DBHelper extends SQLiteOpenHelper {
         contentValues.put(LOCATION_COLUMN_TYPE, type);
         contentValues.put(LOCATION_COLUMN_LAST_TIME_VISITED, time);
         db.update(LOCATION_TABLE_NAME, contentValues, "lat=? and lng=?", new String[]{String.valueOf(lat), String.valueOf(lng)});
-        return true;
     }
 
-    public boolean updateStats(String player_id, Stats stats) {
+    public void updateStats(String player_id, Stats stats) {
         db = this.getWritableDatabase();
         ContentValues contentValues = new ContentValues();
         contentValues.put(STATS_COLUMN_PLAYER_ID, player_id);
         contentValues.put(STATS_COLUMN_WINS, stats.getWins());
         contentValues.put(STATS_COLUMN_CHESTS_OPENED, stats.getChestsOpened());
         contentValues.put(STATS_TOTAL_STEPS, stats.getTotalSteps());
-        db.update(STATS_TABLE_NAME, contentValues, STATS_COLUMN_PLAYER_ID + " = ? ", new String[]{player_id});
-        return true;
     }
 
     public Avatar getAvatar(String player_id) {
@@ -390,23 +386,29 @@ public class DBHelper extends SQLiteOpenHelper {
     }
 
     public Cursor getSurveyData(String player_id) {
-        db = this.getReadableDatabase();
-        return db.rawQuery(selectAllQuery(SURVEY_TABLE_NAME) + " WHERE " + SURVEY_COLUMN_PLAYER_ID + "='" + player_id + "'", null);
+        return getTableData(SURVEY_TABLE_NAME, SURVEY_COLUMN_PLAYER_ID, player_id);
     }
 
-    public Cursor getMoodData(String player_id) {
-        db = this.getReadableDatabase();
-        return db.rawQuery(selectAllQuery(MOOD_TABLE_NAME) + " WHERE " + MOOD_COLUMN_PLAYER_ID + "='" + player_id + "'", null);
+    private Cursor getMoodData(String player_id) {
+        return getTableData(MOOD_TABLE_NAME, MOOD_COLUMN_PLAYER_ID, player_id);
     }
 
     public Cursor getInventoryData(int id) {
-        db = this.getReadableDatabase();
-        return db.rawQuery(selectAllQuery(ITEM_TABLE_NAME) + " WHERE " + ITEM_COLUMN_ID + "=" + id, null);
+        return getTableData(ITEM_TABLE_NAME, ITEM_COLUMN_ID, String.valueOf(id));
     }
 
     public Cursor getWeaponsData(String uuid) {
-        db = this.getReadableDatabase();
-        return db.rawQuery(selectAllQuery(WEAPON_TABLE_NAME) + " WHERE " + WEAPON_COLUMN_UUID + "='" + uuid + "'", null);
+        return getTableData(WEAPON_TABLE_NAME, WEAPON_COLUMN_UUID, uuid);
+    }
+
+    private Cursor getTableData(String tableName, String idCol, String id) {
+        try {
+            db = this.getReadableDatabase();
+            return db.rawQuery(selectAllQuery(tableName) + " WHERE " + idCol + "='" + id + "'", null);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return null;
     }
 
     public Cursor getLocationData(double lat, double lng) {
@@ -540,13 +542,12 @@ public class DBHelper extends SQLiteOpenHelper {
         return stats;
     }
 
-    public boolean insertStepsEntry(float totalDistance) {
+    public boolean insertStepsEntry(float totalDistance, int steps) {
 
         boolean isDateAlreadyPresent = false;
         boolean createSuccessful = false;
         int currentDateStepCounts = 0;
-        Calendar mCalendar = Calendar.getInstance();
-        String todayDate = String.valueOf(mCalendar.get(Calendar.MONTH)) + "/" + String.valueOf(mCalendar.get(Calendar.DAY_OF_MONTH)) + "/" + String.valueOf(mCalendar.get(Calendar.YEAR));
+        String todayDate = getTodaysDate();
         String selectQuery = "SELECT " + TRAVEL_COLUMN_STEPS_COUNT + " FROM " + TRAVEL_TABLE_NAME + " WHERE " + TRAVEL_COLUMN_CREATION_DATE + " = '" + todayDate + "'";
         try {
             db = this.getReadableDatabase();
@@ -570,7 +571,7 @@ public class DBHelper extends SQLiteOpenHelper {
             values.put(TRAVEL_COLUMN_CREATION_DATE, todayDate);
             values.put(TRAVEL_COLUMN_DISTANCE, totalDistance);
             if (isDateAlreadyPresent) {
-                values.put(TRAVEL_COLUMN_STEPS_COUNT, ++currentDateStepCounts);
+                values.put(TRAVEL_COLUMN_STEPS_COUNT, steps + currentDateStepCounts);
                 int row = db.update(TRAVEL_TABLE_NAME, values,
                         TRAVEL_COLUMN_CREATION_DATE + " = '" + todayDate + "'", null);
                 if (row == 1) {
@@ -585,11 +586,18 @@ public class DBHelper extends SQLiteOpenHelper {
                 }
             }
             db.close();
-
+            System.out.println("STEPS: " + (steps + currentDateStepCounts));
+            System.out.println("DATE: " + todayDate);
+            System.out.println("DIST: " + totalDistance);
         } catch (Exception e) {
             e.printStackTrace();
         }
         return createSuccessful;
+    }
+
+    private String getTodaysDate() {
+        Calendar mCalendar = Calendar.getInstance();
+        return String.valueOf(mCalendar.get(Calendar.MONTH)) + "/" + String.valueOf(mCalendar.get(Calendar.DAY_OF_MONTH)) + "/" + String.valueOf(mCalendar.get(Calendar.YEAR));
     }
 
     public int getSteps() {
@@ -613,20 +621,18 @@ public class DBHelper extends SQLiteOpenHelper {
         return steps;
     }
 
-    public ArrayList<Integer> getDailySteps() {
+    public ArrayList<StepEntry> getDailySteps() {
 
-        ArrayList<Integer> steps = new ArrayList<>();
-
+        ArrayList<StepEntry> steps = new ArrayList<>();
         String selectQuery = selectAllQuery(TRAVEL_TABLE_NAME) + " WHERE " + TRAVEL_COLUMN_PLAYER_ID + "=" + 1;
         try {
             db = this.getReadableDatabase();
             Cursor c = db.rawQuery(selectQuery, null);
             if (c.moveToFirst()) {
-                steps.add(c.getInt((c.getColumnIndex(TRAVEL_COLUMN_STEPS_COUNT))));
+                steps.add(new StepEntry(c.getInt((c.getColumnIndex(TRAVEL_COLUMN_STEPS_COUNT))), c.getString(c.getColumnIndex(TRAVEL_COLUMN_CREATION_DATE))));
             }
             while (c.moveToNext()) {
-                steps.add(c.getInt((c.getColumnIndex(TRAVEL_COLUMN_STEPS_COUNT))));
-
+                steps.add(new StepEntry(c.getInt((c.getColumnIndex(TRAVEL_COLUMN_STEPS_COUNT))), c.getString(c.getColumnIndex(TRAVEL_COLUMN_CREATION_DATE))));
             }
             c.close();
             db.close();
@@ -660,43 +666,43 @@ public class DBHelper extends SQLiteOpenHelper {
         return "SELECT * FROM " + tableName;
     }
 
-    public Integer deleteItem(Integer id) {
+    public void deleteItem(Integer id) {
         db = this.getWritableDatabase();
-        return db.delete(ITEM_TABLE_NAME,
+        db.delete(ITEM_TABLE_NAME,
                 ITEM_COLUMN_ID + " = ? ",
                 new String[]{Integer.toString(id)});
     }
 
-    public Integer deleteWeapon(String UUID) {
+    public void deleteWeapon(String UUID) {
         db = this.getWritableDatabase();
-        return db.delete(WEAPON_TABLE_NAME,
+        db.delete(WEAPON_TABLE_NAME,
                 WEAPON_COLUMN_UUID + " = ? ",
                 new String[]{UUID});
     }
 
-    public Integer removeChest(String UUID) {
+    public void removeChest(String UUID) {
         db = this.getWritableDatabase();
-        return db.delete(CHEST_TABLE_NAME,
+        db.delete(CHEST_TABLE_NAME,
                 CHEST_COLUMN_UUID + " = ? ",
                 new String[]{UUID});
     }
 
     private String getTableAsString(SQLiteDatabase db, String tableName) {
-        String tableString = String.format("Table %s:\n", tableName);
+        StringBuilder tableString = new StringBuilder(String.format("Table %s:\n", tableName));
         Cursor allRows = db.rawQuery(selectAllQuery(tableName), null);
         if (allRows.moveToFirst()) {
             String[] columnNames = allRows.getColumnNames();
             do {
                 for (String name : columnNames) {
-                    tableString += String.format("%s: %s\n", name,
-                            allRows.getString(allRows.getColumnIndex(name)));
+                    tableString.append(String.format("%s: %s\n", name,
+                            allRows.getString(allRows.getColumnIndex(name))));
                 }
-                tableString += "\n";
+                tableString.append("\n");
 
             } while (allRows.moveToNext());
         }
         allRows.close();
-        return tableString;
+        return tableString.toString();
     }
 
     public void printAllTables() {

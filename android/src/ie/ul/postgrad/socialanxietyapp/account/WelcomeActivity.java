@@ -1,12 +1,16 @@
 package ie.ul.postgrad.socialanxietyapp.account;
 
+import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.view.animation.Animation;
 import android.view.animation.OvershootInterpolator;
 import android.view.animation.ScaleAnimation;
+
+import java.util.UUID;
 
 import ie.ul.postgrad.socialanxietyapp.App;
 import ie.ul.postgrad.socialanxietyapp.R;
@@ -25,10 +29,11 @@ public class WelcomeActivity extends AppCompatActivity implements View.OnClickLi
         setContentView(R.layout.activity_welcome);
 
         App.setStatusBarColor(this);
+        generateUID();
 
         findViewById(R.id.sign_in_button).setOnClickListener(this);
 
-        GameManager.getInstance().initDatabaseHelper(this);
+        GameManager.getInstance().initDatabase(this);
         firstTime = GameManager.getInstance().getPlayer().getName().equals("");
 
         ScaleAnimation scale
@@ -66,6 +71,16 @@ public class WelcomeActivity extends AppCompatActivity implements View.OnClickLi
             }
             finish();
             SoundManager.getInstance(this).playSound(SoundManager.Sound.CLICK);
+        }
+    }
+
+    public void generateUID() {
+        SharedPreferences prefs = this.getSharedPreferences("ie.ul.postgrad.socialanxietyapp", Context.MODE_PRIVATE);
+
+        final String key = "firstTimeUID";
+        String uid = prefs.getString(key, "");
+        if (uid.equals("")) {
+            prefs.edit().putString(key, UUID.randomUUID().toString()).apply();
         }
     }
 }

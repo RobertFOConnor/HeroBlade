@@ -11,6 +11,8 @@ import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import java.util.Locale;
+
 import ie.ul.postgrad.socialanxietyapp.App;
 import ie.ul.postgrad.socialanxietyapp.R;
 import ie.ul.postgrad.socialanxietyapp.game.GameManager;
@@ -27,31 +29,66 @@ public class WeaponDetailActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_weapon_detail);
-        ActionBar actionBar = getSupportActionBar();
-
         App.setStatusBarColor(this);
+        setupBundleInfo();
+        setupActionBar();
+        setupTextViews();
+        setupImages();
+        setupEquipButtonListener();
+    }
 
+    private void setupImages() {
+        ((ImageView) findViewById(R.id.item_image)).setImageResource(this.getResources().getIdentifier("weapon" + String.format(Locale.ENGLISH, "%04d", weapon.getId()), "drawable", this.getPackageName()));
+        ((ImageView) findViewById(R.id.item_image_type)).setImageResource(weapon.getTypeDrawableRes());
+    }
 
+    private void setupTextViews() {
+        String typeText = "Type: " + weapon.getType();
+        String damageText = "Damage: " + weapon.getDamage();
+        String healthText = "Health: " + weapon.getCurrHealth();
+        String rarityText = "Rarity: " + weapon.getRarity();
+
+        ((TextView) findViewById(R.id.name)).setText(weapon.getName());
+        ((TextView) findViewById(R.id.description)).setText(weapon.getDescription());
+        ((TextView) findViewById(R.id.type)).setText(typeText);
+        ((TextView) findViewById(R.id.damage)).setText(damageText);
+        ((TextView) findViewById(R.id.health)).setText(healthText);
+        ((TextView) findViewById(R.id.rarity)).setText(rarityText);
+    }
+
+    private void setupBundleInfo() {
         Bundle bundle = getIntent().getExtras();
-        weapon = GameManager.getInstance().getInventory().getWeapon(bundle.getString(WEAPON_UID));
+        if (bundle != null) {
+            weapon = GameManager.getInstance().getInventory().getWeapon(bundle.getString(WEAPON_UID));
+        }
+    }
 
+    private void setupActionBar() {
+        ActionBar actionBar = getSupportActionBar();
         if (actionBar != null) {
             actionBar.setTitle(weapon.getName());
             actionBar.setDisplayHomeAsUpEnabled(true);
         }
+    }
 
-        ((TextView) findViewById(R.id.name)).setText(weapon.getName());
-        ((TextView) findViewById(R.id.description)).setText(weapon.getDescription());
-        ((TextView) findViewById(R.id.type)).setText("Type: " + weapon.getType());
-        ((TextView) findViewById(R.id.damage)).setText("Damage: " + weapon.getDamage());
-        ((TextView) findViewById(R.id.health)).setText("Health: " + weapon.getCurrHealth());
-        ((TextView) findViewById(R.id.rarity)).setText("Rarity: " + weapon.getRarity());
+    private void updateWeaponsMenu() {
+        GameManager.getInstance().updateWeaponInDatabase(weapon);
+        Intent returnIntent = new Intent();
+        returnIntent.putExtra(getString(R.string.result), weapon.getUUID());
+        setResult(Activity.RESULT_OK, returnIntent);
+        finish();
+    }
 
-        ((ImageView) findViewById(R.id.item_image)).setImageResource(this.getResources().getIdentifier("weapon" + String.format("%04d", weapon.getId()), "drawable", this.getPackageName()));
-        ((ImageView) findViewById(R.id.item_image_type)).setImageResource(weapon.getTypeDrawableRes());
+    private void setEquipButtonText() {
+        if (weapon.isEquipped()) {
+            equipButton.setText(getString(R.string.unequip_weapon));
+        } else {
+            equipButton.setText(getString(R.string.equip_weapon));
+        }
+    }
 
-
-        equipButton = (Button) findViewById(R.id.equip_button);
+    private void setupEquipButtonListener() {
+        equipButton = findViewById(R.id.equip_button);
         setEquipButtonText();
 
         findViewById(R.id.equip_button).setOnClickListener(new View.OnClickListener() {
@@ -71,22 +108,6 @@ public class WeaponDetailActivity extends AppCompatActivity {
 
             }
         });
-    }
-
-    private void updateWeaponsMenu() {
-        GameManager.getInstance().updateWeaponInDatabase(weapon);
-        Intent returnIntent = new Intent();
-        returnIntent.putExtra(getString(R.string.result), weapon.getUUID());
-        setResult(Activity.RESULT_OK, returnIntent);
-        finish();
-    }
-
-    private void setEquipButtonText() {
-        if (weapon.isEquipped()) {
-            equipButton.setText(getString(R.string.unequip_weapon));
-        } else {
-            equipButton.setText(getString(R.string.equip_weapon));
-        }
     }
 
     @Override

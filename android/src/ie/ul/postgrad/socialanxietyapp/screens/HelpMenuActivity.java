@@ -1,6 +1,8 @@
 package ie.ul.postgrad.socialanxietyapp.screens;
 
+import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
@@ -17,6 +19,7 @@ import ie.ul.postgrad.socialanxietyapp.R;
 import ie.ul.postgrad.socialanxietyapp.adapter.HelpListAdapter;
 import ie.ul.postgrad.socialanxietyapp.game.SoundManager;
 
+import static ie.ul.postgrad.socialanxietyapp.screens.HelpActivity.ANXIETY_INFO;
 import static ie.ul.postgrad.socialanxietyapp.screens.HelpActivity.BATTLE_INFO;
 import static ie.ul.postgrad.socialanxietyapp.screens.HelpActivity.BLACKSMITH_INFO;
 import static ie.ul.postgrad.socialanxietyapp.screens.HelpActivity.CHEST_INFO;
@@ -37,13 +40,23 @@ public class HelpMenuActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_help_menu);
+        setupHelpList();
+        setupListClickListener();
+        setupBars();
+    }
+
+    private void setupHelpList() {
         String[] helpItems = getResources().getStringArray(R.array.help_list_items);
         ArrayList<String> helpArr = new ArrayList<>();
         helpArr.addAll(Arrays.asList(helpItems));
+        if (userHasSAD()) {
+            helpArr.add(getString(R.string.sad_help));
+        }
         helpList = findViewById(R.id.help_list);
         helpList.setAdapter(new HelpListAdapter(this, helpArr));
+    }
 
-
+    private void setupListClickListener() {
         helpList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
@@ -77,13 +90,23 @@ public class HelpMenuActivity extends AppCompatActivity {
                     case 7:
                         helpActivity.putExtra(INFO_KEY, CRAFT_INFO);
                         break;
-
+                    case 8:
+                        helpActivity.putExtra(INFO_KEY, ANXIETY_INFO);
+                        break;
                 }
-                SoundManager.getInstance(getApplicationContext()).playSound(SoundManager.Sound.CLICK);
+                playSound(SoundManager.Sound.CLICK);
                 startActivity(helpActivity);
             }
         });
+    }
 
+    private boolean userHasSAD() {
+        SharedPreferences prefs = this.getSharedPreferences("ie.ul.postgrad.socialanxietyapp", Context.MODE_PRIVATE);
+        final String key = "SADKey";
+        return prefs.getBoolean(key, false);
+    }
+
+    private void setupBars() {
         ActionBar actionBar = getSupportActionBar();
         if (actionBar != null) {
             actionBar.setTitle(getString(R.string.help));
@@ -96,10 +119,14 @@ public class HelpMenuActivity extends AppCompatActivity {
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case android.R.id.home:
+                playSound(SoundManager.Sound.BACK);
                 finish();
-                SoundManager.getInstance(this).playSound(SoundManager.Sound.BACK);
                 break;
         }
         return true;
+    }
+
+    private void playSound(SoundManager.Sound sound) {
+        SoundManager.getInstance(getApplicationContext()).playSound(sound);
     }
 }

@@ -106,6 +106,8 @@
     <string name="used_item">%1$s used %2$s.</string>
     <string name="weapon_change">%1$s changed weapon to %2$s.</string>
     <string name="health_amount">HP: %1$d/%2$d</string>
+    <string name="new_recipe">New Recipe Unlocked.</string>
+    <string name="sad_help">Social Anxiety Help</string>
 
     <string name="go_back">Go Back</string>
 
@@ -141,9 +143,9 @@
 
 
     <string-array name="mini_spin">
-    <item>@string/mini_spin_1</item>
-    <item>@string/mini_spin_2</item>
-    <item>@string/mini_spin_3</item>
+        <item>@string/mini_spin_1</item>
+        <item>@string/mini_spin_2</item>
+        <item>@string/mini_spin_3</item>
     </string-array>
 
     <string name="mini_spin_1">(1/3) Fear of embarrassment causes me to avoid doing things or speaking to people.</string>
@@ -151,8 +153,8 @@
     <string name="mini_spin_3">(3/3) Being embarrassed or looking stupid are among my worst fears.</string>
 
     <string name="help_welcome_screen_1">First off, THANK YOU for taking part in this study! Welcome to Hero Blade (working title). This is a location-based adventure game which will assess your levels of physical and social activity over the next week.</string>
-    <string name="help_welcome_screen_2">The aim of this project is to observe a connection between levels of social anxiety and physical activity, and may later be used to help therapy patients. But for now, you will have to do. :D</string>
-    <string name="help_welcome_screen_3">Although you may not have social anxiety, this app includes material which could help you learn more about yourself. But also, it\'s a bit of fun. So enough jibber jabber, here we go. :)</string>
+    <string name="help_welcome_screen_2">Before continuing, please answer this 5 question survey. In the survey are a few questions related to the study. You\'ll need to enter your APP CODE: </string>
+    <string name="help_welcome_screen_3">Great! The aim of this study is to explore the connection between mood, anxiety and physical activity through games. But mainly, it\'s a bit of fun. So enough jibber jabber, here we go. :)</string>
 
     <string-array name="help_welcome_screens">
         <item>@string/help_welcome_screen_1</item>
@@ -170,8 +172,8 @@
         <item>@string/help_weapon_screen_3</item>
     </string-array>
 
-    <string name="help_map_screen_1">Behold, the Map screen! This shows you what\'s around you (obviously). Updates will happen as you travel, and markers will pop up here when you go to new places!</string>
-    <string name="help_map_screen_2">You can keep this screen open while you walk (stay observant), or open it when you visit a shop or place of interest.</string>
+    <string name="help_map_screen_1">Behold, the Map screen! This shows you what\'s around you (obviously). Updates will happen as you travel, and markers will pop up here when you go to new places! You will pick up items as you walk.</string>
+    <string name="help_map_screen_2">You can double tap to zoom in, or rotate using two fingers. You can keep this screen open while you walk (stay observant), or open it when you visit a shop or place of interest.</string>
     <string name="help_map_screen_3">There are bandits lurking around the map. You can battle these bandits when you are close, just make sure you have some weapons ready.</string>
 
     <string-array name="help_map_screens">
@@ -181,7 +183,7 @@
     </string-array>
 
     <string name="help_village_screen_1">When you visit a village, you will be greeted by a villager who will heal you. You can buy and sell food and potions from them. Villagers will pay lots of cash for potions you craft.</string>
-    <string name="help_village_screen_2">Villagers can be slightly personal at times. Try talking to them to see what I mean. However, if you answer all 3 of their questions honestly, they\'ll actually tell you something about yourself. (plus you\'ll get a big 500XP boost if you answer all 3, I promise.)</string>
+    <string name="help_village_screen_2">Villagers can be slightly personal at times. Try talking to them to see what I mean. However, if you answer all 3 of their questions honestly, they\'ll actually tell you something about yourself. (plus you\'ll get a big 500XP boost if you answer all 3)</string>
     <string name="help_village_screen_3">Each village will have different items available. They will buy your items, but they won\'t buy your swords. You\'ll also have to wait before visiting the same village again.</string>
 
     <string-array name="help_village_screens">
@@ -302,13 +304,8 @@
     <string name="game_tip_1">Talk to villagers for some easy XP.</string>
     <string name="game_tip_2">Treasure chests will always contain swords and cash.</string>
     <string name="game_tip_3">Crafting items gives you an advantage in battle.</string>
-    <string name="game_tip_4">Everyone feels anxious sometimes, but don\'t let it stop you.</string>
-    <string name="game_tip_5">Villages will restore all of your health. Blacksmiths will repair all your weapons.</string>
-    <string name="game_tip_6">Pay attention to your breathing when under pressure.</string>
-    <string name="game_tip_7">Try exploring new areas and locations with some friends.</string>
-    <string name="game_tip_8">Stay true to yourself, and nothing will phase you.</string>
-    <string name="game_tip_9">Challenge yourself to enter new social situations everyday.</string>
-    <string name="game_tip_10">Try to be aware of negative thinking, it is your greatest enemy.</string>
+    <string name="game_tip_4">Villages will restore all of your health. Blacksmiths will repair all your weapons.</string>
+    <string name="game_tip_5">Try exploring new areas and locations with some friends.</string>
 
     <string-array name="game_tips">
         <item>@string/game_tip_1</item>
@@ -316,13 +313,33 @@
         <item>@string/game_tip_3</item>
         <item>@string/game_tip_4</item>
         <item>@string/game_tip_5</item>
-        <item>@string/game_tip_6</item>
-        <item>@string/game_tip_7</item>
-        <item>@string/game_tip_8</item>
-        <item>@string/game_tip_9</item>
-        <item>@string/game_tip_10</item>
     </string-array>
 
+    <string name="anxiety_tip_1">It\'s normal to feel anxious sometimes, talking to someone can really help in tough situations.</string>
+    <string name="anxiety_tip_2">If you feel light-headed under anxious situations, try breathing in and out calmly and relaxing your muscles.</string>
+    <string name="anxiety_tip_3">Don\'t let anxiety isolate you. Ask a friend if they want to go to the shop or see a movie.</string>
+    <string name="anxiety_tip_4">Stay true to yourself, create a list and set goals for yourself.</string>
+    <string name="anxiety_tip_5">Make a concrete plan to meet new people. It can be very scary at first, but if you don’t try, you reduce your chances of making friends or meeting someone special.</string>
+    <string name="anxiety_tip_6">It\'s easy to focus too much on how we appear to others. When socializing, try to pay attention to what other people are doing or saying.</string>
+
+    <string-array name="anxiety_tips">
+        <item>@string/anxiety_tip_1</item>
+        <item>@string/anxiety_tip_2</item>
+        <item>@string/anxiety_tip_3</item>
+        <item>@string/anxiety_tip_4</item>
+        <item>@string/anxiety_tip_5</item>
+        <item>@string/anxiety_tip_6</item>
+    </string-array>
+
+    <string name="anxiety_help_1">If you\'re experiencing anxiety right now, first try to relax with calm in-and-out breathing and relax your muscles. Once calm, try to take note of what event or thoughts triggered your anxiety.</string>
+    <string name="anxiety_help_2">Negative thinking is a main source of social anxiety, and we can often be too hard on ourselves. Don\'t let anxiety isolate you. Ask a friend if they want to go to the shop or see a movie.</string>
+    <string name="anxiety_help_3">If you feel like you have tried everything and need someone to talk to it can be helpful to speak with professionals who can assist you in coping with your current circumstances.</string>
+
+    <string-array name="anxiety_help">
+        <item>@string/anxiety_help_1</item>
+        <item>@string/anxiety_help_2</item>
+        <item>@string/anxiety_help_3</item>
+    </string-array>
 
     <string name="no_battle">You are not prepared for battle.</string>
     <string name="already_visited">Already visited. Come back later.</string>

@@ -53,7 +53,7 @@ public class RemoteSyncAdapter extends AbstractThreadedSyncAdapter {
 
     @Override
     public void onPerformSync(Account account, Bundle extras, String authority, ContentProviderClient provider, SyncResult syncResult) {
-        GameManager.getInstance().initDatabaseHelper(getContext());
+        GameManager.getInstance().initDatabase(getContext());
         GameManager.getInstance().testRemoteServer();
 
         /* data transfer code here */

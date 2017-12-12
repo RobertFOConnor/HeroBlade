@@ -8,7 +8,6 @@ import android.content.res.Resources;
 import android.graphics.Color;
 import android.graphics.PorterDuff;
 import android.location.Location;
-import android.media.MediaPlayer;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -92,7 +91,6 @@ import static ie.ul.postgrad.socialanxietyapp.adapter.NavigationDrawerListAdapte
 import static ie.ul.postgrad.socialanxietyapp.adapter.NavigationDrawerListAdapter.INVENTORY;
 import static ie.ul.postgrad.socialanxietyapp.adapter.NavigationDrawerListAdapter.LEADERBOARD;
 import static ie.ul.postgrad.socialanxietyapp.adapter.NavigationDrawerListAdapter.PROFILE_TEXT;
-import static ie.ul.postgrad.socialanxietyapp.adapter.NavigationDrawerListAdapter.SETTINGS;
 import static ie.ul.postgrad.socialanxietyapp.adapter.NavigationDrawerListAdapter.WEAPONS;
 import static ie.ul.postgrad.socialanxietyapp.game.GameManager.blacksmithXP;
 import static ie.ul.postgrad.socialanxietyapp.game.GameManager.villageXP;
@@ -130,9 +128,9 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
     private static final long UPDATE_INTERVAL_IN_MILLISECONDS = 10000;
     private static final long FASTEST_UPDATE_INTERVAL_IN_MILLISECONDS = UPDATE_INTERVAL_IN_MILLISECONDS / 2;
     public static final int markerRadius = 1000;
-    public static final int markerUsableRadius = 60;
+    public static final int markerUsableRadius = 30;
     private GoogleApiClient mGoogleApiClient;
-    MediaPlayer mediaPlayer;
+    //MediaPlayer mediaPlayer;
     private int signInAttempts = 0;
 
     @Override
@@ -143,7 +141,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
 
         mDrawerList = findViewById(R.id.left_drawer);
         gm = GameManager.getInstance();
-        gm.initDatabaseHelper(this);
+        gm.initDatabase(this);
 
         // Retrieve location and camera position from saved instance state.
         if (savedInstanceState != null) {
@@ -183,21 +181,22 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
         Intent mStepsIntent = new Intent(getApplicationContext(), StepsService.class);
         startService(mStepsIntent);
 
-        setupMusic();
+        //setupMusic();
     }
 
-    private void setupMusic() {
+    /*private void setupMusic() {
         mediaPlayer = MediaPlayer.create(this, R.raw.bg_music_map);
         mediaPlayer.setLooping(true); // Set looping
         mediaPlayer.setVolume(100, 100);
         mediaPlayer.start();
-    }
+    }*/
 
     @Override
     protected void onStart() {
         super.onStart();
         active = true;
         setupNavDrawer();
+
     }
 
     /**
@@ -413,7 +412,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
     protected void onStop() {
         super.onStop();
         active = false;
-        mediaPlayer.pause();
+        //mediaPlayer.pause();
     }
 
     /**
@@ -422,11 +421,11 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
     @Override
     protected void onResume() {
         super.onResume();
-        if (mediaPlayer != null) {
+        /*if (mediaPlayer != null) {
             mediaPlayer.start();
         } else {
             setupMusic();
-        }
+        }*/
 
         updateMarkers();
         ((TextView) findViewById(R.id.level_num)).setText(String.valueOf(gm.getPlayer().getLevel()));

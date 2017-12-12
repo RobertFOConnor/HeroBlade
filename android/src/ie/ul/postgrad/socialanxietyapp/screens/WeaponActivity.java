@@ -36,22 +36,19 @@ public class WeaponActivity extends AppCompatActivity implements View.OnClickLis
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_weapon);
-        actionBar = getSupportActionBar();
-        if (actionBar != null) {
-            actionBar.setDisplayHomeAsUpEnabled(true);
-        }
-
-        App.setStatusBarColor(this);
-
-        itemList = (ListView) findViewById(R.id.item_list);
-        emptyMessage = (TextView) findViewById(R.id.empty_message);
+        setupBars();
+        itemList = findViewById(R.id.item_list);
+        emptyMessage = findViewById(R.id.empty_message);
         inventory = GameManager.getInstance().getInventory();
         equippedWeaponAdapter = new WeaponListAdapter(this, inventory.getEquippedWeapons(), "");
         allWeaponAdapter = new WeaponListAdapter(this, inventory.getUnequippedWeapons(), "");
-
         findViewById(R.id.item_button).setOnClickListener(this);
         findViewById(R.id.weapon_button).setOnClickListener(this);
+        setupWeaponClickListener();
+        switchView(VIEW.EQUIPPED_WEAPONS);
+    }
 
+    private void setupWeaponClickListener() {
         itemClickListener = new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
@@ -65,7 +62,14 @@ public class WeaponActivity extends AppCompatActivity implements View.OnClickLis
                 }
             }
         };
-        switchView(VIEW.EQUIPPED_WEAPONS);
+    }
+
+    private void setupBars() {
+        actionBar = getSupportActionBar();
+        if (actionBar != null) {
+            actionBar.setDisplayHomeAsUpEnabled(true);
+        }
+        App.setStatusBarColor(this);
     }
 
     @Override

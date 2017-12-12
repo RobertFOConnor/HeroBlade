@@ -19,6 +19,7 @@
             android:orientation="vertical">
 
             <ImageView
+                android:contentDescription="@string/chest_unlocked"
                 android:id="@+id/chest_image"
                 android:layout_width="100dp"
                 android:layout_height="100dp"
@@ -61,7 +62,6 @@
                 android:layout_gravity="center"
                 android:gravity="center"
                 android:textSize="30sp"
-                android:text="+$300"
                 android:textColor="@color/green"
                 android:textStyle="bold" />
 

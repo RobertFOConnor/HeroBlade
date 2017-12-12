@@ -49,7 +49,7 @@ public class App extends Application {
         LayoutInflater inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         View layout = inflater.inflate(R.layout.custom_toast, null);
 
-        TextView text = (TextView) layout.findViewById(R.id.text);
+        TextView text = layout.findViewById(R.id.text);
         text.setText(s);
 
         mToast = new Toast(context);
@@ -57,4 +57,6 @@ public class App extends Application {
         mToast.setView(layout);
         mToast.show();
     }
+
+
 }

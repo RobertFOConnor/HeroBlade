@@ -35,7 +35,7 @@ public class DeveloperSettingsActivity extends AppCompatActivity {
 
         App.setStatusBarColor(this);
 
-        ListView settingsList = (ListView) findViewById(R.id.settings_list);
+        ListView settingsList = findViewById(R.id.settings_list);
         SettingsListAdapter settingsAdapter = new SettingsListAdapter(this, menu);
         settingsList.setAdapter(settingsAdapter);
 
@@ -56,7 +56,7 @@ public class DeveloperSettingsActivity extends AppCompatActivity {
                         }
                         break;
                     case "Test Chest":
-                        GameManager.getInstance().awardTestChest(getApplicationContext());
+                        //GameManager.getInstance().awardTestChest(getApplicationContext());
                         App.showToast(getApplicationContext(), "Test chest given to player.");
 
                         break;

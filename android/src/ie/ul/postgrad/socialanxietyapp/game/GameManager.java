@@ -65,9 +65,9 @@ public class GameManager {
         return ourInstance;
     }
 
-    public boolean initDatabaseHelper(Context context, String id, String name, String email, String password) { //returns true if user is already in database
+    public boolean initDatabase(Context context, String id, String name, String email, String password) { //returns true if user is already in database
         //Initialize database helper
-        initDatabaseHelper(context);
+        initDatabase(context);
 
         if (!dbHelper.userExists(id)) { //If player doesn't exist, create a new one.
             WeaponItem weaponItem = generateStartingWeapon(context);
@@ -83,7 +83,7 @@ public class GameManager {
         return true;
     }
 
-    public DBHelper initDatabaseHelper(Context context) {
+    public DBHelper initDatabase(Context context) {
         if (dbHelper == null) {
             dbHelper = new DBHelper(context);
         }
@@ -129,9 +129,9 @@ public class GameManager {
         String playerId = getPlayer().getId();
 
         if (dbHelper.getWeaponsData(weapon.getUUID()).moveToFirst()) {
-            dbHelper.updateWeapon(playerId, weapon.getUUID(), weapon.getId(), weapon.getCurrHealth(), weapon.isEquipped());
+            dbHelper.updateWeapon(playerId, weapon);
         } else {
-            dbHelper.insertWeapon(playerId, weapon.getUUID(), weapon.getId(), weapon.getCurrHealth(), weapon.isEquipped());
+            dbHelper.insertWeapon(playerId, weapon);
         }
     }
 
@@ -209,7 +209,6 @@ public class GameManager {
     private void awardChest(Context context) {
         int random = (int) (Math.random() * 10);
         int chestId = ChestItem.NORMAL_CHEST; // normal chest default.
-
         if (random == 9) {
             chestId = ChestItem.RARE_CHEST; // 1 in 10 chance of rare chest.
         } else if (random > 5) {
@@ -217,21 +216,7 @@ public class GameManager {
         }
         ChestItem chest = (ChestItem) ItemFactory.buildItem(context, chestId);
         chest.setUID(UUID.randomUUID().toString());
-        dbHelper.insertChest(getPlayer().getId(), chest.getUID(), chest.getId(), chest.getCurrDistance());
-    }
-
-    public void awardTestChest(Context context) {
-        int random = (int) (Math.random() * 10);
-        int chestId = ChestItem.NORMAL_CHEST; // normal chest default.
-
-        if (random == 9) {
-            chestId = ChestItem.RARE_CHEST; // 1 in 10 chance of rare chest.
-        } else if (random > 5) {
-            chestId = ChestItem.GOLD_CHEST; // 4 in 10 chance of gold chest.
-        }
-        ChestItem chest = (ChestItem) ItemFactory.buildItem(context, chestId);
-        chest.setUID(UUID.randomUUID().toString());
-        dbHelper.insertChest(getPlayer().getId(), chest.getUID(), chest.getId(), 10);
+        dbHelper.insertChest(getPlayer().getId(), chest);
     }
 
     public int getVillageCount() {
@@ -254,7 +239,7 @@ public class GameManager {
     }
 
     public void updateChest(ChestItem chest) {
-        dbHelper.updateChest(getPlayer().getId(), chest.getUID(), chest.getId(), chest.getCurrDistance());
+        dbHelper.updateChest(getPlayer().getId(), chest);
     }
 
     public void removeChest(ChestItem chest) {
@@ -312,7 +297,6 @@ public class GameManager {
     private static String PostData(GameManager gm) {
         String response = "";
 
-        //android.os.Debug.waitForDebugger();
         try {
             HttpClient httpClient = new DefaultHttpClient();
             String servletName = WebDBHelper.URL + "UpdateTables";
@@ -374,6 +358,13 @@ public class GameManager {
                 keyValuePair("mood_date_" + i, rating.getDate());
             }
 
+            ArrayList<StepEntry> steps = dbHelper.getDailySteps();
+            for (int i = 0; i < steps.size(); i++) {
+                StepEntry step = steps.get(i);
+                keyValuePair("step_count_" + i, String.valueOf(step.getSteps()));
+                keyValuePair("step_date_" + i, step.getDate());
+            }
+
             HttpPost httpPost = new HttpPost(servletName);
             httpPost.setEntity(new UrlEncodedFormEntity(list));
             HttpResponse httpResponse = httpClient.execute(httpPost);
@@ -424,7 +415,7 @@ public class GameManager {
 
             Calendar alarmStartTime = Calendar.getInstance();
             Calendar now = Calendar.getInstance();
-            alarmStartTime.set(Calendar.HOUR_OF_DAY, 20); //replace with custom time.
+            alarmStartTime.set(Calendar.HOUR_OF_DAY, 20);
             alarmStartTime.set(Calendar.MINUTE, 0);
             alarmStartTime.set(Calendar.SECOND, 0);
             if (now.after(alarmStartTime)) {
@@ -442,12 +433,6 @@ public class GameManager {
         dbHelper.updateStats(getPlayer().getId(), stats);
     }
 
-    /*public void addSteps(int steps) {
-        Stats stats = dbHelper.getStats();
-        stats.setTotalSteps(steps);
-        dbHelper.updateStats(getPlayer().getId(), stats);
-    }*/
-
     Stats getStats() {
         return dbHelper.getStats();
     }
@@ -457,10 +442,10 @@ public class GameManager {
     }
 
     public float getDistance(Context context) {
-        return initDatabaseHelper(context).getDistance();
+        return initDatabase(context).getDistance();
     }
 
-    public void recordStep(Context context, float totalDistance) {
-        initDatabaseHelper(context).insertStepsEntry(totalDistance);
+    public void recordStep(Context context, float totalDistance, int steps) {
+        initDatabase(context).insertStepsEntry(totalDistance, steps);
     }
 }

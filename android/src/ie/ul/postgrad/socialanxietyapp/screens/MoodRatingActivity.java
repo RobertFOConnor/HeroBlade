@@ -17,7 +17,6 @@ public class MoodRatingActivity extends AppCompatActivity implements View.OnClic
 
     private int rating = -1; //Holder for mood rating.
     private String desc = ""; //Holder for mood description.
-
     private boolean animating = false; //Have mood views been animated.
     private boolean inserted = false; //Has mood rating and description been inserted into database.
 
@@ -25,7 +24,11 @@ public class MoodRatingActivity extends AppCompatActivity implements View.OnClic
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_mood_rating);
+        setupMoods();
+        setupButtonListeners();
+    }
 
+    private void setupMoods() {
         //Create view array for mood face views.
         View[] moods = new View[5];
         moods[0] = findViewById(R.id.mood_0);
@@ -41,8 +44,9 @@ public class MoodRatingActivity extends AppCompatActivity implements View.OnClic
             scale.setStartOffset(i * 120);
             moods[i].setAnimation(scale);
         }
+    }
 
-        //Set up button listeners.
+    private void setupButtonListeners() {
         findViewById(R.id.back_button).setOnClickListener(this);
         findViewById(R.id.continue_button).setOnClickListener(this);
     }
@@ -168,7 +172,7 @@ public class MoodRatingActivity extends AppCompatActivity implements View.OnClic
             desc = getResources().getStringArray(R.array.mood_ratings)[rating];
         }
 
-        gm.initDatabaseHelper(this).insertMoodRating(gm.getPlayer().getId(), rating, desc);
+        gm.initDatabase(this).insertMoodRating(gm.getPlayer().getId(), rating, desc);
         inserted = true;
     }
 }

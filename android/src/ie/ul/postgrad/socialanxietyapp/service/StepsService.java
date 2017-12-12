@@ -5,6 +5,7 @@ import android.app.PendingIntent;
 import android.app.Service;
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.graphics.Color;
 import android.hardware.Sensor;
@@ -16,12 +17,15 @@ import android.os.Build;
 import android.os.IBinder;
 import android.support.annotation.Nullable;
 import android.support.v4.app.NotificationCompat;
+import android.widget.Toast;
 
 import java.util.ArrayList;
 
 import ie.ul.postgrad.socialanxietyapp.R;
 import ie.ul.postgrad.socialanxietyapp.game.GameManager;
+import ie.ul.postgrad.socialanxietyapp.game.factory.ItemFactory;
 import ie.ul.postgrad.socialanxietyapp.game.item.ChestItem;
+import ie.ul.postgrad.socialanxietyapp.game.item.Item;
 import ie.ul.postgrad.socialanxietyapp.game.item.WeaponItem;
 import ie.ul.postgrad.socialanxietyapp.screens.ChestOpenActivity;
 import ie.ul.postgrad.socialanxietyapp.screens.MapsActivity;
@@ -36,7 +40,8 @@ public class StepsService extends Service implements SensorEventListener {
 
     private boolean usingDetector = true;
     boolean firstReading = true;
-    private int totalSteps;
+    private int totalSteps = 0;
+    private int rewardSteps = 0;
 
     @Override
     public void onCreate() {
@@ -45,7 +50,7 @@ public class StepsService extends Service implements SensorEventListener {
         SensorManager mSensorManager = (SensorManager) this.getSystemService(Context.SENSOR_SERVICE);
         Sensor mStepDetectorSensor;
 
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT && mSensorManager != null) {
             if (getPackageManager().hasSystemFeature(PackageManager.FEATURE_SENSOR_STEP_DETECTOR)) {
                 mStepDetectorSensor = mSensorManager.getDefaultSensor(Sensor.TYPE_STEP_DETECTOR);
                 mSensorManager.registerListener(this, mStepDetectorSensor, SensorManager.SENSOR_DELAY_NORMAL);
@@ -55,7 +60,6 @@ public class StepsService extends Service implements SensorEventListener {
                 usingDetector = false;
             }
         }
-
         firstReading = true;
     }
 
@@ -75,10 +79,11 @@ public class StepsService extends Service implements SensorEventListener {
         GameManager gm = GameManager.getInstance();
         float totalDistance;
         float dist;
+        int steps = 1;
         if (usingDetector) {
             dist = 0.8f;
+            rewardSteps++;
         } else {
-            int steps;
             if (firstReading) {
                 totalSteps = (int) event.values[0];
                 firstReading = false;
@@ -87,10 +92,23 @@ public class StepsService extends Service implements SensorEventListener {
                 steps = (int) (event.values[0] - totalSteps);
                 dist = 0.8f * steps;
                 totalSteps += steps;
+                rewardSteps += steps;
+            }
+            System.out.println("ev " + event.values[0]);
+            System.out.println("steps : " + steps);
+        }
+
+        totalDistance = gm.getDistance(getApplicationContext()) + dist;
+        gm.recordStep(getApplicationContext(), totalDistance, steps);
+
+        if (rewardSteps >= 125) { //Reward item for walking.
+            rewardSteps = 0;
+            final Item walkRewardItem = ItemFactory.buildItem(getApplicationContext(), (int) (Math.random() * 10) + 1);
+            gm.giveItem(walkRewardItem.getId(), 1);
+            if (MapsActivity.active) {
+                Toast.makeText(getApplicationContext(), "Hero Blade: You picked up 1 " + walkRewardItem.getName() + ".", Toast.LENGTH_SHORT).show();
             }
         }
-        totalDistance = gm.getDistance(getApplicationContext()) + dist;
-        gm.recordStep(getApplicationContext(), totalDistance);
 
         ArrayList<ChestItem> removals = new ArrayList<>();
         ArrayList<ChestItem> chests = gm.getInventory().getChests();
@@ -144,7 +162,7 @@ public class StepsService extends Service implements SensorEventListener {
                 );
 
         NotificationCompat.Builder mBuilder =
-                new NotificationCompat.Builder(this)
+                new NotificationCompat.Builder(this, "my_channel_01")
                         .setSmallIcon(chest.getImageID())
                         .setContentTitle(getString(R.string.notify_chest, chest.getName()))
                         .setContentText(getString(R.string.notify_chest_body, (int) (chest.getMaxDistance() / 1000), chest.getName()))

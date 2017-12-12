@@ -94,10 +94,10 @@ public class LogInActivity extends AppCompatActivity implements View.OnClickList
                     JSONObject obj = new JSONObject(result);
                     String id = obj.getString("id");
                     String name = obj.getString("name");
-                    //GameManager.getInstance().initDatabaseHelper(getApplicationContext(), id, name, email, password);
+                    //GameManager.getInstance().initDatabase(getApplicationContext(), id, name, email, password);
                 } catch (JSONException e) {
                     e.printStackTrace();
-                    //GameManager.getInstance().initDatabaseHelper(getApplicationContext(), "getidfromwebservice", "GetNameFromWebService", email, password);
+                    //GameManager.getInstance().initDatabase(getApplicationContext(), "getidfromwebservice", "GetNameFromWebService", email, password);
                 }
 
                 Intent intent = new Intent(getApplicationContext(), MapsActivity.class);

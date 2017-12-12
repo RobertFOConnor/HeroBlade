@@ -96,7 +96,7 @@ public class MarkerManager {
         return location.distanceTo(mCurrentLocation);
     }
 
-    public static int getMarkerPos(Marker marker, ArrayList<Marker> markers, Location currLoc) {
+    private static int getMarkerPos(Marker marker, ArrayList<Marker> markers, Location currLoc) {
         int markerPos;
 
         for (markerPos = 0; markerPos < markers.size(); markerPos++) {

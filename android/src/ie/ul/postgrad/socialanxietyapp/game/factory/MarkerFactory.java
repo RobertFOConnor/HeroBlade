@@ -1,6 +1,7 @@
 package ie.ul.postgrad.socialanxietyapp.game.factory;
 
 import android.content.Context;
+import android.content.res.Resources;
 import android.content.res.TypedArray;
 
 import com.google.android.gms.maps.GoogleMap;
@@ -28,16 +29,15 @@ public class MarkerFactory {
 
     public static Marker buildMarker(Context context, GoogleMap googleMap, LatLng latlng, String snippet, int id) {
 
-        TypedArray ta = context.getResources().obtainTypedArray(R.array.marker_array_refs);
-        int resId = ta.getResourceId(id, 0);
-        TypedArray itemValues = context.getResources().obtainTypedArray(resId);
-
+        Resources res = context.getResources();
+        TypedArray ta = res.obtainTypedArray(R.array.marker_array_refs);
+        TypedArray itemValues = res.obtainTypedArray(ta.getResourceId(id, 0));
 
         @SuppressWarnings("ResourceType")
         String name = itemValues.getString(0);
         @SuppressWarnings("ResourceType")
         String desc = itemValues.getString(1);
-        int imageId = context.getResources().getIdentifier("marker_" + String.format("%04d", id), "drawable", context.getPackageName());
+        int imageId = res.getIdentifier("marker_" + String.format("%04d", id), "drawable", context.getPackageName());
 
         ta.recycle();
         itemValues.recycle();

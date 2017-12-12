@@ -31,7 +31,6 @@ import static ie.ul.postgrad.socialanxietyapp.screens.ItemSelectActivity.SELL_KE
 
 public class VillageActivity extends AndroidApplication implements LibGdxInterface, View.OnClickListener {
 
-    private MainGame game; //Libgdx game object, displays npc and village background
     private LinearLayout optionMenu;//Shows 4 button options for interacting with npc
     private LinearLayout textDisplay;//Where text is displayed on screen.
     private LinearLayout questionOptions;//Options for answering npc questions
@@ -47,30 +46,40 @@ public class VillageActivity extends AndroidApplication implements LibGdxInterfa
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_village);
+        initViews();
+        gm = GameManager.getInstance();
+        gm.initDatabase(this);
+        setupSaleItems();
+        setupLibGdxView();
+        showWelcomeText();
+        showHelpInfo();
+    }
+
+    private void initViews() {
         optionMenu = findViewById(R.id.option_menu);
         textDisplay = findViewById(R.id.text_display);
         questionOptions = findViewById(R.id.question_options);
         dialogue = findViewById(R.id.dialogue);
         nextButton = findViewById(R.id.next_button);
-        gm = GameManager.getInstance();
-        gm.initDatabaseHelper(this);
+    }
 
+    private void setupSaleItems() {
         itemIdsForSale = new ArrayList<>();
         for (int i = 0; i < 5; i++) {
             itemIdsForSale.add((int) (Math.random() * 10) + 1);
         }
+    }
 
+    private void setupLibGdxView() {
         AndroidApplicationConfiguration config = new AndroidApplicationConfiguration();
 
-        game = new MainGame(this, MainGame.CONVERSATION_SCREEN);
+        MainGame game = new MainGame(this, MainGame.CONVERSATION_SCREEN);
         game.updateConvo(1, "");
         View v = initializeForView(game, config);
         ((LinearLayout) findViewById(R.id.character_layout)).addView(v);
+    }
 
-        showText();
-        ((TextView) findViewById(R.id.speaker_name)).setText(getString(R.string.villager));
-
-        //Setup click listeners.
+    private void setupClickListeners() {
         findViewById(R.id.buy_button).setOnClickListener(this);
         findViewById(R.id.sell_button).setOnClickListener(this);
         findViewById(R.id.talk_button).setOnClickListener(this);
@@ -82,9 +91,13 @@ public class VillageActivity extends AndroidApplication implements LibGdxInterfa
         findViewById(R.id.ans_4).setOnClickListener(this);
         findViewById(R.id.go_back).setOnClickListener(this);
         findViewById(R.id.next_button).setOnClickListener(this);
+    }
 
+    private void showWelcomeText() {
+        showText();
+        ((TextView) findViewById(R.id.speaker_name)).setText(getString(R.string.villager));
+        setupClickListeners();
         scrollText(getString(R.string.village_welcome, GameManager.villageXP));
-        showHelpInfo();
     }
 
     private void showHelpInfo() {
@@ -94,7 +107,6 @@ public class VillageActivity extends AndroidApplication implements LibGdxInterfa
         boolean firstTimeMap = prefs.getBoolean(firstTimeVillageKey, true);
         if (firstTimeMap) {
             Intent tutorialIntent = new Intent(this, HelpActivity.class);
-            //bundle here...
             tutorialIntent.putExtra(INFO_KEY, VILLAGE_INFO);
             tutorialIntent.putExtra(REVIEW_KEY, false);
             tutorialIntent.putExtra(TRANSPARENT_KEY, true);
@@ -157,39 +169,50 @@ public class VillageActivity extends AndroidApplication implements LibGdxInterfa
 
     private void showQuestion() {
         try {
-            surveying = true;
-            questionNo = gm.getSurveyQuestion();
-            String[] array = getResources().getStringArray(R.array.mini_spin);
-            if (questionNo < array.length) {
-                scrollText(array[questionNo]);
-                showText();
-            } else {
-                ArrayList<SurveyAnswer> answers = gm.initDatabaseHelper(this).getSurveyAnswers();
-                int total = 0;
-                for (SurveyAnswer answer : answers) {
-                    total += answer.getAnswer();
-                }
-                if (total >= 6) {
-                    scrollText("Based on your answers, you may have have some signs of something called Social Anxiety Disorder.");
+            SharedPreferences prefs = this.getSharedPreferences("ie.ul.postgrad.socialanxietyapp", Context.MODE_PRIVATE);
+            final String key = "SADKey";
+            boolean hasSAD = prefs.getBoolean(key, false);
+            if (!hasSAD) {
+
+                surveying = true;
+                questionNo = gm.getSurveyQuestion();
+                String[] array = getResources().getStringArray(R.array.mini_spin);
+                if (questionNo < array.length) {
+                    scrollText(array[questionNo]);
+                    showText();
                 } else {
-                    scrollText("Based on your answers, it seems that you do not have any signs of social anxiety.");
+                    ArrayList<SurveyAnswer> answers = gm.initDatabase(this).getSurveyAnswers();
+                    int total = 0;
+                    for (SurveyAnswer answer : answers) {
+                        total += answer.getAnswer();
+                    }
+                    if (total >= 6) {
+                        prefs.edit().putBoolean(key, true).apply();
+                        scrollText("You show some signs of Social Anxiety Disorder. In difficult times it may help to speak to professionals when you need someone to talk to, who can assist you in coping with your current circumstances.");
+                    } else {
+                        prefs.edit().putBoolean(key, false).apply();
+                        scrollText("Based on your answers, it seems that you do not show signs of social anxiety.");
+                    }
+                    surveying = false;
+                    showText();
+
+                    final String surveykey = "firstTimeSurvey";
+                    boolean firstTimeSurvey = prefs.getBoolean(surveykey, true);
+                    if (firstTimeSurvey) {
+                        gm.awardXP(this, 500);
+                        prefs.edit().putBoolean(surveykey, false).apply();
+                    }
                 }
-                surveying = false;
+            } else {
+                String[] tips = getResources().getStringArray(R.array.anxiety_tips);
+                scrollText(tips[(int) (Math.random() * tips.length)]);
                 showText();
-
-                SharedPreferences prefs = this.getSharedPreferences("ie.ul.postgrad.socialanxietyapp", Context.MODE_PRIVATE);
-
-                final String key = "firstTimeSurvey";
-                boolean firstTimeSurvey = prefs.getBoolean(key, true);
-                if (firstTimeSurvey) {
-                    gm.awardXP(this, 500);
-                    prefs.edit().putBoolean(key, false).apply();
-                }
             }
 
         } catch (Exception e) {
             showMenu();
         }
+
     }
 
     private void answerQuestion(int answer) {
@@ -273,7 +296,6 @@ public class VillageActivity extends AndroidApplication implements LibGdxInterfa
                             showText();
                         }
                     });
-
                 }
             }
         };

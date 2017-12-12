@@ -55,10 +55,11 @@ public class PlayerAvatarActivity extends AndroidApplication implements LibGdxIn
 
     private void setupStats() {
         Player player = gm.getPlayer();
+        String HPText = player.getCurrHealth() + "/" + player.getMaxHealth();
         ((TextView) findViewById(R.id.name_field)).setText(player.getName());
         ((TextView) findViewById(R.id.level_num)).setText(String.valueOf(player.getLevel()));
         ((TextView) findViewById(R.id.xp_text)).setText(getString(R.string.xp_display, player.getXp(), XPLevels.XP_LEVELS[player.getLevel()]));
-        ((TextView) findViewById(R.id.health_field)).setText(player.getCurrHealth() + "/" + player.getMaxHealth());
+        ((TextView) findViewById(R.id.health_field)).setText(HPText);
         ((TextView) findViewById(R.id.sword_field)).setText(String.valueOf(gm.getFoundWeapons().size()));
         ((TextView) findViewById(R.id.cash_field)).setText(getString(R.string.cash_display, player.getMoney()));
         ((TextView) findViewById(R.id.villages_field)).setText(String.valueOf(gm.getVillageCount()));

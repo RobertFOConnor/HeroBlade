@@ -8,7 +8,6 @@ import android.support.v7.widget.RecyclerView;
 import android.view.MenuItem;
 import android.view.View;
 
-import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
@@ -25,7 +24,11 @@ public class MoodLogActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_mood_log);
+        setupMoodList();
+        setupBars();
+    }
 
+    private void setupMoodList() {
         List<MoodEntry> list = GameManager.getDbHelper().getMoodEntries();
         Collections.reverse(list);
 
@@ -38,7 +41,9 @@ public class MoodLogActivity extends AppCompatActivity {
         if (list.size() > 0) {
             findViewById(R.id.empty_message).setVisibility(View.GONE);
         }
+    }
 
+    private void setupBars() {
         ActionBar actionBar = getSupportActionBar();
         if (actionBar != null) {
             actionBar.setTitle("Mood Ratings");

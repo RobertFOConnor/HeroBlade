@@ -1,7 +1,6 @@
 package ie.ul.postgrad.socialanxietyapp.game;
 
 import android.content.Context;
-import android.content.Intent;
 import android.location.Location;
 import android.location.LocationListener;
 import android.os.Bundle;
@@ -16,8 +15,6 @@ import com.google.android.gms.location.places.Places;
 
 import ie.ul.postgrad.socialanxietyapp.App;
 import ie.ul.postgrad.socialanxietyapp.R;
-import ie.ul.postgrad.socialanxietyapp.screens.InputNameActvity;
-import ie.ul.postgrad.socialanxietyapp.screens.MapsActivity;
 
 /**
  * Created by Robert on 14-Aug-17.

@@ -29,14 +29,19 @@ public class AvatarCustomizationActivity extends AndroidApplication implements L
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_avatar_customization);
         App.setStatusBarColor(this);
+        checkBundle();
+        setupButtonListeners();
+    }
 
-        try { //Check for avatar edit.
-            edit = getIntent().getExtras().getBoolean("edit", false);
-        } catch (NullPointerException e) {
-            e.printStackTrace();
+    private void checkBundle() {
+        Bundle bundle = getIntent().getExtras();
+
+        if (bundle != null) {
+            edit = bundle.getBoolean("edit", false);
         }
+    }
 
-        //Setup button listeners.
+    private void setupButtonListeners() {
         findViewById(R.id.hair_style_button).setOnClickListener(this);
         findViewById(R.id.hair_color_button).setOnClickListener(this);
         findViewById(R.id.skin_color_button).setOnClickListener(this);
@@ -44,6 +49,7 @@ public class AvatarCustomizationActivity extends AndroidApplication implements L
         findViewById(R.id.continue_button).setOnClickListener(this);
     }
 
+    @Override
     public void onStart() {
         super.onStart();
         game = new MainGame(this, MainGame.AVATAR_SCREEN);
@@ -77,18 +83,22 @@ public class AvatarCustomizationActivity extends AndroidApplication implements L
                 break;
             case R.id.continue_button:
                 saveAvatar(avatarDisplay.getAvatar());
-                if (!edit) {
-                    Intent i = new Intent(this, HelpActivity.class);
-                    i.putExtra(HelpActivity.INFO_KEY, HelpActivity.WEAPON_INTRO_INFO);
-                    i.putExtra(HelpActivity.REVIEW_KEY, false);
-                    i.putExtra(HelpActivity.TRANSPARENT_KEY, false);
-                    startActivity(i);
-                    SoundManager.getInstance(this).playSound(SoundManager.Sound.CLICK);
-                }
-                finish();
+                showWeaponScreens();
                 break;
 
         }
+    }
+
+    private void showWeaponScreens() {
+        if (!edit) {
+            SoundManager.getInstance(this).playSound(SoundManager.Sound.CLICK);
+            Intent i = new Intent(this, HelpActivity.class);
+            i.putExtra(HelpActivity.INFO_KEY, HelpActivity.WEAPON_INTRO_INFO);
+            i.putExtra(HelpActivity.REVIEW_KEY, false);
+            i.putExtra(HelpActivity.TRANSPARENT_KEY, false);
+            startActivity(i);
+        }
+        finish();
     }
 
     @Override

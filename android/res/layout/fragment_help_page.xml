@@ -22,6 +22,20 @@
             android:textColor="@color/white"
             android:textSize="16sp" />
 
+        <TextView
+            android:id="@+id/app_code"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:layout_marginBottom="10dp"
+            android:layout_marginLeft="20dp"
+            android:layout_marginRight="20dp"
+            android:gravity="center"
+            android:textStyle="bold"
+            android:textColor="@color/white"
+            android:textSize="26sp"
+            android:visibility="gone" />
+
         <ImageView
             android:id="@+id/help_img"
             android:layout_width="150dp"

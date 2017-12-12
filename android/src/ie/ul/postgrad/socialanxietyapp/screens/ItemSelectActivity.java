@@ -50,11 +50,11 @@ public class ItemSelectActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_weapon_selection);
-        itemList = (ListView) findViewById(R.id.item_list);
+        itemList = findViewById(R.id.item_list);
         Bundle bundle = getIntent().getExtras();
         final String selectType = bundle.getString(SELECT_TYPE, SELECT_WEAPON);
         gm = GameManager.getInstance();
-        gm.initDatabaseHelper(getApplicationContext());
+        gm.initDatabase(getApplicationContext());
         player = gm.getPlayer();
         inventory = gm.getInventory();
         final ArrayAdapter adapter;

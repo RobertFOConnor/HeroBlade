@@ -72,7 +72,11 @@ public class InventoryActivity extends AppCompatActivity {
                 }
             }
         };
+        setupBars();
+        switchView(VIEW.ITEM_VIEW);
+    }
 
+    private void setupBars() {
         ActionBar actionBar = getSupportActionBar();
         if (actionBar != null) {
             actionBar.setTitle(getString(R.string.inventory));
@@ -80,8 +84,6 @@ public class InventoryActivity extends AppCompatActivity {
             actionBar.setDisplayHomeAsUpEnabled(true);
         }
         App.setStatusBarColor(this);
-
-        switchView(VIEW.ITEM_VIEW);
     }
 
     private void switchView(VIEW v) {
