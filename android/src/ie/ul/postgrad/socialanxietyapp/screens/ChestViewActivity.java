@@ -51,7 +51,7 @@ public class ChestViewActivity extends AppCompatActivity {
         LayoutInflater inflater = LayoutInflater.from(this);
 
         for (ChestItem chest : chests) {
-            LinearLayout chestView = (LinearLayout) inflater.inflate(R.layout.chest_view, chestList);
+            LinearLayout chestView = (LinearLayout) inflater.inflate(R.layout.chest_view, null);
             ProgressBar progressBar = chestView.findViewById(R.id.progressBar);
             progressBar.setMax((int) chest.getMaxDistance());
             progressBar.setProgress((int) chest.getCurrDistance());

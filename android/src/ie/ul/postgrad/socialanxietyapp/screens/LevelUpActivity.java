@@ -78,7 +78,7 @@ public class LevelUpActivity extends AppCompatActivity {
     }
 
     private void addChestRewardView() {
-        LinearLayout chestView = (LinearLayout) inflater.inflate(R.layout.chest_view, resourceList);
+        LinearLayout chestView = (LinearLayout) inflater.inflate(R.layout.chest_view, null);
         ProgressBar progressBar = chestView.findViewById(R.id.progressBar);
 
         ArrayList<ChestItem> chests = gm.getChests();
@@ -93,7 +93,7 @@ public class LevelUpActivity extends AppCompatActivity {
     }
 
     private void addRecipeRewardView() {
-        LinearLayout chestView = (LinearLayout) inflater.inflate(R.layout.chest_view, resourceList);
+        LinearLayout chestView = (LinearLayout) inflater.inflate(R.layout.chest_view, null);
         chestView.findViewById(R.id.progressBar).setVisibility(View.GONE);
 
         TextView text = chestView.findViewById(R.id.title);

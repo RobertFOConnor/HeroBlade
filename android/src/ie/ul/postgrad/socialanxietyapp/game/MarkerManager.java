@@ -26,6 +26,8 @@ import ie.ul.postgrad.socialanxietyapp.screens.NearbyLocationsActivity;
 public class MarkerManager {
 
     public static int enemyCount = 0;
+    public static final int MARKER_RADIUS = 1000;
+    public static final int MARKER_USABLE_RADIUS = 30;
 
     public static void updateMarker(Context context, GoogleMap mMap, PlaceLikelihood placeLikelihood, ArrayList<Marker> markers, Location mCurrentLocation) {
         // Add a marker for each place near the device's current location, with an
@@ -110,7 +112,7 @@ public class MarkerManager {
     public static void revealMarkers(Context context, ArrayList<Marker> markers, Location currLoc) {
         //Cycle markers and check for nearby markers. Reveal if player is close.
         for (Marker m : markers) {
-            if (getMarkerDistance(m, currLoc) < MapsActivity.markerRadius && !m.isVisible()) {
+            if (getMarkerDistance(m, currLoc) < MARKER_RADIUS && !m.isVisible()) {
                 m.setVisible(true);
 
                 Vibrator v = (Vibrator) context.getSystemService(Context.VIBRATOR_SERVICE);

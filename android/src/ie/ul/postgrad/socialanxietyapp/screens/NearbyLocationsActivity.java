@@ -43,7 +43,7 @@ public class NearbyLocationsActivity extends AppCompatActivity {
 
             try {
                 for (int i = 0; i < markerIds.length; i++) {
-                    markerView = (LinearLayout) inflater.inflate(R.layout.nearby_marker_display, markerGrid);
+                    markerView = (LinearLayout) inflater.inflate(R.layout.nearby_marker_display, null);
                     ((ImageView) markerView.findViewById(R.id.marker_image)).setImageDrawable(ContextCompat.getDrawable(getApplicationContext(), (c.getResources().getIdentifier("marker_" + String.format("%04d", markerIds[i]), "drawable", c.getPackageName()))));
                     String distanceText = (int) markerDistances[i] + "m";
                     ((TextView) markerView.findViewById(R.id.marker_text)).setText(distanceText);

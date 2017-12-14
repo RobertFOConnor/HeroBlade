@@ -60,7 +60,7 @@ public class BattleActivity extends AndroidApplication implements LibGdxInterfac
 
     //Game stats.
     private int turnCount = 0;
-    private int rewardedXP = 800;
+    private int rewardedXP = 650;
     private int rewardMoney = 200;
 
     @Override
@@ -179,8 +179,13 @@ public class BattleActivity extends AndroidApplication implements LibGdxInterfac
         if (isPlayer) {
             findViewById(R.id.container).setVisibility(View.GONE);
         }
-        battleDisplay = (BattleScreen) game.getScreen();
-        battleDisplay.swordStrike(isPlayer, weapon.getDamage(), weapon.getType());
+        if (weapon != null) {
+            battleDisplay = (BattleScreen) game.getScreen();
+            battleDisplay.swordStrike(isPlayer, weapon.getDamage(), weapon.getType());
+        } else {
+            battleDisplay = (BattleScreen) game.getScreen();
+            battleDisplay.swordStrike(isPlayer, 0, "FIRE");
+        }
     }
 
     private void initEnemyUI() {

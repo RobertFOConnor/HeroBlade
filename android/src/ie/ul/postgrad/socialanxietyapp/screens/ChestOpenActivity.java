@@ -54,7 +54,7 @@ public class ChestOpenActivity extends AppCompatActivity {
         LinearLayout rewardList = findViewById(R.id.reward_list);
         WeaponItem weaponItem = WeaponFactory.buildWeapon(this, swordId);
         LayoutInflater inflater = LayoutInflater.from(this);
-        LinearLayout chestView = (LinearLayout) inflater.inflate(R.layout.fragment_reward_item, rewardList);
+        LinearLayout chestView = (LinearLayout) inflater.inflate(R.layout.fragment_reward_item, null);
         ((TextView) chestView.findViewById(R.id.item_title)).setText(weaponItem.getName());
         ((TextView) chestView.findViewById(R.id.item_description)).setText(weaponItem.getDescription());
         ((ImageView) chestView.findViewById(R.id.item_image)).setImageResource(weaponItem.getTypeDrawableRes());

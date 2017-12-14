@@ -23,7 +23,6 @@ import android.util.TypedValue;
 import android.view.Gravity;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.ListView;
@@ -42,8 +41,6 @@ import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.common.api.PendingResult;
 import com.google.android.gms.common.api.ResultCallback;
-import com.google.android.gms.games.Games;
-import com.google.android.gms.games.LeaderboardsClient;
 import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.location.LocationCallback;
 import com.google.android.gms.location.LocationListener;
@@ -66,8 +63,10 @@ import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 
 import java.util.ArrayList;
+import java.util.Locale;
 
 import ie.ul.postgrad.socialanxietyapp.App;
+import ie.ul.postgrad.socialanxietyapp.DrawerItemClickListener;
 import ie.ul.postgrad.socialanxietyapp.R;
 import ie.ul.postgrad.socialanxietyapp.adapter.NavigationDrawerListAdapter;
 import ie.ul.postgrad.socialanxietyapp.game.AchievementManager;
@@ -84,16 +83,9 @@ import ie.ul.postgrad.socialanxietyapp.map.OnInfoWindowElemTouchListener;
 import ie.ul.postgrad.socialanxietyapp.service.StepsService;
 import ie.ul.postgrad.socialanxietyapp.sync.SyncManager;
 
-import static ie.ul.postgrad.socialanxietyapp.adapter.NavigationDrawerListAdapter.ACHIEVEMENTS;
-import static ie.ul.postgrad.socialanxietyapp.adapter.NavigationDrawerListAdapter.CRAFTING;
-import static ie.ul.postgrad.socialanxietyapp.adapter.NavigationDrawerListAdapter.HELP;
-import static ie.ul.postgrad.socialanxietyapp.adapter.NavigationDrawerListAdapter.INDEX;
-import static ie.ul.postgrad.socialanxietyapp.adapter.NavigationDrawerListAdapter.INVENTORY;
-import static ie.ul.postgrad.socialanxietyapp.adapter.NavigationDrawerListAdapter.LEADERBOARD;
-import static ie.ul.postgrad.socialanxietyapp.adapter.NavigationDrawerListAdapter.PROFILE_TEXT;
-import static ie.ul.postgrad.socialanxietyapp.adapter.NavigationDrawerListAdapter.WEAPONS;
 import static ie.ul.postgrad.socialanxietyapp.game.GameManager.blacksmithXP;
 import static ie.ul.postgrad.socialanxietyapp.game.GameManager.villageXP;
+import static ie.ul.postgrad.socialanxietyapp.game.MarkerManager.MARKER_USABLE_RADIUS;
 import static ie.ul.postgrad.socialanxietyapp.screens.HelpActivity.INFO_KEY;
 import static ie.ul.postgrad.socialanxietyapp.screens.HelpActivity.MAP_INFO;
 import static ie.ul.postgrad.socialanxietyapp.screens.HelpActivity.REVIEW_KEY;
@@ -101,54 +93,113 @@ import static ie.ul.postgrad.socialanxietyapp.screens.HelpActivity.TRANSPARENT_K
 
 public class MapsActivity extends AppCompatActivity implements OnMapReadyCallback, AndroidFragmentApplication.Callbacks, View.OnClickListener, GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener, LocationListener {
 
-    private static final String TAG = MapsActivity.class.getSimpleName();
     public static boolean active = false;
     private GoogleMap mMap;
     private CameraPosition mCameraPosition;
     private LocationRequest mLocationRequest; //Request object for FusedLocationProviderApi.
-    private final LatLng mDefaultLocation = new LatLng(-33.8523341, 151.2106085); //Default location.
     private boolean mLocationPermissionGranted;
     private FusedLocationProviderClient mFusedLocationClient;
     private LocationCallback mLocationCallback;
     private Location mCurrentLocation; //Current location of device.
     private ArrayList<Marker> markers;
     private DrawerLayout mDrawerLayout;
-    private ListView mDrawerList;
+    private GameManager gm;
+    private GoogleApiClient mGoogleApiClient;
+    private int signInAttempts = 0;
+
+    //Marker views.
     private ViewGroup infoWindow;
     private TextView infoTitle;
     private TextView infoSnippet;
     private ImageView infoImg;
     private Button infoButton;
     private OnInfoWindowElemTouchListener infoButtonListener;
-    private GameManager gm;
+
+    //Constants
+    private static final String TAG = MapsActivity.class.getSimpleName();
+    private final LatLng mDefaultLocation = new LatLng(-33.8523341, 151.2106085); //Default location.
     private static final String KEY_CAMERA_POSITION = "camera_position";
     private static final String KEY_LOCATION = "location";
     private static final int DEFAULT_ZOOM = 15;
     private static final int PERMISSIONS_REQUEST_ACCESS_FINE_LOCATION = 1;
     private static final long UPDATE_INTERVAL_IN_MILLISECONDS = 10000;
     private static final long FASTEST_UPDATE_INTERVAL_IN_MILLISECONDS = UPDATE_INTERVAL_IN_MILLISECONDS / 2;
-    public static final int markerRadius = 1000;
-    public static final int markerUsableRadius = 30;
-    private GoogleApiClient mGoogleApiClient;
-    //MediaPlayer mediaPlayer;
-    private int signInAttempts = 0;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_maps);
-        mDrawerLayout = findViewById(R.id.drawer_layout);
+        retrieveBundleInfo(savedInstanceState);
+        setupGameManager();
+        setupLocationCallback();
+        buildGoogleApiClient();
+        mGoogleApiClient.connect();
+        markers = new ArrayList<>();
+        SyncManager.getInstance().startSyncAdapter(this);
+        startStepService();
+        initUI();
+    }
 
-        mDrawerList = findViewById(R.id.left_drawer);
+    @Override
+    protected void onStart() {
+        super.onStart();
+        active = true;
+    }
+
+    @Override
+    protected void onStop() {
+        super.onStop();
+        active = false;
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        updateMarkers();
+        ((TextView) findViewById(R.id.level_num)).setText(String.valueOf(gm.getPlayer().getLevel()));
+        ProgressBar xpBar = findViewById(R.id.xp_bar);
+        xpBar.setMax(XPLevels.XP_LEVELS[gm.getPlayer().getLevel()]);
+        xpBar.setProgress(gm.getPlayer().getXp());
+        xpBar.getIndeterminateDrawable().setColorFilter(Color.WHITE, PorterDuff.Mode.MULTIPLY);
+        signInSilently();
+        getDeviceLocation();
+    }
+
+    private void initUI() {
+        setupNavDrawer();
+        setupToolbar();
+        showLoadingIcon();
+    }
+
+    private void setupGameManager() {
         gm = GameManager.getInstance();
         gm.initDatabase(this);
+        gm.setMoodRatingAlarm(this);
+    }
 
+    private void showLoadingIcon() {
+        Glide.with(this).load(R.drawable.loading_map).into((ImageView) findViewById(R.id.loading_gif));
+    }
+
+    private void setupToolbar() {
+        Toolbar toolbar = findViewById(R.id.toolbar);
+        toolbar.setTitle("");
+        setSupportActionBar(toolbar);
+        findViewById(R.id.menu_button).setOnClickListener(this);
+        findViewById(R.id.marker_button).setOnClickListener(this);
+        findViewById(R.id.updates_button).setOnClickListener(this);
+    }
+
+    private void retrieveBundleInfo(Bundle savedInstanceState) {
         // Retrieve location and camera position from saved instance state.
         if (savedInstanceState != null) {
             mCurrentLocation = savedInstanceState.getParcelable(KEY_LOCATION);
             mCameraPosition = savedInstanceState.getParcelable(KEY_CAMERA_POSITION);
         }
+    }
 
+    private void setupLocationCallback() {
         mFusedLocationClient = LocationServices.getFusedLocationProviderClient(this);
         mLocationCallback = new LocationCallback() {
             @Override
@@ -160,43 +211,12 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
                 }
             }
         };
+    }
 
-        buildGoogleApiClient();
-        mGoogleApiClient.connect();
-        markers = new ArrayList<>();
-
-        Toolbar toolbar = findViewById(R.id.toolbar);
-        toolbar.setTitle("");
-        setSupportActionBar(toolbar);
-
-        findViewById(R.id.menu_button).setOnClickListener(this);
-        findViewById(R.id.marker_button).setOnClickListener(this);
-        findViewById(R.id.updates_button).setOnClickListener(this);
-        Glide.with(this).load(R.drawable.loading_map).into((ImageView) findViewById(R.id.loading_gif));
-
-        SyncManager.getInstance().startSyncAdapter(this);
-        GameManager.getInstance().setMoodRatingAlarm(this);
-
+    private void startStepService() {
         //Start step counter and location service
         Intent mStepsIntent = new Intent(getApplicationContext(), StepsService.class);
         startService(mStepsIntent);
-
-        //setupMusic();
-    }
-
-    /*private void setupMusic() {
-        mediaPlayer = MediaPlayer.create(this, R.raw.bg_music_map);
-        mediaPlayer.setLooping(true); // Set looping
-        mediaPlayer.setVolume(100, 100);
-        mediaPlayer.start();
-    }*/
-
-    @Override
-    protected void onStart() {
-        super.onStart();
-        active = true;
-        setupNavDrawer();
-
     }
 
     /**
@@ -205,6 +225,8 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
     private void setupNavDrawer() {
         final String[] menuTitles = getResources().getStringArray(R.array.nav_items);
         int[] menuIcons = new int[]{R.drawable.ic_prof, R.drawable.ic_backpack, R.drawable.ic_weapons, R.drawable.ic_crafting, R.drawable.ic_index, R.drawable.ic_achievements, R.drawable.ic_leaderboard, R.drawable.ic_quest};
+        mDrawerLayout = findViewById(R.id.drawer_layout);
+        ListView mDrawerList = findViewById(R.id.left_drawer);
         mDrawerList.setAdapter(new NavigationDrawerListAdapter(this, menuTitles, menuIcons));
         mDrawerList.setOnItemClickListener(new DrawerItemClickListener(this));
     }
@@ -219,15 +241,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
         mMap.setMinZoomPreference(16f);
         final MapWrapperLayout mapWrapperLayout = findViewById(R.id.map_wrapper);
         mapWrapperLayout.init(map, getPixelsFromDp(this, 59)); // Setup wrapper with default offset.
-
-        // We want to reuse the info window for all the markers,
-        // so create only one class member instance
-        this.infoWindow = (ViewGroup) getLayoutInflater().inflate(R.layout.custom_info_window_quick, null);
-        this.infoTitle = infoWindow.findViewById(R.id.title);
-        this.infoSnippet = infoWindow.findViewById(R.id.snippet);
-        this.infoImg = infoWindow.findViewById(R.id.info_img);
-        this.infoButton = infoWindow.findViewById(R.id.collect_button);
-
+        setupMarkerViews();
         map.setOnMarkerClickListener(new GoogleMap.OnMarkerClickListener() {
             @Override
             public boolean onMarkerClick(Marker marker) {
@@ -236,6 +250,40 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
             }
         });
 
+        setMarkerClickListener();
+        map.setInfoWindowAdapter(getInfoWindowAdapter(mapWrapperLayout));
+        applyStyleToMap();
+        setupMapLayout();
+        updateLocationUI();
+        updateMarkers();
+
+        if (mCameraPosition != null) {
+            mMap.moveCamera(CameraUpdateFactory.newCameraPosition(mCameraPosition));
+        } else if (mCurrentLocation != null) {
+            mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(
+                    new LatLng(mCurrentLocation.getLatitude(),
+                            mCurrentLocation.getLongitude()), DEFAULT_ZOOM));
+        } else {
+            Log.d(TAG, getString(R.string.null_location));
+            mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(mDefaultLocation, DEFAULT_ZOOM));
+        }
+        mMap.getUiSettings().setScrollGesturesEnabled(false);
+        mMap.getUiSettings().setMyLocationButtonEnabled(false);
+        findViewById(R.id.loading).setVisibility(View.GONE);
+    }
+
+    private void setupMapLayout() {
+        // Calculate ActionBar height
+        int actionBarHeight = 0;
+        TypedValue tv = new TypedValue();
+        if (getTheme().resolveAttribute(android.R.attr.actionBarSize, tv, true)) {
+            actionBarHeight = TypedValue.complexToDimensionPixelSize(tv.data, getResources().getDisplayMetrics());
+        }
+        mMap.setPadding(0, actionBarHeight, 0, 0);
+        mMap.getUiSettings().setMapToolbarEnabled(false);
+    }
+
+    private void setMarkerClickListener() {
         // Setting custom OnTouchListener which deals with the pressed state
         // so it shows up
         this.infoButtonListener = new OnInfoWindowElemTouchListener(infoButton,
@@ -247,7 +295,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
                 int markerId = ((MarkerTag) marker.getTag()).getId();
                 float distance = MarkerManager.getMarkerDistance(marker, mCurrentLocation);
 
-                if (distance < markerUsableRadius || GameManager.TESTING) {//Check if user is close enough to marker.
+                if (distance < MARKER_USABLE_RADIUS || GameManager.TESTING) {//Check if user is close enough to marker.
                     if (MarkerManager.showUsedMarker(marker.getPosition())) {//Check if too soon since last visit.) {
                         switch (markerId) {
                             case MarkerFactory.ID_VILLAGE:
@@ -270,38 +318,16 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
             }
         };
         this.infoButton.setOnTouchListener(infoButtonListener);
+    }
 
-        map.setInfoWindowAdapter(getInfoWindowAdapter(mapWrapperLayout));
-
-        applyStyleToMap();
-
-        // Calculate ActionBar height
-        int actionBarHeight = 0;
-        TypedValue tv = new TypedValue();
-        if (getTheme().resolveAttribute(android.R.attr.actionBarSize, tv, true)) {
-            actionBarHeight = TypedValue.complexToDimensionPixelSize(tv.data, getResources().getDisplayMetrics());
-        }
-
-        mMap.setPadding(0, actionBarHeight, 0, 0);
-        mMap.getUiSettings().setMapToolbarEnabled(false);
-
-        // Turn on the My Location layer and the related control on the map.
-        updateLocationUI();
-        updateMarkers();
-
-        if (mCameraPosition != null) {
-            mMap.moveCamera(CameraUpdateFactory.newCameraPosition(mCameraPosition));
-        } else if (mCurrentLocation != null) {
-            mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(
-                    new LatLng(mCurrentLocation.getLatitude(),
-                            mCurrentLocation.getLongitude()), DEFAULT_ZOOM));
-        } else {
-            Log.d(TAG, getString(R.string.null_location));
-            mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(mDefaultLocation, DEFAULT_ZOOM));
-        }
-        mMap.getUiSettings().setScrollGesturesEnabled(false);
-        mMap.getUiSettings().setMyLocationButtonEnabled(false);
-        findViewById(R.id.loading).setVisibility(View.GONE);
+    private void setupMarkerViews() {
+        // We want to reuse the info window for all the markers,
+        // so create only one class member instance
+        this.infoWindow = (ViewGroup) getLayoutInflater().inflate(R.layout.custom_info_window_quick, null);
+        this.infoTitle = infoWindow.findViewById(R.id.title);
+        this.infoSnippet = infoWindow.findViewById(R.id.snippet);
+        this.infoImg = infoWindow.findViewById(R.id.info_img);
+        this.infoButton = infoWindow.findViewById(R.id.collect_button);
     }
 
     private GoogleMap.InfoWindowAdapter getInfoWindowAdapter(final MapWrapperLayout mapWrapperLayout) {
@@ -314,10 +340,10 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
             @Override
             public View getInfoContents(Marker marker) {
                 // Setting up the infoWindow with current's marker info
+                Context c = getApplicationContext();
                 infoTitle.setText(marker.getTitle());
                 infoSnippet.setText(marker.getSnippet());
-                Context c = getApplicationContext();
-                infoImg.setImageDrawable(ContextCompat.getDrawable(getApplicationContext(), c.getResources().getIdentifier("marker_" + String.format("%04d", ((MarkerTag) marker.getTag()).getId()), "drawable", c.getPackageName())));
+                infoImg.setImageDrawable(ContextCompat.getDrawable(getApplicationContext(), c.getResources().getIdentifier("marker_" + String.format(Locale.ENGLISH, "%04d", ((MarkerTag) marker.getTag()).getId()), "drawable", c.getPackageName())));
                 infoButtonListener.setMarker(marker);
 
                 // We must call this to set the current marker and infoWindow references
@@ -408,41 +434,6 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
         MarkerManager.revealMarkers(this, markers, mCurrentLocation);
     }
 
-    @Override
-    protected void onStop() {
-        super.onStop();
-        active = false;
-        //mediaPlayer.pause();
-    }
-
-    /**
-     * Get the device location and nearby places when the activity is restored after a pause.
-     */
-    @Override
-    protected void onResume() {
-        super.onResume();
-        /*if (mediaPlayer != null) {
-            mediaPlayer.start();
-        } else {
-            setupMusic();
-        }*/
-
-        updateMarkers();
-        ((TextView) findViewById(R.id.level_num)).setText(String.valueOf(gm.getPlayer().getLevel()));
-        ProgressBar xpBar = findViewById(R.id.xp_bar);
-        xpBar.setMax(XPLevels.XP_LEVELS[gm.getPlayer().getLevel()]);
-        xpBar.setProgress(gm.getPlayer().getXp());
-        xpBar.getIndeterminateDrawable().setColorFilter(Color.WHITE, PorterDuff.Mode.MULTIPLY);
-
-        signInSilently();
-
-        getDeviceLocation();
-    }
-
-    private boolean isSignedIn() {
-        return GoogleSignIn.getLastSignedInAccount(this) != null;
-    }
-
     private void signInSilently() {
         GoogleSignInClient signInClient = GoogleSignIn.getClient(this,
                 GoogleSignInOptions.DEFAULT_GAMES_SIGN_IN);
@@ -461,6 +452,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
                     }
                 });
     }
+
     final int RC_SIGN_IN = 1004;
 
     private void startSignInIntent() {
@@ -548,7 +540,6 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
     @Override
     public void onLocationChanged(Location location) {
     }
-
 
     public static int getPixelsFromDp(Context context, float dp) {
         final float scale = context.getResources().getDisplayMetrics().density;
@@ -653,13 +644,9 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
         if (mMap == null) {
             return;
         }
-
-        if (mLocationPermissionGranted) {
-            mMap.setMyLocationEnabled(true);
-            mMap.getUiSettings().setMyLocationButtonEnabled(false);
-        } else {
-            mMap.setMyLocationEnabled(false);
-            mMap.getUiSettings().setMyLocationButtonEnabled(false);
+        mMap.setMyLocationEnabled(mLocationPermissionGranted);
+        mMap.getUiSettings().setMyLocationButtonEnabled(false);
+        if (!mLocationPermissionGranted) {
             mCurrentLocation = null;
         }
     }
@@ -675,9 +662,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
 
     private void startLocationUpdates() {
         try {
-            mFusedLocationClient.requestLocationUpdates(mLocationRequest,
-                    mLocationCallback,
-                    null);
+            mFusedLocationClient.requestLocationUpdates(mLocationRequest, mLocationCallback, null);
         } catch (SecurityException e) {
             e.printStackTrace();
         }
@@ -720,97 +705,6 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
     @Override
     public void exit() {
 
-    }
-
-    private class DrawerItemClickListener implements ListView.OnItemClickListener {
-        private Context context;
-
-        private DrawerItemClickListener(Context context) {
-            this.context = context;
-        }
-
-        @Override
-        public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-            Intent i;
-            switch (position) {
-                case PROFILE_TEXT:
-                    i = new Intent(context, PlayerAvatarActivity.class);
-                    startActivity(i);
-                    playClick();
-                    break;
-                case INVENTORY:
-                    i = new Intent(context, InventoryActivity.class);
-                    startActivity(i);
-                    playClick();
-                    break;
-                case WEAPONS:
-                    i = new Intent(context, WeaponActivity.class);
-                    startActivity(i);
-                    playClick();
-                    break;
-                case CRAFTING:
-                    i = new Intent(context, CraftingActivity.class);
-                    startActivity(i);
-                    playClick();
-                    break;
-                case INDEX:
-                    i = new Intent(context, IndexActivity.class);
-                    startActivity(i);
-                    playClick();
-                    break;
-                case ACHIEVEMENTS:
-                    if (isSignedIn()) {
-                        Games.getAchievementsClient(context, GoogleSignIn.getLastSignedInAccount(context))
-                                .getAchievementsIntent()
-                                .addOnSuccessListener(new OnSuccessListener<Intent>() {
-                                    @Override
-                                    public void onSuccess(Intent intent) {
-                                        startActivityForResult(intent, 1002);
-                                    }
-                                });
-                        playClick();
-                    } else {
-                        App.showToast(getApplicationContext(), getString(R.string.no_google_play_achievements));
-                    }
-                    break;
-                case LEADERBOARD:
-
-                    if (isSignedIn()) {
-                        int totalXP = 0;
-                        for (int j = 0; j < gm.getPlayer().getLevel(); j++) {
-                            totalXP += XPLevels.XP_LEVELS[j];
-                        }
-                        totalXP += gm.getPlayer().getXp();
-
-                        LeaderboardsClient leaderboardsClient = Games.getLeaderboardsClient(context, GoogleSignIn.getLastSignedInAccount(context));
-                        leaderboardsClient.submitScore(getString(R.string.leaderboard_top_players), totalXP);
-                        leaderboardsClient.getLeaderboardIntent(getString(R.string.leaderboard_top_players)).addOnSuccessListener(new OnSuccessListener<Intent>() {
-                            @Override
-                            public void onSuccess(Intent intent) {
-                                startActivityForResult(intent, 1001);
-                            }
-                        });
-                        playClick();
-
-                    } else {
-                        App.showToast(getApplicationContext(), getString(R.string.no_google_play_leaderboard));
-                    }
-                    break;
-
-                case HELP:
-                    i = new Intent(context, HelpMenuActivity.class);
-                    startActivity(i);
-                    playClick();
-                    break;
-                /*case SETTINGS:
-                    i = new Intent(context, DeveloperSettingsActivity.class);
-                    startActivity(i);
-                    break;*/
-            }
-
-            DrawerLayout drawer = ((AppCompatActivity) context).findViewById(R.id.drawer_layout);
-            drawer.closeDrawer(GravityCompat.START);
-        }
     }
 
     private void playClick() {

@@ -108,6 +108,7 @@
     <string name="health_amount">HP: %1$d/%2$d</string>
     <string name="new_recipe">New Recipe Unlocked.</string>
     <string name="sad_help">Social Anxiety Help</string>
+    <string name="feedback_survey">Thank you for taking part in the study this past week. You did great! As a final step, could you please fill out the exit survey? You\'ll need to enter your APP CODE:</string>
 
     <string name="go_back">Go Back</string>
 

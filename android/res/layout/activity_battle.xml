@@ -185,7 +185,7 @@
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center"
-                    android:layout_weight=".5"
+                    android:layout_weight="1"
                     android:drawableStart="@drawable/ic_attack"
                     android:padding="10dp"
                     android:text="@string/attack" />
@@ -226,7 +226,7 @@
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center"
-                    android:layout_weight=".5"
+                    android:layout_weight="1"
                     android:drawableStart="@drawable/ic_use_item"
                     android:padding="10dp"
                     android:text="@string/use_item" />

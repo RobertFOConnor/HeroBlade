@@ -91,7 +91,6 @@
                     android:id="@+id/level_num"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="14"
                     android:textAllCaps="true"
                     android:textColor="@color/white"
                     android:textSize="50sp"
@@ -107,16 +106,6 @@
                 android:progressDrawable="@drawable/xp_bar" />
 
         </LinearLayout>
-
-        <Button
-            android:id="@+id/steps_text"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignParentBottom="true"
-            android:layout_alignParentEnd="true"
-            android:gravity="center"
-            android:visibility="gone"
-            android:text="Steps: " />
 
         <LinearLayout
             android:id="@+id/avatar_fragment"
