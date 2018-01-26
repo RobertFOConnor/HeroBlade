@@ -80,17 +80,21 @@ public class VillageActivity extends AndroidApplication implements LibGdxInterfa
     }
 
     private void setupClickListeners() {
-        findViewById(R.id.buy_button).setOnClickListener(this);
-        findViewById(R.id.sell_button).setOnClickListener(this);
-        findViewById(R.id.talk_button).setOnClickListener(this);
-        findViewById(R.id.run_button).setOnClickListener(this);
-        findViewById(R.id.ans_0).setOnClickListener(this);
-        findViewById(R.id.ans_1).setOnClickListener(this);
-        findViewById(R.id.ans_2).setOnClickListener(this);
-        findViewById(R.id.ans_3).setOnClickListener(this);
-        findViewById(R.id.ans_4).setOnClickListener(this);
-        findViewById(R.id.go_back).setOnClickListener(this);
-        findViewById(R.id.next_button).setOnClickListener(this);
+        setClickListener(R.id.buy_button);
+        setClickListener(R.id.sell_button);
+        setClickListener(R.id.talk_button);
+        setClickListener(R.id.run_button);
+        setClickListener(R.id.ans_0);
+        setClickListener(R.id.ans_1);
+        setClickListener(R.id.ans_2);
+        setClickListener(R.id.ans_3);
+        setClickListener(R.id.ans_4);
+        setClickListener(R.id.go_back);
+        setClickListener(R.id.next_button);
+    }
+
+    private void setClickListener(int id) {
+        findViewById(id).setOnClickListener(this);
     }
 
     private void showWelcomeText() {

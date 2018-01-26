@@ -1,7 +1,0 @@
-<?xml version="1.0" encoding="utf-8"?>
-<resources>
-    <string name="fa_icon_name">&#xe007;</string>
-    <string name="fa_icon_email">&#xe009;</string>
-    <string name="fa_icon_password">&#xe008;</string>
-    <string name="fa_icon_mic">&#xe006;</string>
-</resources>

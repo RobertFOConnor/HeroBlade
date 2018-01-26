@@ -9,6 +9,8 @@ import android.widget.BaseAdapter;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.google.android.gms.auth.api.signin.GoogleSignIn;
+
 import ie.ul.postgrad.socialanxietyapp.R;
 import ie.ul.postgrad.socialanxietyapp.game.GameManager;
 import ie.ul.postgrad.socialanxietyapp.screens.MapsActivity;
@@ -40,7 +42,6 @@ public class NavigationDrawerListAdapter extends BaseAdapter {
     public NavigationDrawerListAdapter(Context context, String[] titles, int[] iconIds) {
         this.titles = titles;
         this.iconIds = iconIds;
-
         this.context = context;
         inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
     }
@@ -78,10 +79,17 @@ public class NavigationDrawerListAdapter extends BaseAdapter {
             ((TextView) rowView.findViewById(R.id.name_display)).setText(GameManager.getInstance().getPlayer().getName());
             ((TextView) rowView.findViewById(R.id.level_display)).setText(context.getString(R.string.level, GameManager.getInstance().getPlayer().getLevel()));
 
+            try {
+                ((ImageView) rowView.findViewById(R.id.profile_pic_button)).setImageURI(GoogleSignIn.getLastSignedInAccount(context).getPhotoUrl());
+            } catch (NullPointerException e) {
+                e.printStackTrace();
+            }
+
             (rowView.findViewById(R.id.profile_pic_button)).setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
                     Intent i = new Intent(context, PlayerAvatarActivity.class); //LibGDX Activity!
+                    i.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                     context.startActivity(i);
 
                     if (context instanceof MapsActivity) {
@@ -93,8 +101,8 @@ public class NavigationDrawerListAdapter extends BaseAdapter {
         } else {
 
             rowView = inflater.inflate(R.layout.fragment_nav_menu_item, null);
-            holder.tv = (TextView) rowView.findViewById(R.id.title);
-            holder.img = (ImageView) rowView.findViewById(R.id.image);
+            holder.tv = rowView.findViewById(R.id.title);
+            holder.img = rowView.findViewById(R.id.image);
             holder.tv.setText(titles[position - 1]);
             holder.img.setImageResource(iconIds[position - 1]);
         }

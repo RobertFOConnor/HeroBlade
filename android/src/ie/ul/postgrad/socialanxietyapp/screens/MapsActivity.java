@@ -39,21 +39,18 @@ import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
 import com.google.android.gms.auth.api.signin.GoogleSignInResult;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
-import com.google.android.gms.common.api.PendingResult;
-import com.google.android.gms.common.api.ResultCallback;
 import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.location.LocationCallback;
 import com.google.android.gms.location.LocationListener;
 import com.google.android.gms.location.LocationRequest;
 import com.google.android.gms.location.LocationResult;
 import com.google.android.gms.location.LocationServices;
-import com.google.android.gms.location.places.PlaceLikelihood;
-import com.google.android.gms.location.places.PlaceLikelihoodBuffer;
 import com.google.android.gms.location.places.Places;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
+import com.google.android.gms.maps.UiSettings;
 import com.google.android.gms.maps.model.CameraPosition;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MapStyleOptions;
@@ -125,7 +122,6 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
     private static final long UPDATE_INTERVAL_IN_MILLISECONDS = 10000;
     private static final long FASTEST_UPDATE_INTERVAL_IN_MILLISECONDS = UPDATE_INTERVAL_IN_MILLISECONDS / 2;
 
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -169,7 +165,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
     private void initUI() {
         setupNavDrawer();
         setupToolbar();
-        showLoadingIcon();
+        showLoadingIcon(true);
     }
 
     private void setupGameManager() {
@@ -178,8 +174,12 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
         gm.setMoodRatingAlarm(this);
     }
 
-    private void showLoadingIcon() {
-        Glide.with(this).load(R.drawable.loading_map).into((ImageView) findViewById(R.id.loading_gif));
+    private void showLoadingIcon(boolean show) {
+        if (show) {
+            Glide.with(this).load(R.drawable.loading_map).into((ImageView) findViewById(R.id.loading_gif));
+        } else {
+            findViewById(R.id.loading).setVisibility(View.GONE);
+        }
     }
 
     private void setupToolbar() {
@@ -256,7 +256,18 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
         setupMapLayout();
         updateLocationUI();
         updateMarkers();
+        setCameraPos();
+        UiSettings uiSettings = mMap.getUiSettings();
+        uiSettings.setScrollGesturesEnabled(false);
+        uiSettings.setMyLocationButtonEnabled(false);
+        showLoadingIcon(false);
+    }
 
+    private void updateMarkers() {
+        MarkerManager.updateMarkers(this, mMap, mLocationPermissionGranted, mGoogleApiClient, markers, mCurrentLocation);
+    }
+
+    private void setCameraPos() {
         if (mCameraPosition != null) {
             mMap.moveCamera(CameraUpdateFactory.newCameraPosition(mCameraPosition));
         } else if (mCurrentLocation != null) {
@@ -267,9 +278,6 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
             Log.d(TAG, getString(R.string.null_location));
             mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(mDefaultLocation, DEFAULT_ZOOM));
         }
-        mMap.getUiSettings().setScrollGesturesEnabled(false);
-        mMap.getUiSettings().setMyLocationButtonEnabled(false);
-        findViewById(R.id.loading).setVisibility(View.GONE);
     }
 
     private void setupMapLayout() {
@@ -294,6 +302,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
                 // Here the marker id is passed to the result activity.
                 int markerId = ((MarkerTag) marker.getTag()).getId();
                 float distance = MarkerManager.getMarkerDistance(marker, mCurrentLocation);
+                Context context = getApplicationContext();
 
                 if (distance < MARKER_USABLE_RADIUS || GameManager.TESTING) {//Check if user is close enough to marker.
                     if (MarkerManager.showUsedMarker(marker.getPosition())) {//Check if too soon since last visit.) {
@@ -310,10 +319,10 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
                         }
                         playClick();
                     } else {
-                        App.showToast(getApplicationContext(), getString(R.string.already_visited));
+                        App.showToast(context, getString(R.string.already_visited));
                     }
                 } else {
-                    App.showToast(getApplicationContext(), getString(R.string.too_far_away));
+                    App.showToast(context, getString(R.string.too_far_away));
                 }
             }
         };
@@ -343,7 +352,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
                 Context c = getApplicationContext();
                 infoTitle.setText(marker.getTitle());
                 infoSnippet.setText(marker.getSnippet());
-                infoImg.setImageDrawable(ContextCompat.getDrawable(getApplicationContext(), c.getResources().getIdentifier("marker_" + String.format(Locale.ENGLISH, "%04d", ((MarkerTag) marker.getTag()).getId()), "drawable", c.getPackageName())));
+                infoImg.setImageDrawable(ContextCompat.getDrawable(c, c.getResources().getIdentifier("marker_" + String.format(Locale.ENGLISH, "%04d", ((MarkerTag) marker.getTag()).getId()), "drawable", c.getPackageName())));
                 infoButtonListener.setMarker(marker);
 
                 // We must call this to set the current marker and infoWindow references
@@ -358,7 +367,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
         Player player = gm.getPlayer();
         player.setCurrHealth(player.getMaxHealth());
         gm.updatePlayerInDatabase(player);
-        gm.awardXP(getApplicationContext(), villageXP);
+        gm.awardXP(this, villageXP);
         MarkerManager.disableMarker(this, marker);
         startMarkerActivity(VillageActivity.class, marker, MarkerFactory.ID_VILLAGE);
     }
@@ -368,7 +377,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
             weaponItem.setCurrHealth(weaponItem.getMaxHealth());
             gm.updateWeaponInDatabase(weaponItem);
         }
-        gm.awardXP(getApplicationContext(), blacksmithXP);
+        gm.awardXP(this, blacksmithXP);
         MarkerManager.disableMarker(this, marker);
         startMarkerActivity(BlacksmithActivity.class, marker, MarkerFactory.ID_BLACKSMITH);
     }
@@ -380,13 +389,13 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
             markers.remove(marker);
             startMarkerActivity(BattleActivity.class, marker, MarkerFactory.ID_ENEMY);
         } else {
-            App.showToast(getApplicationContext(), getString(R.string.no_battle));
+            App.showToast(this, getString(R.string.no_battle));
         }
     }
 
     private void startMarkerActivity(Class activity, Marker marker, int type) {
         gm.addUsedLocation(marker.getPosition(), type);
-        Intent i = new Intent(getApplicationContext(), activity);
+        Intent i = new Intent(this, activity);
         startActivity(i);
     }
 
@@ -403,35 +412,6 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
         } catch (Resources.NotFoundException e) {
             Log.e(TAG, getString(R.string.style_not_found), e);
         }
-    }
-
-    /**
-     * Adds markers for places nearby the device and turns the My Location feature on or off,
-     * provided location permission has been granted.
-     */
-    private void updateMarkers() {
-        if (mMap == null) {
-            return;
-        }
-
-        if (mLocationPermissionGranted) {
-            // Get the businesses and other points of interest located
-            // nearest to the device's current location.
-            @SuppressWarnings("MissingPermission")
-            PendingResult<PlaceLikelihoodBuffer> result = Places.PlaceDetectionApi
-                    .getCurrentPlace(mGoogleApiClient, null);
-            result.setResultCallback(new ResultCallback<PlaceLikelihoodBuffer>() {
-                @Override
-                public void onResult(@NonNull PlaceLikelihoodBuffer likelyPlaces) {
-                    for (PlaceLikelihood placeLikelihood : likelyPlaces) {
-                        MarkerManager.updateMarker(getApplicationContext(), mMap, placeLikelihood, markers, mCurrentLocation);
-                    }
-                    likelyPlaces.release(); // Release the place likelihood buffer.
-                    MarkerManager.checkForEndOfMarkerCooldown(getApplicationContext(), markers);
-                }
-            });
-        }
-        MarkerManager.revealMarkers(this, markers, mCurrentLocation);
     }
 
     private void signInSilently() {

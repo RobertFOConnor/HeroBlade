@@ -4,8 +4,14 @@ import android.content.Context;
 import android.content.Intent;
 import android.location.Location;
 import android.os.Vibrator;
+import android.support.annotation.NonNull;
 
+import com.google.android.gms.common.api.GoogleApiClient;
+import com.google.android.gms.common.api.PendingResult;
+import com.google.android.gms.common.api.ResultCallback;
 import com.google.android.gms.location.places.PlaceLikelihood;
+import com.google.android.gms.location.places.PlaceLikelihoodBuffer;
+import com.google.android.gms.location.places.Places;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
@@ -14,7 +20,6 @@ import java.util.ArrayList;
 
 import ie.ul.postgrad.socialanxietyapp.R;
 import ie.ul.postgrad.socialanxietyapp.game.factory.MarkerFactory;
-import ie.ul.postgrad.socialanxietyapp.screens.MapsActivity;
 import ie.ul.postgrad.socialanxietyapp.screens.NearbyLocationsActivity;
 
 /**
@@ -26,10 +31,39 @@ import ie.ul.postgrad.socialanxietyapp.screens.NearbyLocationsActivity;
 public class MarkerManager {
 
     public static int enemyCount = 0;
-    public static final int MARKER_RADIUS = 1000;
+    private static final int MARKER_RADIUS = 1000;
     public static final int MARKER_USABLE_RADIUS = 30;
 
-    public static void updateMarker(Context context, GoogleMap mMap, PlaceLikelihood placeLikelihood, ArrayList<Marker> markers, Location mCurrentLocation) {
+    /**
+     * Adds markers for places nearby the device and turns the My Location feature on or off,
+     * provided location permission has been granted.
+     */
+    public static void updateMarkers(final Context context, final GoogleMap mMap, boolean mLocationPermissionGranted, GoogleApiClient mGoogleApiClient, final ArrayList<Marker> markers, final Location mCurrentLocation) {
+        if (mMap == null) {
+            return;
+        }
+
+        if (mLocationPermissionGranted) {
+            // Get the businesses and other points of interest located
+            // nearest to the device's current location.
+            @SuppressWarnings("MissingPermission")
+            PendingResult<PlaceLikelihoodBuffer> result = Places.PlaceDetectionApi
+                    .getCurrentPlace(mGoogleApiClient, null);
+            result.setResultCallback(new ResultCallback<PlaceLikelihoodBuffer>() {
+                @Override
+                public void onResult(@NonNull PlaceLikelihoodBuffer likelyPlaces) {
+                    for (PlaceLikelihood placeLikelihood : likelyPlaces) {
+                        updateMarker(context, mMap, placeLikelihood, markers, mCurrentLocation);
+                    }
+                    likelyPlaces.release(); // Release the place likelihood buffer.
+                    checkForEndOfMarkerCooldown(context, markers);
+                }
+            });
+        }
+        revealMarkers(context, markers, mCurrentLocation);
+    }
+
+    private static void updateMarker(Context context, GoogleMap mMap, PlaceLikelihood placeLikelihood, ArrayList<Marker> markers, Location mCurrentLocation) {
         // Add a marker for each place near the device's current location, with an
         // info window showing place information.
         String attributions = (String) placeLikelihood.getPlace().getAttributions();
@@ -109,14 +143,16 @@ public class MarkerManager {
         return markerPos;
     }
 
-    public static void revealMarkers(Context context, ArrayList<Marker> markers, Location currLoc) {
+    private static void revealMarkers(Context context, ArrayList<Marker> markers, Location currLoc) {
         //Cycle markers and check for nearby markers. Reveal if player is close.
         for (Marker m : markers) {
             if (getMarkerDistance(m, currLoc) < MARKER_RADIUS && !m.isVisible()) {
                 m.setVisible(true);
 
                 Vibrator v = (Vibrator) context.getSystemService(Context.VIBRATOR_SERVICE);
-                v.vibrate(500);
+                if (v != null) {
+                    v.vibrate(500);
+                }
             }
         }
     }
@@ -126,7 +162,7 @@ public class MarkerManager {
         marker.setIcon(MarkerFactory.getUpdateMarkerIcon(context, MarkerFactory.COOLDONW_MARKER));
     }
 
-    public static boolean markerExists(LatLng latLng, ArrayList<Marker> markers) {
+    private static boolean markerExists(LatLng latLng, ArrayList<Marker> markers) {
         boolean doesMarkerExist = false;
 
         for (Marker marker : markers) { //Check if marker has already been placed on map.
@@ -137,7 +173,7 @@ public class MarkerManager {
         return doesMarkerExist;
     }
 
-    public static void checkForEndOfMarkerCooldown(Context context, ArrayList<Marker> markers) {
+    private static void checkForEndOfMarkerCooldown(Context context, ArrayList<Marker> markers) {
         GameManager gm = GameManager.getInstance();
         for (Marker marker : markers) {
             ConsumedLocation location = gm.hasUsedLocation(marker.getPosition());

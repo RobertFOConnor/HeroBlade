@@ -13,16 +13,17 @@ import android.widget.TextView;
 import ie.ul.postgrad.socialanxietyapp.App;
 import ie.ul.postgrad.socialanxietyapp.R;
 
-public class FeedbackActivity extends AppCompatActivity {
+import static ie.ul.postgrad.socialanxietyapp.Constants.APP_PATH;
+import static ie.ul.postgrad.socialanxietyapp.Constants.FEEDBACK_SURVEY_LINK;
 
-    private static final String FEEDBACK_SURVEY_LINK = "https://www.surveymonkey.com/r/7SCVLJP";
+public class FeedbackActivity extends AppCompatActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_feedback);
         try {
-            SharedPreferences prefs = getSharedPreferences("ie.ul.postgrad.socialanxietyapp", Context.MODE_PRIVATE);
+            SharedPreferences prefs = getSharedPreferences(APP_PATH, Context.MODE_PRIVATE);
             ((TextView) findViewById(R.id.app_code)).setText(prefs.getString("firstTimeUID", "").substring(0, 5));
         } catch (Exception e) {
             e.printStackTrace();

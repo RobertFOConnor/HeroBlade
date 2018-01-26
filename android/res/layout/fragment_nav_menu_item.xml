@@ -4,6 +4,7 @@
     android:layout_height="match_parent"
     android:layout_marginLeft="20dp"
     android:layout_marginRight="20dp"
+    android:background="?attr/selectableItemBackground"
     android:gravity="center_vertical"
     android:orientation="horizontal"
     android:paddingBottom="15dp"
@@ -15,9 +16,9 @@
         android:layout_height="30dp"
         android:layout_marginLeft="20dp"
         android:layout_marginRight="20dp"
+        android:contentDescription="@string/proceed"
         android:src="@mipmap/ic_launcher"
-        android:tint="@color/text_dark"
-        android:contentDescription="@string/proceed" />
+        android:tint="@color/text_dark" />
 
     <TextView
         android:id="@+id/title"
